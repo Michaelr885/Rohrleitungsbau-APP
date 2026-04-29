@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0c1218" />
+    <title>Einheiten &amp; Taschenrechner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css?v=16" />
+  </head>
+  <body>
+    <div class="wrap wrap--sub">
+      <a href="index.html" class="back-link">← Index</a>
+      <h1>Einheiten &amp; Taschenrechner</h1>
+      <p class="sub">
+        Schnelle Umrechnungen für den Rohrleitungsbau und einen einfachen Taschenrechner — per Schalter umschalten.
+      </p>
+
+      <div class="calc-mode-bar card card--flat" role="tablist" aria-label="Ansicht wechseln">
+        <button type="button" class="calc-mode-btn calc-mode-btn--active" id="mode-units" role="tab" aria-selected="true" data-mode="units">
+          Umrechner
+        </button>
+        <button type="button" class="calc-mode-btn" id="mode-calc" role="tab" aria-selected="false" data-mode="calc">
+          Taschenrechner
+        </button>
+      </div>
+
+      <div id="panel-units" class="calc-panel">
+        <div class="card">
+          <h2>Druck</h2>
+          <p class="formula-note">1 bar = 100 000 Pa (exakt)</p>
+          <div class="row row--mobile-stack unit-pair-row">
+            <div>
+              <label for="barVal">bar</label>
+              <input id="barVal" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 6,5" />
+            </div>
+            <div>
+              <label for="paVal">Pa</label>
+              <input id="paVal" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 650000" />
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Temperatur</h2>
+          <div class="row row--mobile-stack unit-pair-row">
+            <div>
+              <label for="celsiusVal">°C</label>
+              <input id="celsiusVal" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 100" />
+            </div>
+            <div>
+              <label for="fahrenheitVal">°F</label>
+              <input id="fahrenheitVal" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 212" />
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Volumenstrom</h2>
+          <p class="formula-note">1 m³/h = <sup>1</sup>/<sub>3,6</sub> l/s ≈ 0,278 l/s</p>
+          <div class="row row--mobile-stack unit-pair-row">
+            <div>
+              <label for="m3hVal">m³/h</label>
+              <input id="m3hVal" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 10" />
+            </div>
+            <div>
+              <label for="lsVal">l/s</label>
+              <input id="lsVal" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 2,78" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="panel-calc" class="calc-panel" hidden>
+        <div class="card calc-card">
+          <div class="calc-display-wrap">
+            <output id="calcDisplay" class="calc-display" aria-live="polite">0</output>
+          </div>
+          <div class="calc-keys" id="calcKeys">
+            <button type="button" class="calc-key calc-key--wide" data-act="clear">C</button>
+            <button type="button" class="calc-key" data-act="back">⌫</button>
+            <button type="button" class="calc-key calc-key--op" data-op="/">÷</button>
+
+            <button type="button" class="calc-key" data-digit="7">7</button>
+            <button type="button" class="calc-key" data-digit="8">8</button>
+            <button type="button" class="calc-key" data-digit="9">9</button>
+            <button type="button" class="calc-key calc-key--op" data-op="*">×</button>
+
+            <button type="button" class="calc-key" data-digit="4">4</button>
+            <button type="button" class="calc-key" data-digit="5">5</button>
+            <button type="button" class="calc-key" data-digit="6">6</button>
+            <button type="button" class="calc-key calc-key--op" data-op="-">−</button>
+
+            <button type="button" class="calc-key" data-digit="1">1</button>
+            <button type="button" class="calc-key" data-digit="2">2</button>
+            <button type="button" class="calc-key" data-digit="3">3</button>
+            <button type="button" class="calc-key calc-key--op" data-op="+">+</button>
+
+            <button type="button" class="calc-key calc-key--wide" data-digit="0">0</button>
+            <button type="button" class="calc-key" data-act="dot">,</button>
+            <button type="button" class="calc-key calc-key--eq calc-key--op" data-act="eq">=</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="disclaimer">
+        Umrechner und Rechner dienen der Orientierung; Rundungen können bei der Anzeige auftreten.
+      </p>
+    </div>
+    <script src="einheiten-rechner.js?v=1" defer></script>
+  </body>
+</html>
