@@ -1160,7 +1160,7 @@ code {
   margin-bottom: 0.7rem;
 }
 
-.support-sketch-host {
+.support-svg-host {
   width: 100%;
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -1168,7 +1168,7 @@ code {
   background: rgba(0, 0, 0, 0.14);
 }
 
-.support-sketch-host svg {
+.support-svg-host svg {
   display: block;
   width: 100%;
   height: auto;
