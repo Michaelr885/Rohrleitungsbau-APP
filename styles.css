@@ -865,18 +865,28 @@ code {
   text-align: center;
   vertical-align: middle;
   width: 3rem;
+  line-height: 1;
 }
 
 .assign-check {
   appearance: none;
   -webkit-appearance: none;
-  width: 1.35rem;
-  height: 1.35rem;
+  box-sizing: border-box;
+  width: 1.25rem;
+  height: 1.25rem;
+  min-width: 1.25rem;
+  min-height: 1.25rem;
+  aspect-ratio: 1;
   margin: 0;
+  padding: 0;
   border-radius: 6px;
   border: 2px solid var(--border);
   background: rgba(13, 18, 24, 0.85);
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
   vertical-align: middle;
   transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
 }
@@ -899,12 +909,12 @@ code {
 .assign-check:checked::after {
   content: "";
   display: block;
-  width: 5px;
-  height: 9px;
-  margin: 1px auto 0;
+  width: 4px;
+  height: 8px;
+  margin: 0;
   border: solid #fff;
   border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
+  transform: rotate(45deg) translateY(-1px);
 }
 
 .assign-row--done td:not(.assign-check-cell) {
