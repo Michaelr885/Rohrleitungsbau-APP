@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Schraubenlängen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="wrap wrap--sub">
+      <a href="index.html" class="back-link">← Index</a>
+      <h1>Schraubenlängen</h1>
+      <p class="sub">
+        Flansch auswählen (Art · DN · PN), Zusatzwerte für Dichtung, Gewindegänge und
+        Überstand eingeben — Ergebnis: Länge für starre Schraube und für Stehbolzen.
+      </p>
+
+      <div class="card">
+        <h2>Flansch</h2>
+        <div class="row row--mobile-stack">
+          <div>
+            <label for="art">Art</label>
+            <select id="art" name="art" required>
+              <option value="">Lade Daten…</option>
+            </select>
+          </div>
+          <div>
+            <label for="dn">DN</label>
+            <select id="dn" name="dn">
+              <option value="">— zuerst Art wählen —</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label for="pn">PN</label>
+            <select id="pn" name="pn">
+              <option value="">— zuerst DN wählen —</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Zusatzparameter</h2>
+        <div class="row row--mobile-stack">
+          <div>
+            <label for="dichtungHoehe">Dichtung Höhe (mm)</label>
+            <input id="dichtungHoehe" name="dichtungHoehe" type="text" inputmode="decimal" />
+          </div>
+          <div>
+            <label for="gewindegaenge">Überstand / Anzahl Gewindegänge</label>
+            <input id="gewindegaenge" name="gewindegaenge" type="text" inputmode="decimal" />
+          </div>
+        </div>
+        <div class="row row--mobile-stack">
+          <div>
+            <label for="ueberstandBolzen">Überstand Bolzen (mm)</label>
+            <input id="ueberstandBolzen" name="ueberstandBolzen" type="text" inputmode="decimal" />
+          </div>
+          <div>
+            <label for="flanschHoeheManuell">Flanschhöhe manuell (mm), falls kein Wert hinterlegt ist</label>
+            <input
+              id="flanschHoeheManuell"
+              name="flanschHoeheManuell"
+              type="text"
+              inputmode="decimal"
+              placeholder="nur bei fehlendem Wert nötig"
+            />
+            <p class="hint">Wird nur genutzt, wenn für den gewählten Flansch keine Höhe hinterlegt ist.</p>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="btn" id="calc">Berechnen</button>
+
+      <div id="msg" class="msg" role="status"></div>
+
+      <div id="result" class="out card">
+        <h2>Ergebnis</h2>
+        <div class="out-grid">
+          <div class="kpi">
+            <div class="label">Gewinde</div>
+            <div class="value" id="kpi-gewinde">—</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Anzahl Schrauben</div>
+            <div class="value" id="kpi-anzahl">—</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Starre Schraube</div>
+            <div class="value"><span id="kpi-starre">—</span> <span class="unit">mm</span></div>
+          </div>
+          <div class="kpi">
+            <div class="label">Stehbolzen</div>
+            <div class="value"><span id="kpi-steh">—</span> <span class="unit">mm</span></div>
+          </div>
+          <div class="detail" id="detail"></div>
+        </div>
+      </div>
+
+      <p class="footnote">
+        Stammdaten: <code>schrauben-daten.json</code>. Fehlende Werte zu einem Gewinde führen zu einer Fehlermeldung statt einer Schätzung.
+      </p>
+    </div>
+    <script src="app.js?v=5" defer></script>
+  </body>
+</html>

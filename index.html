@@ -2,8 +2,9 @@
 <html lang="de">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Schraubenlängen</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0c1218" />
+    <title>Index</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -12,102 +13,59 @@
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
-    <div class="wrap">
-      <h1>Schraubenlängen</h1>
-      <p class="sub">
-        Flansch auswählen (Art · DN · PN), Zusatzwerte für Dichtung, Gewindegänge und
-        Überstand eingeben — Ergebnis: Länge für starre Schraube und für Stehbolzen.
-      </p>
+  <body class="body--home">
+    <div class="home-wrap">
+      <header class="home-header">
+        <h1 class="home-title">Index</h1>
+        <p class="home-lead">Werkzeuge und Rechner — wähle einen Bereich.</p>
+      </header>
 
-      <div class="card">
-        <h2>Flansch</h2>
-        <div class="row cols-2">
-          <div>
-            <label for="art">Art</label>
-            <select id="art" name="art" required>
-              <option value="">Lade Daten…</option>
-            </select>
-          </div>
-          <div>
-            <label for="dn">DN</label>
-            <select id="dn" name="dn">
-              <option value="">— zuerst Art wählen —</option>
-            </select>
-          </div>
-        </div>
-        <div class="row">
-          <div>
-            <label for="pn">PN</label>
-            <select id="pn" name="pn">
-              <option value="">— zuerst DN wählen —</option>
-            </select>
-          </div>
-        </div>
-      </div>
+      <nav class="home-grid" aria-label="Hauptnavigation">
+        <a href="schraubenlaengen.html" class="glass-btn glass-btn--primary">
+          <span class="glass-btn__icon" aria-hidden="true">⌀</span>
+          <span class="glass-btn__text">
+            <span class="glass-btn__title">Schraubenlängen</span>
+            <span class="glass-btn__desc">Flansch, Gewinde, Längen</span>
+          </span>
+          <span class="glass-btn__chev" aria-hidden="true">›</span>
+        </a>
 
-      <div class="card">
-        <h2>Zusatzparameter</h2>
-        <div class="row cols-2">
-          <div>
-            <label for="dichtungHoehe">Dichtung Höhe (mm)</label>
-            <input id="dichtungHoehe" name="dichtungHoehe" type="text" inputmode="decimal" />
-          </div>
-          <div>
-            <label for="gewindegaenge">Überstand / Anzahl Gewindegänge</label>
-            <input id="gewindegaenge" name="gewindegaenge" type="text" inputmode="decimal" />
-          </div>
-        </div>
-        <div class="row cols-2">
-          <div>
-            <label for="ueberstandBolzen">Überstand Bolzen (mm)</label>
-            <input id="ueberstandBolzen" name="ueberstandBolzen" type="text" inputmode="decimal" />
-          </div>
-          <div>
-            <label for="flanschHoeheManuell">Flanschhöhe manuell (mm), falls kein Wert hinterlegt ist</label>
-            <input
-              id="flanschHoeheManuell"
-              name="flanschHoeheManuell"
-              type="text"
-              inputmode="decimal"
-              placeholder="nur bei fehlendem Wert nötig"
-            />
-            <p class="hint">Wird nur genutzt, wenn für den gewählten Flansch keine Höhe hinterlegt ist.</p>
-          </div>
-        </div>
-      </div>
-
-      <button type="button" class="btn" id="calc">Berechnen</button>
-
-      <div id="msg" class="msg" role="status"></div>
-
-      <div id="result" class="out card">
-        <h2>Ergebnis</h2>
-        <div class="out-grid">
-          <div class="kpi">
-            <div class="label">Gewinde</div>
-            <div class="value" id="kpi-gewinde">—</div>
-          </div>
-          <div class="kpi">
-            <div class="label">Anzahl Schrauben</div>
-            <div class="value" id="kpi-anzahl">—</div>
-          </div>
-          <div class="kpi">
-            <div class="label">Starre Schraube</div>
-            <div class="value"><span id="kpi-starre">—</span> <span class="unit">mm</span></div>
-          </div>
-          <div class="kpi">
-            <div class="label">Stehbolzen</div>
-            <div class="value"><span id="kpi-steh">—</span> <span class="unit">mm</span></div>
-          </div>
-          <div class="detail" id="detail"></div>
-        </div>
-      </div>
-
-      <p class="footnote">
-        Stammdaten: <code>schrauben-daten.json</code>. Fehlende Werte zu einem Gewinde führen zu einer Fehlermeldung statt einer Schätzung.
-      </p>
+        <button type="button" class="glass-btn glass-btn--placeholder" disabled>
+          <span class="glass-btn__icon" aria-hidden="true">◇</span>
+          <span class="glass-btn__text">
+            <span class="glass-btn__title">Platzhalter 1</span>
+            <span class="glass-btn__desc">Demnächst</span>
+          </span>
+        </button>
+        <button type="button" class="glass-btn glass-btn--placeholder" disabled>
+          <span class="glass-btn__icon" aria-hidden="true">◇</span>
+          <span class="glass-btn__text">
+            <span class="glass-btn__title">Platzhalter 2</span>
+            <span class="glass-btn__desc">Demnächst</span>
+          </span>
+        </button>
+        <button type="button" class="glass-btn glass-btn--placeholder" disabled>
+          <span class="glass-btn__icon" aria-hidden="true">◇</span>
+          <span class="glass-btn__text">
+            <span class="glass-btn__title">Platzhalter 3</span>
+            <span class="glass-btn__desc">Demnächst</span>
+          </span>
+        </button>
+        <button type="button" class="glass-btn glass-btn--placeholder" disabled>
+          <span class="glass-btn__icon" aria-hidden="true">◇</span>
+          <span class="glass-btn__text">
+            <span class="glass-btn__title">Platzhalter 4</span>
+            <span class="glass-btn__desc">Demnächst</span>
+          </span>
+        </button>
+        <button type="button" class="glass-btn glass-btn--placeholder" disabled>
+          <span class="glass-btn__icon" aria-hidden="true">◇</span>
+          <span class="glass-btn__text">
+            <span class="glass-btn__title">Platzhalter 5</span>
+            <span class="glass-btn__desc">Demnächst</span>
+          </span>
+        </button>
+      </nav>
     </div>
-    <script src="app.js?v=4" defer></script>
   </body>
 </html>
