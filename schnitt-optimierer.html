@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0c1218" />
+    <title>Schnitt-Optimierer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="wrap wrap--sub">
+      <a href="index.html" class="back-link">← Index</a>
+      <h1>Schnitt-Optimierer</h1>
+      <p class="sub">Stangen (1D) und Platten (2D) — gleiche Logik wie im früheren Prototyp, angepasst auf diese App.</p>
+
+      <div class="schnitt-tabs" role="tablist" aria-label="Modus">
+        <button type="button" class="schnitt-tab" data-mode-tab="1d" role="tab" aria-selected="false">
+          Stangen (1D)
+        </button>
+        <button type="button" class="schnitt-tab" data-mode-tab="2d" role="tab" aria-selected="false">
+          Platten (2D)
+        </button>
+      </div>
+
+      <div id="section-1d" hidden>
+        <div class="card">
+          <h2>Material (Stab)</h2>
+          <div class="row row--mobile-stack">
+            <div>
+              <label for="stockLength">Stangenlänge (mm)</label>
+              <input id="stockLength" type="text" inputmode="decimal" autocomplete="off" />
+            </div>
+            <div>
+              <label for="bladeWidth1D">Sägeblatt / Schnittbreite (mm)</label>
+              <input id="bladeWidth1D" type="text" inputmode="decimal" autocomplete="off" />
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="cut-list-head">
+            <h2>Teile-Liste</h2>
+            <button type="button" class="cut-add-btn" id="add-1d" aria-label="Zeile hinzufügen">+</button>
+          </div>
+          <div id="items-1d" class="cut-items"></div>
+        </div>
+
+        <button type="button" class="btn" id="calc-1d">Optimierung berechnen</button>
+      </div>
+
+      <div id="section-2d" hidden>
+        <div class="card">
+          <h2>Material (Platte)</h2>
+          <div class="row row--mobile-stack cols-3">
+            <div>
+              <label for="sheetWidth">Breite (mm)</label>
+              <input id="sheetWidth" type="text" inputmode="decimal" autocomplete="off" />
+            </div>
+            <div>
+              <label for="sheetHeight">Höhe (mm)</label>
+              <input id="sheetHeight" type="text" inputmode="decimal" autocomplete="off" />
+            </div>
+            <div>
+              <label for="bladeWidth2D">Schnitt (mm)</label>
+              <input id="bladeWidth2D" type="text" inputmode="decimal" autocomplete="off" />
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="cut-list-head">
+            <h2>Teile (Rechteck)</h2>
+            <button type="button" class="cut-add-btn" id="add-2d" aria-label="Zeile hinzufügen">+</button>
+          </div>
+          <div id="items-2d" class="cut-items"></div>
+        </div>
+
+        <button type="button" class="btn" id="calc-2d">Optimierung berechnen</button>
+      </div>
+
+      <div id="cut-error" class="msg" role="alert" hidden></div>
+
+      <div id="results-1d" hidden>
+        <div class="cut-stats row row--mobile-stack">
+          <div class="cut-stat cut-stat--ok">
+            <span class="cut-stat-label">Stangen</span>
+            <span class="cut-stat-val" id="stat-bars">—</span>
+          </div>
+          <div class="cut-stat cut-stat--warn">
+            <span class="cut-stat-label">Verschnitt</span>
+            <span class="cut-stat-val"><span id="stat-waste-1d">—</span> %</span>
+          </div>
+        </div>
+        <div id="bars-list"></div>
+      </div>
+
+      <div id="results-2d" hidden>
+        <div class="cut-stats row row--mobile-stack">
+          <div class="cut-stat cut-stat--ok">
+            <span class="cut-stat-label">Platten</span>
+            <span class="cut-stat-val" id="stat-sheets">—</span>
+          </div>
+          <div class="cut-stat cut-stat--warn">
+            <span class="cut-stat-label">Verschnitt (gesamt)</span>
+            <span class="cut-stat-val"><span id="stat-waste-2d">—</span> %</span>
+          </div>
+        </div>
+        <div id="sheets-list"></div>
+      </div>
+
+      <p class="disclaimer">
+        Hinweis: Nur Orientierung. Keine Gewähr — Schnittplan vor Produktion prüfen (Maschine,
+        Auflage, Bearbeitung).
+      </p>
+    </div>
+    <script src="schnitt-optimierer.js?v=1" defer></script>
+  </body>
+</html>

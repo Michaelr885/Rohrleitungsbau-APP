@@ -541,3 +541,262 @@ code {
   color: var(--muted);
 }
 
+@media (min-width: 520px) {
+  .row.cols-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+/* Schnitt-Optimierer */
+.schnitt-tabs {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.35rem;
+  margin-bottom: 1.25rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.schnitt-tab {
+  flex: 1;
+  min-height: 48px;
+  padding: 0.65rem 0.75rem;
+  border: none;
+  border-radius: 8px;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: var(--muted);
+  background: transparent;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.schnitt-tab--active {
+  background: linear-gradient(180deg, #4ba3f0 0%, var(--accent) 100%);
+  color: #0a0f14;
+}
+
+.cut-list-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.cut-list-head h2 {
+  margin: 0;
+}
+
+.cut-add-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(61, 157, 240, 0.15);
+  color: var(--accent);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.cut-add-btn:active {
+  transform: scale(0.96);
+}
+
+.cut-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.cut-item-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.cut-item-row--2d {
+  align-items: flex-start;
+}
+
+.cut-item-num {
+  width: 1.75rem;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.cut-inp {
+  flex: 1;
+  min-width: 5rem;
+}
+
+.cut-inp--qty {
+  flex: 0 0 4.5rem;
+  max-width: 5rem;
+  text-align: center;
+}
+
+.cut-pair {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.cut-x {
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.cut-remove {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--err);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.cut-stats {
+  margin-bottom: 1rem;
+}
+
+.cut-stat {
+  padding: 1rem;
+  border-radius: var(--radius);
+  text-align: center;
+  border: 1px solid var(--border);
+}
+
+.cut-stat--ok {
+  background: rgba(74, 222, 128, 0.08);
+}
+
+.cut-stat--warn {
+  background: rgba(251, 191, 36, 0.08);
+}
+
+.cut-stat-label {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+}
+
+.cut-stat-val {
+  font-size: 1.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.cut-result-card {
+  margin-bottom: 1rem;
+}
+
+.cut-result-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.65rem;
+}
+
+.cut-result-rest {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.cut-plate-badge {
+  font-size: 0.75rem;
+  color: var(--muted);
+  background: #111820;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+}
+
+.cut-bar-track {
+  display: flex;
+  height: 36px;
+  width: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #111820;
+}
+
+.cut-bar-seg {
+  height: 100%;
+  background: var(--accent);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: #fff;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.cut-bar-rest {
+  flex: 1;
+  min-width: 1.5rem;
+  background: rgba(248, 113, 113, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: var(--err);
+}
+
+.cut-sheet-svg-wrap {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid var(--border);
+  background: #111820;
+}
+
+.cut-sheet-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.cut-sheet-foot {
+  margin: 0.65rem 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+.glass-btn--accent {
+  border-color: rgba(167, 139, 250, 0.35);
+  background: linear-gradient(
+    135deg,
+    rgba(167, 139, 250, 0.18) 0%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+}
+
+.glass-btn--accent:hover {
+  border-color: rgba(167, 139, 250, 0.5);
+}
+
+.glass-btn--accent .glass-btn__icon {
+  color: #c4b5fd;
+}
+
+.glass-btn--accent .glass-btn__chev {
+  color: rgba(196, 181, 253, 0.75);
+}
+
