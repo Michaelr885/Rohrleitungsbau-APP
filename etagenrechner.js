@@ -576,7 +576,7 @@ function setSprungMode(sprung) {
   if (hint) {
     hint.innerHTML = space
       ? 'Raumdiagonale <strong>D</strong> = √(H² + V² + L²) im Modus „Länge L“; im Modus „Winkel α“ wird <strong>L</strong> aus H, V und α ermittelt (<strong>D·cos α</strong>).'
-      : 'Plansprung: <strong>D</strong> = √(H² + V²). Der Winkel α zwischen den Rohrachsen ist <strong>α = atan(H/V)</strong>. Die Felder „Länge L“ / „Winkel α“ gelten hier nicht.';
+      : 'Plansprung: Im Modus <strong>Länge</strong> aus H und V: <strong>D = √(H² + V²)</strong>, <strong>α = atan(H/V)</strong>. Im Modus <strong>Winkel α</strong> aus H und α: <strong>V = H / tan(α)</strong>, <strong>D = H / sin(α)</strong>.';
   }
   const gh = document.getElementById("guideSvgHost");
   if (gh) gh.innerHTML = renderGuideSvgPick(sprung);
@@ -584,9 +584,7 @@ function setSprungMode(sprung) {
   const wrA = document.getElementById("wrapAlpha");
   const modeBar = document.querySelector(".etagen-mode-bar");
   if (wrL && wrA && modeBar) {
-    wrL.hidden = !space;
-    wrA.hidden = !space;
-    modeBar.hidden = !space;
+    modeBar.hidden = false;
   }
   const sh = document.getElementById("schemaHint");
   if (sh) {
@@ -594,6 +592,7 @@ function setSprungMode(sprung) {
       ? "Nicht maßstäblich; Maße H, V, L und Raumdiagonale."
       : "Nicht maßstäblich; rechtwinkliges Dreieck H–V–D (Ansicht).";
   }
+  updateGeometryModeUi();
 }
 
 function setMode(mode) {
@@ -602,18 +601,37 @@ function setMode(mode) {
   document.getElementById("mode-angle").classList.toggle("etagen-mode-btn--active", !isLen);
   document.getElementById("mode-length").setAttribute("aria-selected", isLen ? "true" : "false");
   document.getElementById("mode-angle").setAttribute("aria-selected", !isLen ? "true" : "false");
-  document.getElementById("wrapL").hidden = !isLen;
-  document.getElementById("wrapAlpha").hidden = isLen;
+  updateGeometryModeUi();
+}
+
+function updateGeometryModeUi() {
+  const sprung = getSprungMode();
+  const isLen = document.getElementById("mode-length").classList.contains("etagen-mode-btn--active");
+  const wrapL = document.getElementById("wrapL");
+  const wrapAlpha = document.getElementById("wrapAlpha");
+  const inputV = document.getElementById("inputV");
+  const labelV = document.getElementById("labelInputV");
+  if (sprung === "space") {
+    wrapL.hidden = !isLen;
+    wrapAlpha.hidden = isLen;
+    inputV.removeAttribute("readonly");
+    labelV.textContent = "Versatz V";
+  } else {
+    wrapL.hidden = true;
+    wrapAlpha.hidden = isLen;
+    if (isLen) {
+      inputV.removeAttribute("readonly");
+      labelV.textContent = "Versatz V (2D)";
+    } else {
+      inputV.setAttribute("readonly", "readonly");
+      labelV.textContent = "Versatz V (wird aus H und α berechnet)";
+    }
+  }
 }
 
 function collectInputs() {
   const sprung = getSprungMode();
-  const mode =
-    sprung === "planar"
-      ? "planar"
-      : document.getElementById("mode-length").classList.contains("etagen-mode-btn--active")
-        ? "length"
-        : "angle";
+  const mode = document.getElementById("mode-length").classList.contains("etagen-mode-btn--active") ? "length" : "angle";
   const H = parseNum(document.getElementById("inputH").value);
   const V = parseNum(document.getElementById("inputV").value);
   const Lraw = parseNum(document.getElementById("inputL").value);
@@ -646,16 +664,30 @@ function collectInputs() {
 }
 
 function computeGeometry(inp) {
-  const { H, V, mode } = inp;
+  const { H, V, mode, sprung } = inp;
   if (!Number.isFinite(H) || H <= 0) return { err: "Bitte eine positive Höhe H (mm) angeben." };
-  if (!Number.isFinite(V) || V <= 0) return { err: "Bitte einen positiven Versatz V (mm) angeben." };
-
-  if (mode === "planar") {
-    const D = Math.sqrt(H * H + V * V);
-    const alphaRad = Math.atan2(H, V);
-    const alphaDeg = (alphaRad * 180) / Math.PI;
-    return { H, V, L: NaN, D, alphaRad, alphaDeg, base: Math.sqrt(H * H + V * V), sprung: "planar" };
+  if (sprung === "planar") {
+    if (mode === "length") {
+      if (!Number.isFinite(V) || V <= 0) return { err: "Bitte einen positiven Versatz V (mm) angeben." };
+      const D = Math.sqrt(H * H + V * V);
+      const alphaRad = Math.atan2(H, V);
+      const alphaDeg = (alphaRad * 180) / Math.PI;
+      return { H, V, L: NaN, D, alphaRad, alphaDeg, base: Math.sqrt(H * H + V * V), sprung: "planar" };
+    }
+    const alphaDeg = inp.alphaRaw;
+    if (!Number.isFinite(alphaDeg) || alphaDeg <= 0 || alphaDeg >= 90)
+      return { err: "Winkel α bitte zwischen 0° und 90°." };
+    const alphaRad = (alphaDeg * Math.PI) / 180;
+    const t = Math.tan(alphaRad);
+    const s = Math.sin(alphaRad);
+    if (!Number.isFinite(t) || t <= 0 || !Number.isFinite(s) || s <= 0) return { err: "Winkel ungültig." };
+    const Vcalc = H / t;
+    const D = H / s;
+    if (!Number.isFinite(Vcalc) || Vcalc <= 0 || !Number.isFinite(D) || D <= 0) return { err: "Berechnung fehlgeschlagen." };
+    return { H, V: Vcalc, L: NaN, D, alphaRad, alphaDeg, base: Math.sqrt(H * H + Vcalc * Vcalc), sprung: "planar" };
   }
+
+  if (!Number.isFinite(V) || V <= 0) return { err: "Bitte einen positiven Versatz V (mm) angeben." };
 
   const base = Math.sqrt(H * H + V * V);
   let L;
@@ -748,7 +780,7 @@ function run() {
 
   const kv = document.getElementById("kvList");
   kv.innerHTML = "";
-  const isPlanar = inp.mode === "planar";
+  const isPlanar = inp.sprung === "planar";
   const items = [
     [isPlanar ? "Schräge D (Hypotenuse)" : "Raumdiagonale D", `${fmtMm(D)} mm`],
     [
@@ -839,7 +871,7 @@ function restore(preloaded) {
   if (!s || typeof s !== "object") return;
   const sprung = s.sprung === "planar" ? "planar" : "space";
   setSprungMode(sprung);
-  if (sprung === "space" && (s.mode === "length" || s.mode === "angle")) setMode(s.mode);
+  if (s.mode === "length" || s.mode === "angle") setMode(s.mode);
   if (s.H != null) document.getElementById("inputH").value = String(s.H);
   if (s.V != null) document.getElementById("inputV").value = String(s.V);
   if (s.L != null) document.getElementById("inputL").value = String(s.L);
