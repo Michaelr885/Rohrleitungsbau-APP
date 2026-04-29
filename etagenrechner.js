@@ -204,6 +204,58 @@ function renderGuideSvgPick(sprung) {
 }
 
 /**
+ * Mini-Legende: erklärt Bogenmaß außen/innen/mittig am Viertelkreis.
+ */
+function renderBendLegendSvg() {
+  const W = 420;
+  const H = 260;
+  const cx = 150;
+  const cy = 200;
+  const rMid = 94;
+  const wall = 20;
+  const rOut = rMid + wall / 2;
+  const rIn = rMid - wall / 2;
+  const a0 = -Math.PI / 2;
+  const a1 = 0;
+
+  function P(r, a) {
+    return [cx + Math.cos(a) * r, cy + Math.sin(a) * r];
+  }
+  function arcD(r) {
+    const [sx, sy] = P(r, a0);
+    const [ex, ey] = P(r, a1);
+    return `M ${sx.toFixed(1)} ${sy.toFixed(1)} A ${r.toFixed(1)} ${r.toFixed(1)} 0 0 1 ${ex.toFixed(1)} ${ey.toFixed(1)}`;
+  }
+
+  const gid = `g-legend-${Math.random().toString(36).slice(2, 9)}`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Legende Bogenmaß außen innen">
+  <defs>
+    <linearGradient id="${gid}" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#141d28"/>
+      <stop offset="100%" style="stop-color:#10161d"/>
+    </linearGradient>
+    <marker id="arrLegend" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#8b9bab"/>
+    </marker>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#${gid})" rx="10"/>
+  <text x="${W / 2}" y="24" text-anchor="middle" fill="#e8edf2" font-size="13" font-weight="600" font-family="DM Sans,system-ui,sans-serif">Bogenmaß außen / innen — was ist was?</text>
+  <path d="${arcD(rOut)}" fill="none" stroke="#7dd3fc" stroke-width="5" stroke-linecap="round"/>
+  <path d="${arcD(rMid)}" fill="none" stroke="#e8935c" stroke-width="3" stroke-dasharray="6 5" stroke-linecap="round"/>
+  <path d="${arcD(rIn)}" fill="none" stroke="#6ee7b7" stroke-width="5" stroke-linecap="round"/>
+  <line x1="${cx}" y1="${cy}" x2="${(cx + rOut).toFixed(1)}" y2="${cy}" stroke="rgba(139,155,171,0.25)" stroke-width="1"/>
+  <line x1="${cx}" y1="${cy}" x2="${cx}" y2="${(cy - rOut).toFixed(1)}" stroke="rgba(139,155,171,0.25)" stroke-width="1"/>
+  <line x1="256" y1="78" x2="218" y2="108" stroke="#8b9bab" stroke-width="1.2" marker-end="url(#arrLegend)"/>
+  <line x1="282" y1="128" x2="234" y2="148" stroke="#8b9bab" stroke-width="1.2" marker-end="url(#arrLegend)"/>
+  <line x1="276" y1="176" x2="222" y2="178" stroke="#8b9bab" stroke-width="1.2" marker-end="url(#arrLegend)"/>
+  <text x="262" y="74" fill="#7dd3fc" font-size="11.5" font-weight="700" font-family="DM Sans,system-ui,sans-serif">Bogenmaß außen</text>
+  <text x="288" y="126" fill="#e8935c" font-size="11.5" font-weight="700" font-family="DM Sans,system-ui,sans-serif">Bogenmaß Mitte</text>
+  <text x="282" y="174" fill="#6ee7b7" font-size="11.5" font-weight="700" font-family="DM Sans,system-ui,sans-serif">Bogenmaß innen</text>
+  <text x="212" y="224" fill="#8b9bab" font-size="10" font-family="DM Sans,system-ui,sans-serif">Formeln: L außen=(R+OD/2)·α · L innen=(R−OD/2)·α</text>
+</svg>`;
+}
+
+/**
  * Statische Prinzip-Zeichnung Raumsprung: Bedeutung von H, V, L am Raumprisma (nicht maßstäblich).
  */
 function renderGuideSvgSpace() {
@@ -734,6 +786,8 @@ function run() {
 
   fillBend("bendTitle1", "bendDl1", "Bogen 1", inp.elbow1, R1);
   fillBend("bendTitle2", "bendDl2", "Bogen 2", inp.elbow2, R2);
+  const bendLegendHost = document.getElementById("bendLegendHost");
+  if (bendLegendHost) bendLegendHost.innerHTML = renderBendLegendSvg();
 
   document.getElementById("svgHost").innerHTML = isPlanar
     ? renderSvgPlanar(H, V, alphaDeg, pass, D)

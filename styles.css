@@ -1529,6 +1529,22 @@ code {
   max-width: 100%;
 }
 
+.etagen-bogen-legend {
+  margin-top: 0.25rem;
+}
+
+.etagen-bogen-legend p {
+  margin-top: 0;
+  margin-bottom: 0.7rem;
+}
+
+.etagen-svg-host--legend {
+  min-height: 160px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
 .etagen-bend-row {
   margin-top: 0.25rem;
 }
