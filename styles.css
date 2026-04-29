@@ -822,3 +822,45 @@ code {
   color: rgba(196, 181, 253, 0.75);
 }
 
+.assign-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.35rem 1.35rem;
+  margin-bottom: 1.25rem;
+}
+
+.assign-card .assign-title {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.assign-card .assign-lead {
+  margin: 0 0 1rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.data-table--assign th:first-child,
+.data-table--assign td:first-child {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.cut-heuristic-note {
+  margin-bottom: 1rem;
+}
+
+.cut-bar-piece-id {
+  display: inline-block;
+  min-width: 1em;
+  font-weight: 800;
+  color: #fef08a;
+  margin-right: 2px;
+}
+
+.cut-bar-mm {
+  font-variant-numeric: tabular-nums;
+}

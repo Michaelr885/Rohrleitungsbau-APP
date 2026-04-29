@@ -44,12 +44,22 @@ function parseNum(el) {
   return Number.isFinite(v) ? v : 0;
 }
 
-function fmt(n, d = 1) {
-  if (!Number.isFinite(n)) return "—";
-  return n.toLocaleString("de-DE", {
-    minimumFractionDigits: d,
-    maximumFractionDigits: d,
-  });
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function rowIndexLabel1D(rowId) {
+  const ix = state.items1D.findIndex((i) => i.id === rowId);
+  return ix >= 0 ? String(ix + 1) : "—";
+}
+
+function rowIndexLabel2D(rowId) {
+  const ix = state.items2D.findIndex((i) => i.id === rowId);
+  return ix >= 0 ? String(ix + 1) : "—";
 }
 
 let state = {
@@ -229,7 +239,8 @@ function calculate1D() {
     if (item.length > stock) errors.push(`Teil ${item.length} mm ist länger als die Stange.`);
     for (let i = 0; i < item.quantity; i++) {
       allCuts.push({
-        id: item.id,
+        rowId: item.id,
+        rowIdx: rowIndexLabel1D(item.id),
         length: item.length,
       });
     }
@@ -246,7 +257,13 @@ function calculate1D() {
     return;
   }
 
-  allCuts.sort((a, b) => b.length - a.length);
+  let pid = 1;
+  const cutsWithIds = allCuts.map((c) => ({
+    ...c,
+    pieceId: pid++,
+  }));
+
+  cutsWithIds.sort((a, b) => b.length - a.length);
   const bars = [];
 
   function spaceIfAdded(bar, cutLen) {
@@ -255,7 +272,7 @@ function calculate1D() {
     return kerfs + cutLen;
   }
 
-  for (const cut of allCuts) {
+  for (const cut of cutsWithIds) {
     let placed = false;
     for (const bar of bars) {
       const need = spaceIfAdded(bar, cut.length);
@@ -276,13 +293,26 @@ function calculate1D() {
 
   const totalWaste = bars.reduce((a, b) => a + b.remainingSpace, 0);
   const usedMat = bars.length * stock;
-  const reqMat = allCuts.reduce((acc, c) => acc + c.length, 0);
-  const kerfBars = bars.reduce((acc, bar) => acc + Math.max(0, bar.cuts.length - 1), 0);
+  const reqMat = cutsWithIds.reduce((acc, c) => acc + c.length, 0);
+
+  const assignRows = [];
+  bars.forEach((bar, bi) => {
+    bar.cuts.forEach((cut) => {
+      assignRows.push({
+        pieceId: cut.pieceId,
+        lengthMm: cut.length,
+        rowIdx: cut.rowIdx,
+        barNumber: bi + 1,
+      });
+    });
+  });
+  assignRows.sort((a, b) => a.pieceId - b.pieceId);
 
   stats1D = {
     totalBars: bars.length,
     wastePercentage: usedMat > 0 ? ((usedMat - reqMat) / usedMat) * 100 : 0,
     totalWaste,
+    assignRows,
   };
   results1D = bars;
 
@@ -317,6 +347,7 @@ function calculate2D() {
     return;
   }
 
+  let pieceId2 = 1;
   const blocks = [];
 
   for (const item of state.items2D) {
@@ -332,7 +363,9 @@ function calculate2D() {
         h: item.height + blade,
         originalW: item.width,
         originalH: item.height,
-        id: item.id,
+        rowId: item.id,
+        rowIdx: rowIndexLabel2D(item.id),
+        pieceId: pieceId2++,
       });
     }
   }
@@ -386,12 +419,84 @@ function calculate2D() {
     totalSheets: sheets.length,
     wastePercentage: wastePct,
     usedArea: partsAreaTotal,
+    assignRows: [],
   };
   results2D = sheets;
+
+  const assignRows2d = [];
+  sheets.forEach((sheet, si) => {
+    sheet.blocks.forEach((block) => {
+      assignRows2d.push({
+        pieceId: block.pieceId,
+        widthMm: block.originalW,
+        heightMm: block.originalH,
+        rowIdx: block.rowIdx,
+        sheetNumber: si + 1,
+      });
+    });
+  });
+  assignRows2d.sort((a, b) => a.pieceId - b.pieceId);
+  stats2D.assignRows = assignRows2d;
 
   renderError();
   renderResults2D(sw, sh);
   saveState();
+}
+
+function renderAssignTable1D() {
+  const el = document.getElementById("cut-assign-1d");
+  if (!stats1D || !stats1D.assignRows || !stats1D.assignRows.length) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  el.hidden = false;
+  const rows = stats1D.assignRows
+    .map(
+      (r) =>
+        `<tr><td>${r.pieceId}</td><td>${r.lengthMm} mm</td><td>Zeile ${r.rowIdx}</td><td>Stange ${r.barNumber}</td></tr>`
+    )
+    .join("");
+  el.innerHTML = `
+    <h2 class="assign-title">Wofür welche Stange?</h2>
+    <p class="assign-lead">Jedes Stück (Nr.) schneidest du aus der angegebenen Stange — Reihenfolge von links nach rechts im Balken oben.</p>
+    <div class="table-wrap">
+      <table class="data-table data-table--assign">
+        <thead>
+          <tr><th>Stück</th><th>Länge</th><th>aus Teile-Zeile</th><th>Stange</th></tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderAssignTable2D() {
+  const el = document.getElementById("cut-assign-2d");
+  if (!stats2D || !stats2D.assignRows || !stats2D.assignRows.length) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  el.hidden = false;
+  const rows = stats2D.assignRows
+    .map(
+      (r) =>
+        `<tr><td>${r.pieceId}</td><td>${r.widthMm}×${r.heightMm} mm</td><td>Zeile ${r.rowIdx}</td><td>Platte ${r.sheetNumber}</td></tr>`
+    )
+    .join("");
+  el.innerHTML = `
+    <h2 class="assign-title">Wofür welche Platte?</h2>
+    <p class="assign-lead">Position siehe Skizze — gleiche Nummer wie im Diagramm.</p>
+    <div class="table-wrap">
+      <table class="data-table data-table--assign">
+        <thead>
+          <tr><th>Stück</th><th>Maße</th><th>aus Teile-Zeile</th><th>Platte</th></tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `;
 }
 
 function renderResults1D() {
@@ -406,9 +511,12 @@ function renderResults1D() {
   document.getElementById("stat-bars").textContent = String(stats1D.totalBars);
   document.getElementById("stat-waste-1d").textContent = fmt(stats1D.wastePercentage, 1);
 
+  renderAssignTable1D();
+
   const list = document.getElementById("bars-list");
   list.innerHTML = "";
 
+  const blade = state.bladeWidth1D;
   results1D.forEach((bar, idx) => {
     const card = document.createElement("div");
     card.className = "card cut-result-card";
@@ -418,12 +526,12 @@ function renderResults1D() {
         const segsW = first ? cut.length : blade + cut.length;
         const pct = (segsW / stock) * 100;
         const title = first
-          ? `${cut.length} mm`
-          : `${blade} mm + ${cut.length} mm`;
+          ? `Stück ${cut.pieceId}: ${cut.length} mm`
+          : `${blade} mm Kerf + Stück ${cut.pieceId}: ${cut.length} mm`;
         const inner = first
-          ? `${cut.length}`
-          : `<span class="cut-bar-kerf">${blade}</span><span class="cut-bar-plus">+</span><span>${cut.length}</span>`;
-        return `<div class="cut-bar-seg${first ? "" : " cut-bar-seg--with-kerf"}" style="width:${pct}%" title="${title}">${inner}</div>`;
+          ? `<span class="cut-bar-piece-id">${cut.pieceId}</span><span class="cut-bar-mm">${cut.length}</span>`
+          : `<span class="cut-bar-kerf">${blade}</span><span class="cut-bar-plus">+</span><span class="cut-bar-piece-id">${cut.pieceId}</span><span class="cut-bar-mm">${cut.length}</span>`;
+        return `<div class="cut-bar-seg${first ? "" : " cut-bar-seg--with-kerf"}" style="width:${pct}%" title="${escapeHtml(title)}">${inner}</div>`;
       })
       .join("");
     const restPct = (bar.remainingSpace / stock) * 100;
@@ -452,6 +560,8 @@ function renderResults2D(sw, sh) {
   document.getElementById("stat-sheets").textContent = String(stats2D.totalSheets);
   document.getElementById("stat-waste-2d").textContent = fmt(stats2D.wastePercentage, 1);
 
+  renderAssignTable2D();
+
   const list = document.getElementById("sheets-list");
   list.innerHTML = "";
 
@@ -469,15 +579,18 @@ function renderResults2D(sw, sh) {
       .map((block, bIdx) => {
         const cx = block.fit.x + block.originalW / 2;
         const cy = block.fit.y + block.originalH / 2;
-        const fs = Math.min(block.originalW, block.originalH) / 4;
-        const showLabel =
-          block.originalW > sw / 15 && block.originalH > sh / 15;
-        const label = showLabel
-          ? `<text x="${cx}" y="${cy}" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="${fs}" font-family="DM Sans, sans-serif" pointer-events="none">${block.originalW}×${block.originalH}</text>`
+        const fsDim = Math.min(block.originalW, block.originalH) / 5;
+        const fsId = Math.min(block.originalW, block.originalH) / 3.5;
+        const showDim =
+          block.originalW > sw / 18 && block.originalH > sh / 18;
+        const dimLabel = showDim
+          ? `<text x="${cx}" y="${cy + fsDim * 0.35}" dominant-baseline="middle" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="${fsDim}" font-family="DM Sans, sans-serif" pointer-events="none">${block.originalW}×${block.originalH}</text>`
           : "";
+        const idLabel = `<text x="${cx}" y="${cy - fsDim * 0.5}" dominant-baseline="middle" text-anchor="middle" fill="#fef08a" font-weight="700" font-size="${fsId}" font-family="DM Sans, sans-serif" pointer-events="none">#${block.pieceId}</text>`;
         return `<g>
       <rect x="${block.fit.x}" y="${block.fit.y}" width="${block.originalW}" height="${block.originalH}" fill="#3d9df0" stroke="#1e5a8a" stroke-width="${strokeW}"/>
-      ${label}
+      ${idLabel}
+      ${dimLabel}
     </g>`;
       })
       .join("");
