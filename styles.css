@@ -1302,10 +1302,17 @@ code {
   color: #6ee7b7;
 }
 
-.calc-keys--angle {
-  padding-top: 0.15rem;
-  border-top: 1px solid var(--border);
-  margin-top: 0.15rem;
+.calc-keys--fn-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.45rem;
+  margin-bottom: 0.45rem;
+}
+
+@media (min-width: 420px) {
+  .calc-keys--fn-row {
+    grid-template-columns: repeat(6, 1fr);
+  }
 }
 
 .unit-pair-row input {

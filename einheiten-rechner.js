@@ -162,8 +162,8 @@ function applyAngleFn(fn, displayVal, inputIsDeg) {
 function createCalculator() {
   const display = document.getElementById("calcDisplay");
   const panelCalc = document.getElementById("panel-calc");
-  const keysBasic = document.getElementById("calcKeysBasic");
-  const keysAngle = document.getElementById("calcKeysAngle");
+  const keysPad = document.getElementById("calcKeysPad");
+  const keysAngleRow = document.getElementById("calcKeysAngleRow");
   const btnBasic = document.getElementById("calc-sub-basic");
   const btnAngle = document.getElementById("calc-sub-angle");
   const angleUnitWrap = document.getElementById("calcAngleUnitWrap");
@@ -209,8 +209,7 @@ function createCalculator() {
 
   function updateSubModeUi() {
     const angle = calcSubMode === "angle";
-    keysBasic.hidden = angle;
-    keysAngle.hidden = !angle;
+    keysAngleRow.hidden = !angle;
     btnBasic.classList.toggle("calc-submode-btn--active", !angle);
     btnAngle.classList.toggle("calc-submode-btn--active", angle);
     angleUnitWrap.hidden = !angle;
