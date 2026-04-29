@@ -132,7 +132,16 @@ function wireFilters() {
   });
 }
 
+function field(id, ...legacyIds) {
+  for (const x of [id, ...legacyIds]) {
+    const el = document.getElementById(x);
+    if (el) return el;
+  }
+  return null;
+}
+
 function parseField(el, fallback) {
+  if (!el) return fallback;
   const raw = String(el.value).trim().replace(",", ".");
   if (raw === "") return fallback;
   const v = parseFloat(raw);
@@ -141,11 +150,13 @@ function parseField(el, fallback) {
 
 function readInputs() {
   const d = STATE.data.defaults;
-  const eEl = document.getElementById("dichtungHoehe");
-  const fEl = document.getElementById("gewindegaenge");
-  const hEl = document.getElementById("ueberstandBolzen");
-  const hoeheOverride = document.getElementById("flanschHoeheManuell");
-  const hoRaw = hoeheOverride.value.trim().replace(",", ".");
+  const eEl = field("dichtungHoehe", "e3");
+  const fEl = field("gewindegaenge", "f3");
+  const hEl = field("ueberstandBolzen", "h3");
+  const hoeheOverride = field("flanschHoeheManuell", "hoeheOverride");
+  const hoRaw = hoeheOverride
+    ? hoeheOverride.value.trim().replace(",", ".")
+    : "";
   const hoNum = hoRaw === "" ? NaN : parseFloat(hoRaw);
   return {
     dichtungHoeheMm: parseField(eEl, d.dichtungHoeheMm),
@@ -284,9 +295,13 @@ async function init() {
   populateArt(data);
 
   const d = data.defaults;
-  document.getElementById("dichtungHoehe").value = String(d.dichtungHoeheMm).replace(".", ",");
-  document.getElementById("gewindegaenge").value = String(d.ueberstandGewindegange).replace(".", ",");
-  document.getElementById("ueberstandBolzen").value = String(d.ueberstandBolzenMm).replace(".", ",");
+  const setVal = (id, legacyId, val) => {
+    const el = field(id, legacyId);
+    if (el) el.value = String(val).replace(".", ",");
+  };
+  setVal("dichtungHoehe", "e3", d.dichtungHoeheMm);
+  setVal("gewindegaenge", "f3", d.ueberstandGewindegange);
+  setVal("ueberstandBolzen", "h3", d.ueberstandBolzenMm);
 
   wireFilters();
   document.getElementById("calc").addEventListener("click", (ev) => {
