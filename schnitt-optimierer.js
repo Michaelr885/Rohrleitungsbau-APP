@@ -11,6 +11,47 @@
  */
 
 const STORAGE_KEY = "schnitt-optimierer-v1";
+const ASSIGN_CHECK_KEY = "schnitt-assign-check-v1";
+
+function loadAssignCheck() {
+  try {
+    const raw = localStorage.getItem(ASSIGN_CHECK_KEY);
+    if (!raw) return { "1d": {}, "2d": {} };
+    const o = JSON.parse(raw);
+    return {
+      "1d": o["1d"] && typeof o["1d"] === "object" ? o["1d"] : {},
+      "2d": o["2d"] && typeof o["2d"] === "object" ? o["2d"] : {},
+    };
+  } catch (_) {
+    return { "1d": {}, "2d": {} };
+  }
+}
+
+function saveAssignCheck(data) {
+  try {
+    localStorage.setItem(ASSIGN_CHECK_KEY, JSON.stringify(data));
+  } catch (_) {}
+}
+
+function assignSig1D(r) {
+  return `${r.pieceId}|${r.lengthMm}|${r.rowIdx}|${r.barNumber}`;
+}
+
+function assignSig2D(r) {
+  return `${r.pieceId}|${r.widthMm}|${r.heightMm}|${r.rowIdx}|${r.sheetNumber}`;
+}
+
+/** Behält nur Häkchen für Zeilen, die noch in der aktuellen Zuordnung vorkommen. */
+function pruneAssignMode(mode, validSigs) {
+  const all = loadAssignCheck();
+  const sub = all[mode] || {};
+  const next = {};
+  for (const s of validSigs) {
+    if (sub[s]) next[s] = true;
+  }
+  all[mode] = next;
+  saveAssignCheck(all);
+}
 
 /**
  * @param {{ fw: number, fh: number, rotated: boolean, node: object, area: number }} a
@@ -633,11 +674,15 @@ function renderAssignTable1D() {
     return;
   }
   el.hidden = false;
+  const validSigs = stats1D.assignRows.map(assignSig1D);
+  pruneAssignMode("1d", validSigs);
+  const checks = loadAssignCheck()["1d"];
   const rows = stats1D.assignRows
-    .map(
-      (r) =>
-        `<tr><td>${r.pieceId}</td><td>${r.lengthMm} mm</td><td>Zeile ${r.rowIdx}</td><td>Stange ${r.barNumber}</td></tr>`
-    )
+    .map((r) => {
+      const sig = assignSig1D(r);
+      const done = !!checks[sig];
+      return `<tr class="${done ? "assign-row--done" : ""}"><td>${r.pieceId}</td><td>${r.lengthMm} mm</td><td>Zeile ${r.rowIdx}</td><td>Stange ${r.barNumber}</td><td class="assign-check-cell"><input type="checkbox" class="assign-check" data-assign-mode="1d" data-assign-key="${escapeHtml(sig)}" ${done ? "checked" : ""} aria-label="Erledigt: Stück ${r.pieceId}" /></td></tr>`;
+    })
     .join("");
   el.innerHTML = `
     <h2 class="assign-title">Wofür welche Stange?</h2>
@@ -645,7 +690,7 @@ function renderAssignTable1D() {
     <div class="table-wrap">
       <table class="data-table data-table--assign">
         <thead>
-          <tr><th>Stück</th><th>Länge</th><th>aus Teile-Zeile</th><th>Stange</th></tr>
+          <tr><th>Stück</th><th>Länge</th><th>aus Teile-Zeile</th><th>Stange</th><th class="assign-th-check" scope="col"><span class="assign-th-check-inner" title="Abhaken wenn geschnitten">OK</span></th></tr>
         </thead>
         <tbody>${rows}</tbody>
       </table>
@@ -661,11 +706,15 @@ function renderAssignTable2D() {
     return;
   }
   el.hidden = false;
+  const validSigs = stats2D.assignRows.map(assignSig2D);
+  pruneAssignMode("2d", validSigs);
+  const checks = loadAssignCheck()["2d"];
   const rows = stats2D.assignRows
-    .map(
-      (r) =>
-        `<tr><td>${r.pieceId}</td><td>${r.widthMm}×${r.heightMm} mm</td><td>Zeile ${r.rowIdx}</td><td>Platte ${r.sheetNumber}</td></tr>`
-    )
+    .map((r) => {
+      const sig = assignSig2D(r);
+      const done = !!checks[sig];
+      return `<tr class="${done ? "assign-row--done" : ""}"><td>${r.pieceId}</td><td>${r.widthMm}×${r.heightMm} mm</td><td>Zeile ${r.rowIdx}</td><td>Platte ${r.sheetNumber}</td><td class="assign-check-cell"><input type="checkbox" class="assign-check" data-assign-mode="2d" data-assign-key="${escapeHtml(sig)}" ${done ? "checked" : ""} aria-label="Erledigt: Stück ${r.pieceId}" /></td></tr>`;
+    })
     .join("");
   el.innerHTML = `
     <h2 class="assign-title">Wofür welche Platte?</h2>
@@ -673,7 +722,7 @@ function renderAssignTable2D() {
     <div class="table-wrap">
       <table class="data-table data-table--assign">
         <thead>
-          <tr><th>Stück</th><th>Maße</th><th>aus Teile-Zeile</th><th>Platte</th></tr>
+          <tr><th>Stück</th><th>Maße</th><th>aus Teile-Zeile</th><th>Platte</th><th class="assign-th-check" scope="col"><span class="assign-th-check-inner" title="Abhaken wenn geschnitten">OK</span></th></tr>
         </thead>
         <tbody>${rows}</tbody>
       </table>
@@ -885,6 +934,23 @@ function wireEnterOnStockForms() {
   document.addEventListener("keydown", enterAddsMaterialRow, true);
 }
 
+function wireAssignCheckboxes() {
+  document.addEventListener("change", (e) => {
+    const t = e.target;
+    if (!t || !t.classList || !t.classList.contains("assign-check")) return;
+    const mode = t.getAttribute("data-assign-mode");
+    const key = t.getAttribute("data-assign-key");
+    if (!mode || !key) return;
+    const all = loadAssignCheck();
+    if (!all[mode]) all[mode] = {};
+    if (t.checked) all[mode][key] = true;
+    else delete all[mode][key];
+    saveAssignCheck(all);
+    const tr = t.closest("tr");
+    if (tr) tr.classList.toggle("assign-row--done", t.checked);
+  });
+}
+
 function init() {
   loadState();
   syncDomFromState();
@@ -899,6 +965,7 @@ function init() {
   document.getElementById("add-1d").addEventListener("click", () => addItem1DRow(true));
 
   wireEnterOnStockForms();
+  wireAssignCheckboxes();
 
   document.getElementById("add-2d").addEventListener("click", () => addItem2DRow(true));
 
