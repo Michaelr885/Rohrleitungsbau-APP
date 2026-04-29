@@ -769,16 +769,20 @@ function run() {
     const dl = document.getElementById(dlId);
     dl.innerHTML = "";
     const pairs = [
-      ["Bogenmaß außen", fmtMm(br.outerArc)],
-      ["Baulänge (tan·R+Spalt, Näherung)", fmtMm(br.buildLen)],
-      ["Sehne", fmtMm(br.chord)],
-      ["Bogenmaß innen", fmtMm(br.innerArc)],
+      ["Bogenmaß außen", fmtMm(br.outerArc), "arc-outer"],
+      ["Baulänge (tan·R+Spalt, Näherung)", fmtMm(br.buildLen), ""],
+      ["Sehne", fmtMm(br.chord), "arc-center"],
+      ["Bogenmaß innen", fmtMm(br.innerArc), "arc-inner"],
     ];
-    for (const [dt, dd] of pairs) {
+    for (const [dt, dd, cls] of pairs) {
       const ddt = document.createElement("dt");
       ddt.textContent = dt;
       const ddd = document.createElement("dd");
       ddd.textContent = dd;
+      if (cls) {
+        ddt.classList.add(`etagen-${cls}`);
+        ddd.classList.add(`etagen-${cls}`);
+      }
       dl.appendChild(ddt);
       dl.appendChild(ddd);
     }

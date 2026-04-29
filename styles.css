@@ -1583,6 +1583,21 @@ code {
   text-align: right;
 }
 
+.etagen-dl dt.etagen-row--outer,
+.etagen-dl dd.etagen-row--outer {
+  color: #fca5a5;
+}
+
+.etagen-dl dt.etagen-row--center,
+.etagen-dl dd.etagen-row--center {
+  color: #93c5fd;
+}
+
+.etagen-dl dt.etagen-row--inner,
+.etagen-dl dd.etagen-row--inner {
+  color: #86efac;
+}
+
 .checkbox-row {
   display: flex;
   align-items: center;
