@@ -447,7 +447,7 @@ function calculate1D() {
       });
     });
   });
-  assignRows.sort((a, b) => a.pieceId - b.pieceId);
+  /* Reihenfolge: Stange 1 … n, innerhalb einer Stange wie im Balken (links nach rechts). */
 
   stats1D = {
     totalBars: bars.length,
