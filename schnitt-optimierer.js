@@ -95,6 +95,13 @@ function escapeHtml(s) {
     .replace(/"/g, "&quot;");
 }
 
+/** Zahlen für Statistik und Beschriftung (dezimales Komma). */
+function fmt(value, decimals) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "—";
+  return n.toFixed(decimals).replace(".", ",");
+}
+
 function rowIndexLabel1D(rowId) {
   const ix = state.items1D.findIndex((i) => i.id === rowId);
   return ix >= 0 ? String(ix + 1) : "—";
