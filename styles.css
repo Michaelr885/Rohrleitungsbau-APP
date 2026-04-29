@@ -1509,10 +1509,13 @@ code {
 }
 
 .etagen-svg-host--schema {
-  min-height: min(28vw, 180px);
+  min-height: min(22vw, 140px);
   border-radius: 10px;
   overflow: hidden;
   border: 1px solid var(--border);
+  max-width: 340px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .etagen-svg-host svg {
@@ -1528,6 +1531,10 @@ code {
 .etagen-svg-host--guide svg {
   width: 100%;
   max-width: 460px;
+}
+
+.etagen-svg-host--schema svg {
+  max-width: 340px;
 }
 
 .etagen-bogen-legend {
