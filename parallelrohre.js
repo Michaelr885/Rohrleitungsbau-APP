@@ -46,7 +46,6 @@ function renderSvg(spacingMm, angleDeg, pipeCount, stepMm) {
   const pad = 36;
   const pipeGap = (W - 2 * pad) / Math.max(n - 1, 1);
 
-  const headerBottom = 52;
   const labelBand = 34;
   const yBottom = H - labelBand - 8;
   let bendY0 = 78;
