@@ -1,7 +1,6 @@
 {
   "meta": {
     "title": "Schraubenlängen",
-    "pwNormId": 6165,
     "excelSheet": "Schraubenlänge",
     "notes": [
       "Berechnung entspricht den Formeln in Zelle C6 (starre Schraube) und C9 (Stehbolzen) der Excel-Datei.",

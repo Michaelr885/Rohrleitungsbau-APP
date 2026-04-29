@@ -154,7 +154,6 @@ function readInputs() {
     ueberstandGewindegange: parseField(fEl, d.ueberstandGewindegange),
     ueberstandBolzenMm: parseField(hEl, d.ueberstandBolzenMm),
     hoeheOverrideMm: Number.isFinite(hoNum) ? hoNum : null,
-    pwNorm: document.getElementById("pwNorm").checked,
   };
 }
 
@@ -186,11 +185,6 @@ function compute() {
   }
 
   const inp = readInputs();
-  if (!inp.pwNorm) {
-    msg.classList.add("visible", "warn");
-    msg.textContent =
-      "Hinweis: In Excel greifen die Ergebnisfelder nur bei PW-Norm 6165 (Kennung im Blatt). Berechnung erfolgt trotzdem mit den Tabellenwerten.";
-  }
 
   const maps = buildLookupMaps(STATE.data);
   const gw = fl.gewinde;
