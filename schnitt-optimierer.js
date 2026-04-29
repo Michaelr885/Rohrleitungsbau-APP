@@ -1,5 +1,11 @@
 /**
- * Schnitt-Optimierer — 1D Stangen & 2D Platten (Logik wie im ursprünglichen React-Code).
+ * Schnitt-Optimierer — 1D Stangen & 2D Platten
+ *
+ * 1D: Beim Bel einer Stange zählt jedes weitere Teil einen Schnittspalt VOR dem Teil:
+ *     Bedarf = L1 + (kerf + L2) + (kerf + L3) + … = Summe(L) + (n−1)·kerf  (n Teile auf einer Stange).
+ *     So wie bei realen Sägeschnitten zwischen den Stücken; kein „Schwanz“-Kerf nach dem letzten Stück.
+ *
+ * 2D: Rechteck-Packing mit Guillotine-Packer; Kantenabstand der Teil-Footprints enthält kerf (wie im Original).
  */
 
 const STORAGE_KEY = "schnitt-optimierer-v1";
@@ -225,7 +231,6 @@ function calculate1D() {
       allCuts.push({
         id: item.id,
         length: item.length,
-        totalSpace: item.length + blade,
       });
     }
   }
@@ -241,15 +246,22 @@ function calculate1D() {
     return;
   }
 
-  allCuts.sort((a, b) => b.totalSpace - a.totalSpace);
+  allCuts.sort((a, b) => b.length - a.length);
   const bars = [];
+
+  function spaceIfAdded(bar, cutLen) {
+    const n = bar.cuts.length;
+    const kerfs = n > 0 ? blade : 0;
+    return kerfs + cutLen;
+  }
 
   for (const cut of allCuts) {
     let placed = false;
     for (const bar of bars) {
-      if (bar.remainingSpace >= cut.totalSpace) {
+      const need = spaceIfAdded(bar, cut.length);
+      if (bar.remainingSpace >= need) {
         bar.cuts.push(cut);
-        bar.remainingSpace -= cut.totalSpace;
+        bar.remainingSpace -= need;
         placed = true;
         break;
       }
@@ -257,7 +269,7 @@ function calculate1D() {
     if (!placed) {
       bars.push({
         cuts: [cut],
-        remainingSpace: stock - cut.totalSpace,
+        remainingSpace: stock - cut.length,
       });
     }
   }
@@ -265,6 +277,7 @@ function calculate1D() {
   const totalWaste = bars.reduce((a, b) => a + b.remainingSpace, 0);
   const usedMat = bars.length * stock;
   const reqMat = allCuts.reduce((acc, c) => acc + c.length, 0);
+  const kerfBars = bars.reduce((acc, bar) => acc + Math.max(0, bar.cuts.length - 1), 0);
 
   stats1D = {
     totalBars: bars.length,
@@ -400,10 +413,18 @@ function renderResults1D() {
     const card = document.createElement("div");
     card.className = "card cut-result-card";
     const segs = bar.cuts
-      .map(
-        (cut) =>
-          `<div class="cut-bar-seg" style="width:${(cut.totalSpace / stock) * 100}%" title="${cut.length} mm">${cut.length}</div>`
-      )
+      .map((cut, ci) => {
+        const first = ci === 0;
+        const segsW = first ? cut.length : blade + cut.length;
+        const pct = (segsW / stock) * 100;
+        const title = first
+          ? `${cut.length} mm`
+          : `${blade} mm + ${cut.length} mm`;
+        const inner = first
+          ? `${cut.length}`
+          : `<span class="cut-bar-kerf">${blade}</span><span class="cut-bar-plus">+</span><span>${cut.length}</span>`;
+        return `<div class="cut-bar-seg${first ? "" : " cut-bar-seg--with-kerf"}" style="width:${pct}%" title="${title}">${inner}</div>`;
+      })
       .join("");
     const restPct = (bar.remainingSpace / stock) * 100;
     card.innerHTML = `

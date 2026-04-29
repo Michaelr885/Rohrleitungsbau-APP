@@ -29,8 +29,12 @@
       </div>
 
       <div id="section-1d" hidden>
-        <div class="card">
-          <h2>Material (Stab)</h2>
+      <div class="card">
+        <h2>Material (Stab)</h2>
+        <p class="formula-note">
+          Modell: Zwischen zwei Teilen auf derselben Stange entsteht einmal die Sägeblattbreite;
+          das erste Stück beginnt ohne vorangehenden Schnitt (kein Kerf „am Ende“ der Stange).
+        </p>
           <div class="row row--mobile-stack">
             <div>
               <label for="stockLength">Stangenlänge (mm)</label>
@@ -55,8 +59,12 @@
       </div>
 
       <div id="section-2d" hidden>
-        <div class="card">
-          <h2>Material (Platte)</h2>
+      <div class="card">
+        <h2>Material (Platte)</h2>
+        <p class="formula-note">
+          Jedes Teil belegt Breite+Höhe zzgl. Schnitt pro Kante im Raster (wie beim Guillotine-Packen).
+          Drehung einzelner Teile beim Packen ist noch nicht implementiert — bei Bedarf Breite/Höhe tauschen.
+        </p>
           <div class="row row--mobile-stack cols-3">
             <div>
               <label for="sheetWidth">Breite (mm)</label>
@@ -119,6 +127,6 @@
         Auflage, Bearbeitung).
       </p>
     </div>
-    <script src="schnitt-optimierer.js?v=1" defer></script>
+    <script src="schnitt-optimierer.js?v=2" defer></script>
   </body>
 </html>
