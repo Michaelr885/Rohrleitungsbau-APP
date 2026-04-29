@@ -5,15 +5,64 @@
  *     Bedarf = L1 + (kerf + L2) + (kerf + L3) + … = Summe(L) + (n−1)·kerf  (n Teile auf einer Stange).
  *     So wie bei realen Sägeschnitten zwischen den Stücken; kein „Schwanz“-Kerf nach dem letzten Stück.
  *
- * 2D: Guillotine-Packer; pro Teil wird beim Platzieren die bessere 90°-Orientierung gewählt (kleinerer Footprint,
- *     bei Gleichstand ohne Drehung). Kerf am Rand des platzierten Rechtecks wie bisher.
+ * 2D: Guillotine-Packer; pro Teil werden beide 90°-Lagen geprüft. Die Footprint-Fläche (w+k)(h+k) ist bei
+ *     Rechtecken in beiden Lagen gleich — daher mehrere Tie-Break-Strategien (schmaler Footprint, Reststreifen …),
+ *     und calculate2D probiert mehrere Strategien und die beste Packung.
  */
 
 const STORAGE_KEY = "schnitt-optimierer-v1";
 
+/**
+ * @param {{ fw: number, fh: number, rotated: boolean, node: object, area: number }} a
+ * @param {{ fw: number, fh: number, rotated: boolean, node: object, area: number }} b
+ */
+function orientationBetter(a, b, tieMode) {
+  if (a.area < b.area) return true;
+  if (a.area > b.area) return false;
+  const maxA = Math.max(a.fw, a.fh);
+  const maxB = Math.max(b.fw, b.fh);
+  const minA = Math.min(a.fw, a.fh);
+  const minB = Math.min(b.fw, b.fh);
+  const rightA = a.node.w - a.fw;
+  const rightB = b.node.w - b.fw;
+  const downA = a.node.h - a.fh;
+  const downB = b.node.h - b.fh;
+  switch (tieMode) {
+    case "tie_min_max":
+      if (maxA !== maxB) return maxA < maxB;
+      break;
+    case "tie_min_min":
+      if (minA !== minB) return minA < minB;
+      break;
+    case "tie_min_fw":
+      if (a.fw !== b.fw) return a.fw < b.fw;
+      break;
+    case "tie_min_fh":
+      if (a.fh !== b.fh) return a.fh < b.fh;
+      break;
+    case "tie_max_free_right":
+      if (rightA !== rightB) return rightA > rightB;
+      break;
+    case "tie_max_free_down":
+      if (downA !== downB) return downA > downB;
+      break;
+    case "tie_natural":
+      if (a.rotated !== b.rotated) return !a.rotated;
+      return false;
+    case "tie_rotated":
+      if (a.rotated !== b.rotated) return a.rotated;
+      return false;
+    default:
+      break;
+  }
+  if (a.rotated !== b.rotated) return !a.rotated;
+  return false;
+}
+
 class Packer {
-  constructor(w, h) {
+  constructor(w, h, rotateTieMode = "tie_min_fw") {
     this.root = { x: 0, y: 0, w, h };
+    this.rotateTieMode = rotateTieMode;
   }
 
   fit(blocks) {
@@ -43,17 +92,18 @@ class Packer {
           ];
 
       let chosen = null;
-      let bestArea = Infinity;
       for (const c of cands) {
         const node = this.findNode(this.root, c.fw, c.fh);
         if (!node) continue;
-        const area = c.fw * c.fh;
-        if (
-          area < bestArea ||
-          (area === bestArea && !c.rotated && chosen && chosen.rotated)
-        ) {
-          bestArea = area;
-          chosen = { ...c, node };
+        const cand = {
+          fw: c.fw,
+          fh: c.fh,
+          rotated: c.rotated,
+          node,
+          area: c.fw * c.fh,
+        };
+        if (!chosen || orientationBetter(cand, chosen, this.rotateTieMode)) {
+          chosen = cand;
         }
       }
       if (!chosen) continue;
@@ -379,7 +429,7 @@ function partFitsSheet(w, h, sw, sh, blade) {
   return fitsNormal || fitsRot;
 }
 
-function runPack2DLoop(sw, sh, blade, instances) {
+function runPack2DLoop(sw, sh, blade, instances, rotateTieMode = "tie_min_fw") {
   let unpacked = instances.map((b) => ({ ...b }));
   const sheets = [];
   let safety = 0;
@@ -394,7 +444,7 @@ function runPack2DLoop(sw, sh, blade, instances) {
       delete b.footprintH;
     }
 
-    const packer = new Packer(sw, sh);
+    const packer = new Packer(sw, sh, rotateTieMode);
     const forFit = unpacked.map((b) => ({
       ...b,
       blade,
@@ -500,26 +550,40 @@ function calculate2D() {
     },
   ];
 
+  /** Bei gleicher Footprint-Fläche unterschiedliche Platzierungs-Tie-Breaker (wirkt wie echte Dreh-Wahl). */
+  const rotateTieModes = [
+    "tie_min_fw",
+    "tie_min_fh",
+    "tie_max_free_right",
+    "tie_max_free_down",
+    "tie_min_max",
+    "tie_min_min",
+    "tie_natural",
+    "tie_rotated",
+  ];
+
   let bestSheets = null;
   let bestScore = Infinity;
   let bestWastePct = 0;
 
   for (const sm of sortModes) {
     const sorted = [...instances].sort(sm.sort);
-    const sheets = runPack2DLoop(sw, sh, blade, sorted);
-    if (!sheets) continue;
+    for (const tm of rotateTieModes) {
+      const sheets = runPack2DLoop(sw, sh, blade, sorted, tm);
+      if (!sheets) continue;
 
-    const sheetCount = sheets.length;
-    const usedAreaTotal = sheetCount * sw * sh;
-    const wastePct =
-      usedAreaTotal > 0
-        ? ((usedAreaTotal - partsAreaTotal) / usedAreaTotal) * 100
-        : 0;
-    const sc = scorePackResult(sheetCount, wastePct);
-    if (sc < bestScore) {
-      bestScore = sc;
-      bestSheets = sheets;
-      bestWastePct = wastePct;
+      const sheetCount = sheets.length;
+      const usedAreaTotal = sheetCount * sw * sh;
+      const wastePct =
+        usedAreaTotal > 0
+          ? ((usedAreaTotal - partsAreaTotal) / usedAreaTotal) * 100
+          : 0;
+      const sc = scorePackResult(sheetCount, wastePct);
+      if (sc < bestScore) {
+        bestScore = sc;
+        bestSheets = sheets;
+        bestWastePct = wastePct;
+      }
     }
   }
 
@@ -600,9 +664,7 @@ function renderAssignTable2D() {
   const rows = stats2D.assignRows
     .map(
       (r) =>
-        `<tr><td>${r.pieceId}</td><td>${r.widthMm}×${r.heightMm} mm${
-          r.rotated ? " (90°)" : ""
-        }</td><td>Zeile ${r.rowIdx}</td><td>Platte ${r.sheetNumber}</td></tr>`
+        `<tr><td>${r.pieceId}</td><td>${r.widthMm}×${r.heightMm} mm</td><td>Zeile ${r.rowIdx}</td><td>Platte ${r.sheetNumber}</td></tr>`
     )
     .join("");
   el.innerHTML = `
