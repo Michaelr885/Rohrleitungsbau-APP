@@ -5,7 +5,8 @@
  *     Bedarf = L1 + (kerf + L2) + (kerf + L3) + … = Summe(L) + (n−1)·kerf  (n Teile auf einer Stange).
  *     So wie bei realen Sägeschnitten zwischen den Stücken; kein „Schwanz“-Kerf nach dem letzten Stück.
  *
- * 2D: Rechteck-Packing mit Guillotine-Packer; Kantenabstand der Teil-Footprints enthält kerf (wie im Original).
+ * 2D: Guillotine-Packer; pro Teil wird beim Platzieren die bessere 90°-Orientierung gewählt (kleinerer Footprint,
+ *     bei Gleichstand ohne Drehung). Kerf am Rand des platzierten Rechtecks wie bisher.
  */
 
 const STORAGE_KEY = "schnitt-optimierer-v1";
@@ -19,8 +20,50 @@ class Packer {
     for (let n = 0; n < blocks.length; n++) {
       const block = blocks[n];
       delete block.fit;
-      const node = this.findNode(this.root, block.w, block.h);
-      if (node) block.fit = this.splitNode(node, block.w, block.h);
+      delete block.rotated;
+      delete block.placeW;
+      delete block.placeH;
+      delete block.footprintW;
+      delete block.footprintH;
+
+      const k = Number(block.blade) || 0;
+      const ow = block.originalW;
+      const oh = block.originalH;
+      const fw0 = ow + k;
+      const fh0 = oh + k;
+      const fw1 = oh + k;
+      const fh1 = ow + k;
+      const square = ow === oh;
+
+      const cands = square
+        ? [{ fw: fw0, fh: fh0, rotated: false }]
+        : [
+            { fw: fw0, fh: fh0, rotated: false },
+            { fw: fw1, fh: fh1, rotated: true },
+          ];
+
+      let chosen = null;
+      let bestArea = Infinity;
+      for (const c of cands) {
+        const node = this.findNode(this.root, c.fw, c.fh);
+        if (!node) continue;
+        const area = c.fw * c.fh;
+        if (
+          area < bestArea ||
+          (area === bestArea && !c.rotated && chosen && chosen.rotated)
+        ) {
+          bestArea = area;
+          chosen = { ...c, node };
+        }
+      }
+      if (!chosen) continue;
+
+      block.fit = this.splitNode(chosen.node, chosen.fw, chosen.fh);
+      block.rotated = chosen.rotated;
+      block.placeW = chosen.rotated ? oh : ow;
+      block.placeH = chosen.rotated ? ow : oh;
+      block.footprintW = chosen.fw;
+      block.footprintH = chosen.fh;
     }
   }
 
@@ -329,6 +372,61 @@ function partFitsSheet(w, h, sw, sh, blade) {
   return fitsNormal || fitsRot;
 }
 
+function runPack2DLoop(sw, sh, blade, instances) {
+  let unpacked = instances.map((b) => ({ ...b }));
+  const sheets = [];
+  let safety = 0;
+  while (unpacked.length > 0 && safety < 100) {
+    safety++;
+    for (const b of unpacked) {
+      delete b.fit;
+      delete b.rotated;
+      delete b.placeW;
+      delete b.placeH;
+      delete b.footprintW;
+      delete b.footprintH;
+    }
+
+    const packer = new Packer(sw, sh);
+    const forFit = unpacked.map((b) => ({
+      ...b,
+      blade,
+    }));
+    packer.fit(forFit);
+
+    const current = [];
+    const next = [];
+
+    for (let i = 0; i < unpacked.length; i++) {
+      const block = unpacked[i];
+      const fb = forFit[i];
+      if (fb.fit) {
+        block.fit = fb.fit;
+        block.rotated = fb.rotated;
+        block.placeW = fb.placeW;
+        block.placeH = fb.placeH;
+        block.footprintW = fb.footprintW;
+        block.footprintH = fb.footprintH;
+        current.push(block);
+      } else {
+        next.push(block);
+      }
+    }
+
+    if (next.length === unpacked.length) {
+      return null;
+    }
+
+    sheets.push({ blocks: current });
+    unpacked = next;
+  }
+  return sheets;
+}
+
+function scorePackResult(sheetCount, wastePct) {
+  return sheetCount * 1e9 + wastePct;
+}
+
 function calculate2D() {
   bindInputsFromDom();
   errorMsg = "";
@@ -348,7 +446,7 @@ function calculate2D() {
   }
 
   let pieceId2 = 1;
-  const blocks = [];
+  const instances = [];
 
   for (const item of state.items2D) {
     if (item.width <= 0 || item.height <= 0 || item.quantity <= 0) continue;
@@ -358,9 +456,7 @@ function calculate2D() {
       return;
     }
     for (let i = 0; i < item.quantity; i++) {
-      blocks.push({
-        w: item.width + blade,
-        h: item.height + blade,
+      instances.push({
         originalW: item.width,
         originalH: item.height,
         rowId: item.id,
@@ -370,66 +466,81 @@ function calculate2D() {
     }
   }
 
-  if (blocks.length === 0) {
+  if (instances.length === 0) {
     errorMsg = "Keine Platten-Teile eingetragen.";
     renderError();
     return;
   }
 
-  blocks.sort((a, b) => Math.max(b.w, b.h) - Math.max(a.w, a.h));
-
-  const sheets = [];
-  let unpacked = blocks.map((b) => ({ ...b }));
-
-  let safety = 0;
-  while (unpacked.length > 0 && safety < 100) {
-    safety++;
-    for (const b of unpacked) delete b.fit;
-
-    const packer = new Packer(sw, sh);
-    packer.fit(unpacked);
-
-    const current = [];
-    const next = [];
-
-    for (const block of unpacked) {
-      if (block.fit) current.push(block);
-      else next.push(block);
-    }
-
-    if (next.length === unpacked.length) {
-      errorMsg = "Ein Teil ist zu groß für die Platte (Packung nicht möglich).";
-      renderError();
-      return;
-    }
-
-    sheets.push({ blocks: current });
-    unpacked = next;
-  }
-
-  const usedAreaTotal = sheets.length * sw * sh;
-  const partsAreaTotal = blocks.reduce(
+  const partsAreaTotal = instances.reduce(
     (acc, b) => acc + b.originalW * b.originalH,
     0
   );
-  const wastePct =
-    usedAreaTotal > 0 ? ((usedAreaTotal - partsAreaTotal) / usedAreaTotal) * 100 : 0;
+
+  const sortModes = [
+    {
+      sort: (a, b) =>
+        b.originalW * b.originalH - a.originalW * a.originalH,
+    },
+    {
+      sort: (a, b) =>
+        Math.max(b.originalW, b.originalH) -
+        Math.max(a.originalW, a.originalH),
+    },
+    {
+      sort: (a, b) =>
+        b.originalW - a.originalW || b.originalH - a.originalH,
+    },
+  ];
+
+  let bestSheets = null;
+  let bestScore = Infinity;
+  let bestWastePct = 0;
+
+  for (const sm of sortModes) {
+    const sorted = [...instances].sort(sm.sort);
+    const sheets = runPack2DLoop(sw, sh, blade, sorted);
+    if (!sheets) continue;
+
+    const sheetCount = sheets.length;
+    const usedAreaTotal = sheetCount * sw * sh;
+    const wastePct =
+      usedAreaTotal > 0
+        ? ((usedAreaTotal - partsAreaTotal) / usedAreaTotal) * 100
+        : 0;
+    const sc = scorePackResult(sheetCount, wastePct);
+    if (sc < bestScore) {
+      bestScore = sc;
+      bestSheets = sheets;
+      bestWastePct = wastePct;
+    }
+  }
+
+  if (!bestSheets) {
+    errorMsg =
+      "Mit den gewählten Teilen ist keine gültige Packung möglich (auch nicht mit 90°-Drehung).";
+    renderError();
+    return;
+  }
 
   stats2D = {
-    totalSheets: sheets.length,
-    wastePercentage: wastePct,
+    totalSheets: bestSheets.length,
+    wastePercentage: bestWastePct,
     usedArea: partsAreaTotal,
     assignRows: [],
   };
-  results2D = sheets;
+  results2D = bestSheets;
 
   const assignRows2d = [];
-  sheets.forEach((sheet, si) => {
+  bestSheets.forEach((sheet, si) => {
     sheet.blocks.forEach((block) => {
       assignRows2d.push({
         pieceId: block.pieceId,
         widthMm: block.originalW,
         heightMm: block.originalH,
+        drawW: block.placeW,
+        drawH: block.placeH,
+        rotated: block.rotated,
         rowIdx: block.rowIdx,
         sheetNumber: si + 1,
       });
@@ -482,7 +593,9 @@ function renderAssignTable2D() {
   const rows = stats2D.assignRows
     .map(
       (r) =>
-        `<tr><td>${r.pieceId}</td><td>${r.widthMm}×${r.heightMm} mm</td><td>Zeile ${r.rowIdx}</td><td>Platte ${r.sheetNumber}</td></tr>`
+        `<tr><td>${r.pieceId}</td><td>${r.widthMm}×${r.heightMm} mm${
+          r.rotated ? " (90°)" : ""
+        }</td><td>Zeile ${r.rowIdx}</td><td>Platte ${r.sheetNumber}</td></tr>`
     )
     .join("");
   el.innerHTML = `
@@ -577,18 +690,19 @@ function renderResults2D(sw, sh) {
 
     const rects = sheet.blocks
       .map((block, bIdx) => {
-        const cx = block.fit.x + block.originalW / 2;
-        const cy = block.fit.y + block.originalH / 2;
-        const fsDim = Math.min(block.originalW, block.originalH) / 5;
-        const fsId = Math.min(block.originalW, block.originalH) / 3.5;
-        const showDim =
-          block.originalW > sw / 18 && block.originalH > sh / 18;
+        const pw = block.placeW ?? block.originalW;
+        const ph = block.placeH ?? block.originalH;
+        const cx = block.fit.x + pw / 2;
+        const cy = block.fit.y + ph / 2;
+        const fsDim = Math.min(pw, ph) / 5;
+        const fsId = Math.min(pw, ph) / 3.5;
+        const showDim = pw > sw / 18 && ph > sh / 18;
         const dimLabel = showDim
           ? `<text x="${cx}" y="${cy + fsDim * 0.35}" dominant-baseline="middle" text-anchor="middle" fill="rgba(255,255,255,0.95)" font-size="${fsDim}" font-family="DM Sans, sans-serif" pointer-events="none">${block.originalW}×${block.originalH}</text>`
           : "";
         const idLabel = `<text x="${cx}" y="${cy - fsDim * 0.5}" dominant-baseline="middle" text-anchor="middle" fill="#fef08a" font-weight="700" font-size="${fsId}" font-family="DM Sans, sans-serif" pointer-events="none">#${block.pieceId}</text>`;
         return `<g>
-      <rect x="${block.fit.x}" y="${block.fit.y}" width="${block.originalW}" height="${block.originalH}" fill="#3d9df0" stroke="#1e5a8a" stroke-width="${strokeW}"/>
+      <rect x="${block.fit.x}" y="${block.fit.y}" width="${pw}" height="${ph}" fill="#3d9df0" stroke="#1e5a8a" stroke-width="${strokeW}"/>
       ${idLabel}
       ${dimLabel}
     </g>`;

@@ -70,8 +70,8 @@
         <div class="card">
           <h2>Material (Platte)</h2>
           <p class="formula-note">
-            Jedes Teil belegt Breite+Höhe zzgl. Schnitt pro Kante im Raster (wie beim Guillotine-Packen).
-            Drehung einzelner Teile beim Packen ist noch nicht implementiert — bei Bedarf Breite/Höhe tauschen.
+            Jedes Teil belegt Breite+Höhe zzgl. Schnitt pro Kante im Raster (Guillotine).
+            Beim Platzieren wird pro Teil automatisch die günstigere 90°-Lage versucht (Quadrate sind rotationssymmetrisch).
           </p>
           <form id="form-sheet-2d" class="cut-stock-form">
             <div class="row row--mobile-stack cols-3">
@@ -140,6 +140,6 @@
         Auflage, Bearbeitung).
       </p>
     </div>
-    <script src="schnitt-optimierer.js?v=5" defer></script>
+    <script src="schnitt-optimierer.js?v=6" defer></script>
   </body>
 </html>
