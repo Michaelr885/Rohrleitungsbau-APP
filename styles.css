@@ -1259,6 +1259,49 @@ code {
   font-variant-numeric: tabular-nums;
 }
 
+.site-footer {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+body.body--home .site-footer {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.site-footer__link {
+  font-size: 0.82rem;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.site-footer__link:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.site-footer-links {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.88rem;
+}
+
+.impressum-block .impressum-lead {
+  margin-bottom: 0.35rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.impressum-address {
+  margin: 0 0 1rem;
+  line-height: 1.55;
+}
+
+.impressum-note {
+  margin-bottom: 0;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
