@@ -16,10 +16,6 @@
     <div class="wrap wrap--sub">
       <a href="index.html" class="back-link">← Index</a>
       <h1>Schraubenlängen</h1>
-      <p class="sub">
-        Flansch auswählen (Art · DN · PN), Zusatzwerte für Dichtung, Gewindegänge und
-        Überstand eingeben — Ergebnis: Länge für starre Schraube und für Stehbolzen.
-      </p>
 
       <div class="card">
         <h2>Flansch</h2>
@@ -61,19 +57,18 @@
         </div>
         <div class="row row--mobile-stack">
           <div>
-            <label for="ueberstandBolzen">Überstand Bolzen (mm)</label>
+            <label for="ueberstandBolzen">Überstand (mm)</label>
             <input id="ueberstandBolzen" name="ueberstandBolzen" type="text" inputmode="decimal" />
           </div>
           <div>
-            <label for="flanschHoeheManuell">Flanschhöhe manuell (mm), falls kein Wert hinterlegt ist</label>
+            <label for="flanschHoeheManuell">Flanschhöhe (mm)</label>
             <input
               id="flanschHoeheManuell"
               name="flanschHoeheManuell"
               type="text"
               inputmode="decimal"
-              placeholder="nur bei fehlendem Wert nötig"
+              placeholder="Flanschhöhe manuell (mm), falls kein Wert hinterlegt ist"
             />
-            <p class="hint">Wird nur genutzt, wenn für den gewählten Flansch keine Höhe hinterlegt ist.</p>
           </div>
         </div>
       </div>
@@ -109,6 +104,6 @@
         Stammdaten: <code>schrauben-daten.json</code>. Fehlende Werte zu einem Gewinde führen zu einer Fehlermeldung statt einer Schätzung.
       </p>
     </div>
-    <script src="app.js?v=5" defer></script>
+    <script src="app.js?v=6" defer></script>
   </body>
 </html>

@@ -236,7 +236,7 @@ function compute() {
     fl.hoeheFlanschMm == null ? " (manuell)" : ""
   },
     Nut/Rücksprung ${fmt(nut)} mm, Bund ${fmt(bund)} mm ·
-    Dichtung ${fmt(dichtungMm)} mm, Gewindegänge ${gewindegaenge}, Überstand Bolzen ${fmt(ueberstandBolzenMm)} mm
+    Dichtung ${fmt(dichtungMm)} mm, Gewindegänge ${gewindegaenge}, Überstand ${fmt(ueberstandBolzenMm)} mm
   `;
 
   out.classList.add("visible");

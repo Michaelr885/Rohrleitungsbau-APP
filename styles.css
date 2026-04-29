@@ -132,6 +132,12 @@ select:focus {
   border-color: var(--accent);
 }
 
+input::placeholder {
+  color: rgba(139, 155, 171, 0.85);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
 .hint {
   font-size: 0.8rem;
   color: var(--muted);
