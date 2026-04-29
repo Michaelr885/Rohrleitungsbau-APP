@@ -511,6 +511,26 @@ function syncDomFromState() {
   renderItems2D();
 }
 
+function addItem1DRow(focusLength = true) {
+  bindInputsFromDom();
+  const newId = Date.now();
+  state.items1D.push({
+    id: newId,
+    length: 0,
+    quantity: 1,
+  });
+  renderItems1D();
+  saveState();
+  if (focusLength) {
+    requestAnimationFrame(() => {
+      const inp = document.querySelector(
+        `#items-1d input[data-field="length"][data-id="${newId}"]`
+      );
+      if (inp) inp.focus();
+    });
+  }
+}
+
 function init() {
   loadState();
   syncDomFromState();
@@ -522,15 +542,14 @@ function init() {
     );
   });
 
-  document.getElementById("add-1d").addEventListener("click", () => {
-    bindInputsFromDom();
-    state.items1D.push({
-      id: Date.now(),
-      length: 0,
-      quantity: 1,
-    });
-    renderItems1D();
-    saveState();
+  document.getElementById("add-1d").addEventListener("click", () => addItem1DRow(true));
+
+  document.getElementById("section-1d").addEventListener("keydown", (e) => {
+    if (e.key !== "Enter") return;
+    const id = e.target && e.target.id;
+    if (id !== "stockLength" && id !== "bladeWidth1D") return;
+    e.preventDefault();
+    addItem1DRow(true);
   });
 
   document.getElementById("add-2d").addEventListener("click", () => {
