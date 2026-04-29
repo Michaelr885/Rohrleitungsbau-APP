@@ -76,18 +76,25 @@ function wireFilters() {
   art.addEventListener("change", () => {
     dn.innerHTML = '<option value="">— DN —</option>';
     pn.innerHTML = '<option value="">— PN —</option>';
-    if (!art.value) return;
+    if (!art.value) {
+      saveFormState();
+      return;
+    }
     for (const d of dnsForArt(art.value)) {
       const o = document.createElement("option");
       o.value = d;
       o.textContent = String(d);
       dn.appendChild(o);
     }
+    saveFormState();
   });
 
   dn.addEventListener("change", () => {
     pn.innerHTML = '<option value="">— PN —</option>';
-    if (!art.value || dn.value === "") return;
+    if (!art.value || dn.value === "") {
+      saveFormState();
+      return;
+    }
     const dnum = dn.value.includes(".")
       ? parseFloat(dn.value)
       : parseInt(dn.value, 10);
@@ -97,6 +104,7 @@ function wireFilters() {
       o.textContent = String(p);
       pn.appendChild(o);
     }
+    saveFormState();
   });
 }
 
@@ -106,6 +114,81 @@ function field(id, ...legacyIds) {
     if (el) return el;
   }
   return null;
+}
+
+const STORAGE_KEY = "schraubenlaengen-form-v1";
+
+function saveFormState() {
+  try {
+    const art = document.getElementById("art").value;
+    const dn = document.getElementById("dn").value;
+    const pn = document.getElementById("pn").value;
+    const payload = {
+      art,
+      dn,
+      pn,
+      dichtungHoehe: field("dichtungHoehe", "e3")?.value ?? "",
+      gewindegaenge: field("gewindegaenge", "f3")?.value ?? "",
+      ueberstandBolzen: field("ueberstandBolzen", "h3")?.value ?? "",
+      flanschHoeheManuell: field("flanschHoeheManuell", "hoeheOverride")?.value ?? "",
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  } catch (_) {
+    /* ignore quota / private mode */
+  }
+}
+
+function restoreFormState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    const s = JSON.parse(raw);
+    if (!s || typeof s !== "object") return false;
+
+    const artEl = document.getElementById("art");
+    if (!s.art || ![...artEl.options].some((o) => o.value === s.art)) return false;
+
+    artEl.value = s.art;
+    artEl.dispatchEvent(new Event("change", { bubbles: true }));
+
+    const dnEl = document.getElementById("dn");
+    const dnStr = s.dn !== undefined && s.dn !== null && s.dn !== "" ? String(s.dn) : "";
+    if (!dnStr || ![...dnEl.options].some((o) => o.value === dnStr)) return true;
+
+    dnEl.value = dnStr;
+    dnEl.dispatchEvent(new Event("change", { bubbles: true }));
+
+    const pnEl = document.getElementById("pn");
+    const pnStr = s.pn !== undefined && s.pn !== null && s.pn !== "" ? String(s.pn) : "";
+    if (pnStr && [...pnEl.options].some((o) => o.value === pnStr)) {
+      pnEl.value = pnStr;
+    }
+
+    const setIf = (id, legacy, val) => {
+      const el = field(id, legacy);
+      if (!el || val == null) return;
+      el.value = typeof val === "string" ? val : String(val).replace(".", ",");
+    };
+    setIf("dichtungHoehe", "e3", s.dichtungHoehe);
+    setIf("gewindegaenge", "f3", s.gewindegaenge);
+    setIf("ueberstandBolzen", "h3", s.ueberstandBolzen);
+    setIf("flanschHoeheManuell", "hoeheOverride", s.flanschHoeheManuell);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function wireSaveOnChange() {
+  const ids = ["art", "dn", "pn", "dichtungHoehe", "gewindegaenge", "ueberstandBolzen", "flanschHoeheManuell"];
+  for (const id of ids) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    el.addEventListener("change", saveFormState);
+    if (el.tagName === "TEXTAREA" || (el.tagName === "INPUT" && el.type !== "hidden")) {
+      el.addEventListener("input", saveFormState);
+    }
+  }
 }
 
 function parseField(el, fallback) {
@@ -122,9 +205,12 @@ function readInputs() {
   const fEl = field("gewindegaenge", "f3");
   const hEl = field("ueberstandBolzen", "h3");
   const hoeheOverride = field("flanschHoeheManuell", "hoeheOverride");
-  const hoRaw = hoeheOverride
-    ? hoeheOverride.value.trim().replace(",", ".")
-    : "";
+  let hoRaw = "";
+  if (hoeheOverride) {
+    const lines = hoeheOverride.value.split(/\r?\n/).map((l) => l.trim());
+    hoRaw = lines.find((l) => l.length > 0) ?? "";
+    hoRaw = hoRaw.replace(/\s+/g, " ").replace(",", ".");
+  }
   const hoNum = hoRaw === "" ? NaN : parseFloat(hoRaw);
   return {
     dichtungHoeheMm: parseField(eEl, d.dichtungHoeheMm),
@@ -240,6 +326,7 @@ function compute() {
   `;
 
   out.classList.add("visible");
+  saveFormState();
 }
 
 async function init() {
@@ -261,20 +348,29 @@ async function init() {
   indexFlansche(data.flansche);
   populateArt(data);
 
+  wireFilters();
+
   const d = data.defaults;
   const setVal = (id, legacyId, val) => {
     const el = field(id, legacyId);
     if (el) el.value = String(val).replace(".", ",");
   };
-  setVal("dichtungHoehe", "e3", d.dichtungHoeheMm);
-  setVal("gewindegaenge", "f3", d.ueberstandGewindegange);
-  setVal("ueberstandBolzen", "h3", d.ueberstandBolzenMm);
 
-  wireFilters();
+  const restored = restoreFormState();
+  if (!restored) {
+    setVal("dichtungHoehe", "e3", d.dichtungHoeheMm);
+    setVal("gewindegaenge", "f3", d.ueberstandGewindegange);
+    setVal("ueberstandBolzen", "h3", d.ueberstandBolzenMm);
+  }
+
+  wireSaveOnChange();
+
   document.getElementById("calc").addEventListener("click", (ev) => {
     ev.preventDefault();
     compute();
   });
+
+  saveFormState();
 }
 
 document.addEventListener("DOMContentLoaded", init);

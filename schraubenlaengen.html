@@ -62,13 +62,16 @@
           </div>
           <div>
             <label for="flanschHoeheManuell">Flanschhöhe (mm)</label>
-            <input
+            <textarea
               id="flanschHoeheManuell"
               name="flanschHoeheManuell"
-              type="text"
+              class="field-input field-input--textarea"
+              rows="2"
               inputmode="decimal"
-              placeholder="Flanschhöhe manuell (mm), falls kein Wert hinterlegt ist"
-            />
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="Flanschhöhe manuell (mm),&#10;falls kein Wert hinterlegt ist"
+            ></textarea>
           </div>
         </div>
       </div>
@@ -104,6 +107,6 @@
         Stammdaten: <code>schrauben-daten.json</code>. Fehlende Werte zu einem Gewinde führen zu einer Fehlermeldung statt einer Schätzung.
       </p>
     </div>
-    <script src="app.js?v=6" defer></script>
+    <script src="app.js?v=7" defer></script>
   </body>
 </html>
