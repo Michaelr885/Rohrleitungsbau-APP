@@ -644,6 +644,64 @@ function addItem1DRow(focusLength = true) {
   }
 }
 
+function addItem2DRow(focusWidth = true) {
+  bindInputsFromDom();
+  const newId = Date.now();
+  state.items2D.push({
+    id: newId,
+    width: 0,
+    height: 0,
+    quantity: 1,
+  });
+  renderItems2D();
+  saveState();
+  if (focusWidth) {
+    requestAnimationFrame(() => {
+      const inp = document.querySelector(
+        `#items-2d input[data-field="width"][data-id="${newId}"]`
+      );
+      if (inp) inp.focus();
+    });
+  }
+}
+
+function wireEnterOnStockForms() {
+  const form1 = document.getElementById("form-stock-1d");
+  if (form1) {
+    form1.addEventListener("submit", (e) => {
+      e.preventDefault();
+      addItem1DRow(true);
+    });
+  }
+
+  const form2 = document.getElementById("form-sheet-2d");
+  if (form2) {
+    form2.addEventListener("submit", (e) => {
+      e.preventDefault();
+      addItem2DRow(true);
+    });
+  }
+
+  function enterAddsMaterialRow(ev) {
+    if (ev.key !== "Enter") return;
+    const id = ev.target && ev.target.id;
+    if (!id) return;
+    const stockIds = ["stockLength", "bladeWidth1D"];
+    const sheetIds = ["sheetWidth", "sheetHeight", "bladeWidth2D"];
+    if (stockIds.includes(id)) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      addItem1DRow(true);
+    } else if (sheetIds.includes(id)) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      addItem2DRow(true);
+    }
+  }
+
+  document.addEventListener("keydown", enterAddsMaterialRow, true);
+}
+
 function init() {
   loadState();
   syncDomFromState();
@@ -657,25 +715,9 @@ function init() {
 
   document.getElementById("add-1d").addEventListener("click", () => addItem1DRow(true));
 
-  document.getElementById("section-1d").addEventListener("keydown", (e) => {
-    if (e.key !== "Enter") return;
-    const id = e.target && e.target.id;
-    if (id !== "stockLength" && id !== "bladeWidth1D") return;
-    e.preventDefault();
-    addItem1DRow(true);
-  });
+  wireEnterOnStockForms();
 
-  document.getElementById("add-2d").addEventListener("click", () => {
-    bindInputsFromDom();
-    state.items2D.push({
-      id: Date.now(),
-      width: 0,
-      height: 0,
-      quantity: 1,
-    });
-    renderItems2D();
-    saveState();
-  });
+  document.getElementById("add-2d").addEventListener("click", () => addItem2DRow(true));
 
   document.getElementById("items-1d").addEventListener("click", (e) => {
     const id = e.target.getAttribute("data-remove-1d");
