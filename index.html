@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Schraubenlängen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Schraubenlängen</h1>
+      <p class="sub">
+        Auswahl wie in der Excel-Tabelle (Flansch · DN · PN), zusätzlich die
+        Eingaben aus Zeile 3 (Dichtung, Gewindegänge, Überstand). Ergebnisse:
+        starre Schraube und Stehbolzen — entsprechend den Formeln aus Zelle C6 und C9.
+      </p>
+
+      <div class="card">
+        <h2>Flansch</h2>
+        <div class="row cols-2">
+          <div>
+            <label for="art">Art</label>
+            <select id="art" name="art" required>
+              <option value="">Lade Daten…</option>
+            </select>
+          </div>
+          <div>
+            <label for="dn">DN</label>
+            <select id="dn" name="dn">
+              <option value="">— zuerst Art wählen —</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label for="pn">PN</label>
+            <select id="pn" name="pn">
+              <option value="">— zuerst DN wählen —</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Zusatzparameter (wie Zeile 3 im Blatt)</h2>
+        <div class="row cols-2">
+          <div>
+            <label for="e3">Dichtung Höhe (mm) — E3</label>
+            <input id="e3" name="e3" type="text" inputmode="decimal" />
+          </div>
+          <div>
+            <label for="f3">Überstand / Anzahl Gewindegänge — F3</label>
+            <input id="f3" name="f3" type="text" inputmode="decimal" />
+          </div>
+        </div>
+        <div class="row cols-2">
+          <div>
+            <label for="h3">Überstand Bolzen (mm) — H3</label>
+            <input id="h3" name="h3" type="text" inputmode="decimal" />
+          </div>
+          <div>
+            <label for="hoeheOverride">Flanschhöhe manuell (mm), falls in Excel „NA“</label>
+            <input
+              id="hoeheOverride"
+              name="hoeheOverride"
+              type="text"
+              inputmode="decimal"
+              placeholder="nur bei fehlendem Wert nötig"
+            />
+            <p class="hint">Wird ignoriert, wenn die Tabelle eine Höhe liefert.</p>
+          </div>
+        </div>
+        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer">
+          <input type="checkbox" id="pwNorm" checked />
+          <span>Rechenweg wie bei PW-Norm 6165 (Excel prüft J3 = 6165)</span>
+        </label>
+      </div>
+
+      <button type="button" class="btn" id="calc">Berechnen</button>
+
+      <div id="msg" class="msg" role="status"></div>
+
+      <div id="result" class="out card">
+        <h2>Ergebnis</h2>
+        <div class="out-grid">
+          <div class="kpi">
+            <div class="label">Gewinde</div>
+            <div class="value" id="kpi-gewinde">—</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Anzahl Schrauben</div>
+            <div class="value" id="kpi-anzahl">—</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Starre Schraube</div>
+            <div class="value"><span id="kpi-starre">—</span> <span class="unit">mm</span></div>
+          </div>
+          <div class="kpi">
+            <div class="label">Stehbolzen</div>
+            <div class="value"><span id="kpi-steh">—</span> <span class="unit">mm</span></div>
+          </div>
+          <div class="detail" id="detail"></div>
+        </div>
+      </div>
+
+      <p class="footnote">
+        Formeln (aus der Arbeitsmappe): <code id="formeln"></code><br />
+        Daten: <code>schrauben-daten.json</code> (Export aus
+        <code>xxSchraubenlängen.xlsx</code>). Für fehlende Gewindegrößen M39/M45 in den
+        Hilfstabellen wird linear zwischen den Nachbargrößen interpoliert.
+      </p>
+    </div>
+    <script src="app.js" defer></script>
+  </body>
+</html>

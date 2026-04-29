@@ -1,0 +1,3032 @@
+{
+  "meta": {
+    "title": "Schraubenlängen",
+    "pwNormId": 6165,
+    "excelSheet": "Schraubenlänge",
+    "notes": [
+      "Berechnung entspricht den Formeln in Zelle C6 (starre Schraube) und C9 (Stehbolzen) der Excel-Datei.",
+      "Zeilenfilter: Es wird genau die Zeile aus der Flansch-Tabelle verwendet, bei der Art, DN und PN mit der Auswahl übereinstimmen (entspricht INDEX(Flansch,...) mit MATCH(1,Probe[Prüfung],0))."
+    ],
+    "formeln": {
+      "starreSchraubeMm": "2*hoeheFlansch + steigungMm*F3 + mutterHoehe + scheibenHoehe + E3 + H3 - nut + 2*bund",
+      "stehbolzenMm": "2*hoeheFlansch + 2*(steigungMm*F3) + 2*mutterHoehe + 2*scheibenHoehe + E3 + 2*H3 - nut + 2*bund"
+    }
+  },
+  "defaults": {
+    "dichtungHoeheMm": 2.0,
+    "ueberstandGewindegange": 3.0,
+    "ueberstandBolzenMm": 0
+  },
+  "flansche": [
+    {
+      "art": "Vorschweißflansch",
+      "dn": 10,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 14.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 15,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 14.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 20,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 25,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 32,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 40,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 50,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 65,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 80,
+      "pn": 10,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 20.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 100,
+      "pn": 10,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 20.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 125,
+      "pn": 10,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 22.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 150,
+      "pn": 10,
+      "anzahlSchrauben": 8,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 22.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 200,
+      "pn": 10,
+      "anzahlSchrauben": 8,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 24.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 250,
+      "pn": 10,
+      "anzahlSchrauben": 12,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 300,
+      "pn": 10,
+      "anzahlSchrauben": 12,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 350,
+      "pn": 10,
+      "anzahlSchrauben": 16,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 400,
+      "pn": 10,
+      "anzahlSchrauben": 16,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 500,
+      "pn": 10,
+      "anzahlSchrauben": 20,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 28.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 600,
+      "pn": 10,
+      "anzahlSchrauben": 20,
+      "gewinde": "M27",
+      "hoeheFlanschMm": 28.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 10,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 14.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 15,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 14.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 20,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 25,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 32,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 40,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 50,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 65,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 80,
+      "pn": 16,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 20.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 100,
+      "pn": 16,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 20.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 125,
+      "pn": 16,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 22.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 150,
+      "pn": 16,
+      "anzahlSchrauben": 8,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 22.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 200,
+      "pn": 16,
+      "anzahlSchrauben": 12,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 24.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 250,
+      "pn": 16,
+      "anzahlSchrauben": 12,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 300,
+      "pn": 16,
+      "anzahlSchrauben": 12,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 28.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 350,
+      "pn": 16,
+      "anzahlSchrauben": 16,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 30.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 400,
+      "pn": 16,
+      "anzahlSchrauben": 16,
+      "gewinde": "M27",
+      "hoeheFlanschMm": 32.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 500,
+      "pn": 16,
+      "anzahlSchrauben": 20,
+      "gewinde": "M30",
+      "hoeheFlanschMm": 34.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 600,
+      "pn": 16,
+      "anzahlSchrauben": 20,
+      "gewinde": "M33",
+      "hoeheFlanschMm": 36.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 10,
+      "pn": 25,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 15,
+      "pn": 25,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 20,
+      "pn": 25,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 25,
+      "pn": 25,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 32,
+      "pn": 25,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 40,
+      "pn": 25,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 50,
+      "pn": 25,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 20.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 65,
+      "pn": 25,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 22.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 80,
+      "pn": 25,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 24.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 100,
+      "pn": 25,
+      "anzahlSchrauben": 8,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 24.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 125,
+      "pn": 25,
+      "anzahlSchrauben": 8,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 150,
+      "pn": 25,
+      "anzahlSchrauben": 8,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 28.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 200,
+      "pn": 25,
+      "anzahlSchrauben": 12,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 30.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 250,
+      "pn": 25,
+      "anzahlSchrauben": 12,
+      "gewinde": "M27",
+      "hoeheFlanschMm": 32.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 300,
+      "pn": 25,
+      "anzahlSchrauben": 16,
+      "gewinde": "M27",
+      "hoeheFlanschMm": 34.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 350,
+      "pn": 25,
+      "anzahlSchrauben": 16,
+      "gewinde": "M30",
+      "hoeheFlanschMm": 38.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 400,
+      "pn": 25,
+      "anzahlSchrauben": 16,
+      "gewinde": "M33",
+      "hoeheFlanschMm": 40.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 500,
+      "pn": 25,
+      "anzahlSchrauben": 20,
+      "gewinde": "M33",
+      "hoeheFlanschMm": 44.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 10,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 15,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 20,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 25,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 32,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 40,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 50,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 20.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 65,
+      "pn": 40,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 22.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 80,
+      "pn": 40,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 24.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 100,
+      "pn": 40,
+      "anzahlSchrauben": 8,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 24.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 125,
+      "pn": 40,
+      "anzahlSchrauben": 8,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 150,
+      "pn": 40,
+      "anzahlSchrauben": 8,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 28.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 200,
+      "pn": 40,
+      "anzahlSchrauben": 12,
+      "gewinde": "M27",
+      "hoeheFlanschMm": 34.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 250,
+      "pn": 40,
+      "anzahlSchrauben": 12,
+      "gewinde": "M30",
+      "hoeheFlanschMm": 38.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 300,
+      "pn": 40,
+      "anzahlSchrauben": 16,
+      "gewinde": "M30",
+      "hoeheFlanschMm": 42.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vorschweißflansch",
+      "dn": 350,
+      "pn": 40,
+      "anzahlSchrauben": 16,
+      "gewinde": "M33",
+      "hoeheFlanschMm": 46.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 10,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 14.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 15,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 14.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 20,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 25,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 32,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 40,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 50,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 65,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 80,
+      "pn": 10,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 20.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 100,
+      "pn": 10,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 20.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 125,
+      "pn": 10,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 22.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 150,
+      "pn": 10,
+      "anzahlSchrauben": 8,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 22.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 200,
+      "pn": 10,
+      "anzahlSchrauben": 8,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 24.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 250,
+      "pn": 10,
+      "anzahlSchrauben": 12,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 300,
+      "pn": 10,
+      "anzahlSchrauben": 12,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 350,
+      "pn": 10,
+      "anzahlSchrauben": 16,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 400,
+      "pn": 10,
+      "anzahlSchrauben": 16,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 500,
+      "pn": 10,
+      "anzahlSchrauben": 20,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 28.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 600,
+      "pn": 10,
+      "anzahlSchrauben": 20,
+      "gewinde": "M27",
+      "hoeheFlanschMm": 28.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 10,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 14.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 15,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 14.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 20,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 25,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 32,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 40,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 50,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 65,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 80,
+      "pn": 16,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 20.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 100,
+      "pn": 16,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 20.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 125,
+      "pn": 16,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 22.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 150,
+      "pn": 16,
+      "anzahlSchrauben": 8,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 22.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 200,
+      "pn": 16,
+      "anzahlSchrauben": 12,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 24.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 250,
+      "pn": 16,
+      "anzahlSchrauben": 12,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 300,
+      "pn": 16,
+      "anzahlSchrauben": 12,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 28.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 350,
+      "pn": 16,
+      "anzahlSchrauben": 16,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 30.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 400,
+      "pn": 16,
+      "anzahlSchrauben": 16,
+      "gewinde": "M27",
+      "hoeheFlanschMm": 32.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 500,
+      "pn": 16,
+      "anzahlSchrauben": 20,
+      "gewinde": "M30",
+      "hoeheFlanschMm": 34.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 600,
+      "pn": 16,
+      "anzahlSchrauben": 20,
+      "gewinde": "M33",
+      "hoeheFlanschMm": 36.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 10,
+      "pn": 25,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 15,
+      "pn": 25,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 20,
+      "pn": 25,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 25,
+      "pn": 25,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 32,
+      "pn": 25,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 40,
+      "pn": 25,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 50,
+      "pn": 25,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 20.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 65,
+      "pn": 25,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 22.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 80,
+      "pn": 25,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 24.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 100,
+      "pn": 25,
+      "anzahlSchrauben": 8,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 24.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 125,
+      "pn": 25,
+      "anzahlSchrauben": 8,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 150,
+      "pn": 25,
+      "anzahlSchrauben": 8,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 28.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 200,
+      "pn": 25,
+      "anzahlSchrauben": 12,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 30.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 250,
+      "pn": 25,
+      "anzahlSchrauben": 12,
+      "gewinde": "M27",
+      "hoeheFlanschMm": 32.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 300,
+      "pn": 25,
+      "anzahlSchrauben": 16,
+      "gewinde": "M27",
+      "hoeheFlanschMm": 34.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 350,
+      "pn": 25,
+      "anzahlSchrauben": 16,
+      "gewinde": "M30",
+      "hoeheFlanschMm": 38.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 400,
+      "pn": 25,
+      "anzahlSchrauben": 16,
+      "gewinde": "M33",
+      "hoeheFlanschMm": 40.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 500,
+      "pn": 25,
+      "anzahlSchrauben": 20,
+      "gewinde": "M33",
+      "hoeheFlanschMm": 44.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 10,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 15,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 20,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 25,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 32,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 40,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 50,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 20.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 65,
+      "pn": 40,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 22.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 80,
+      "pn": 40,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 24.0,
+      "nutRuecksprungMm": 2.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 100,
+      "pn": 40,
+      "anzahlSchrauben": 8,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 24.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 125,
+      "pn": 40,
+      "anzahlSchrauben": 8,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 150,
+      "pn": 40,
+      "anzahlSchrauben": 8,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 28.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 200,
+      "pn": 40,
+      "anzahlSchrauben": 12,
+      "gewinde": "M27",
+      "hoeheFlanschMm": 34.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 250,
+      "pn": 40,
+      "anzahlSchrauben": 12,
+      "gewinde": "M30",
+      "hoeheFlanschMm": 38.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 300,
+      "pn": 40,
+      "anzahlSchrauben": 16,
+      "gewinde": "M30",
+      "hoeheFlanschMm": 42.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Feder und Nut",
+      "dn": 350,
+      "pn": 40,
+      "anzahlSchrauben": 16,
+      "gewinde": "M33",
+      "hoeheFlanschMm": 46.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 10,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 14.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 15,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 14.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 20,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 25,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 32,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 40,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 50,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 65,
+      "pn": 10,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 80,
+      "pn": 10,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 20.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 100,
+      "pn": 10,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 20.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 125,
+      "pn": 10,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 22.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 150,
+      "pn": 10,
+      "anzahlSchrauben": 8,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 22.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 200,
+      "pn": 10,
+      "anzahlSchrauben": 8,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 24.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 250,
+      "pn": 10,
+      "anzahlSchrauben": 12,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 300,
+      "pn": 10,
+      "anzahlSchrauben": 12,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 350,
+      "pn": 10,
+      "anzahlSchrauben": 16,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 4.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 400,
+      "pn": 10,
+      "anzahlSchrauben": 16,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 4.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 500,
+      "pn": 10,
+      "anzahlSchrauben": 20,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 28.0,
+      "nutRuecksprungMm": 4.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 600,
+      "pn": 10,
+      "anzahlSchrauben": 20,
+      "gewinde": "M27",
+      "hoeheFlanschMm": 28.0,
+      "nutRuecksprungMm": 4.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 10,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 14.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 15,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 14.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 20,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 25,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 32,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 40,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 50,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 65,
+      "pn": 16,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 80,
+      "pn": 16,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 20.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 100,
+      "pn": 16,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 20.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 125,
+      "pn": 16,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 22.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 150,
+      "pn": 16,
+      "anzahlSchrauben": 8,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 22.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 200,
+      "pn": 16,
+      "anzahlSchrauben": 12,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 24.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 250,
+      "pn": 16,
+      "anzahlSchrauben": 12,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 300,
+      "pn": 16,
+      "anzahlSchrauben": 12,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 28.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 350,
+      "pn": 16,
+      "anzahlSchrauben": 16,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 30.0,
+      "nutRuecksprungMm": 4.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 400,
+      "pn": 16,
+      "anzahlSchrauben": 16,
+      "gewinde": "M27",
+      "hoeheFlanschMm": 32.0,
+      "nutRuecksprungMm": 4.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 500,
+      "pn": 16,
+      "anzahlSchrauben": 20,
+      "gewinde": "M30",
+      "hoeheFlanschMm": 34.0,
+      "nutRuecksprungMm": 4.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 600,
+      "pn": 16,
+      "anzahlSchrauben": 20,
+      "gewinde": "M33",
+      "hoeheFlanschMm": 36.0,
+      "nutRuecksprungMm": 4.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 10,
+      "pn": 25,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 15,
+      "pn": 25,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 20,
+      "pn": 25,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 25,
+      "pn": 25,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 32,
+      "pn": 25,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 40,
+      "pn": 25,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 50,
+      "pn": 25,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 20.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 65,
+      "pn": 25,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 22.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 80,
+      "pn": 25,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 24.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 100,
+      "pn": 25,
+      "anzahlSchrauben": 8,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 24.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 125,
+      "pn": 25,
+      "anzahlSchrauben": 8,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 150,
+      "pn": 25,
+      "anzahlSchrauben": 8,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 28.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 200,
+      "pn": 25,
+      "anzahlSchrauben": 12,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 30.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 250,
+      "pn": 25,
+      "anzahlSchrauben": 12,
+      "gewinde": "M27",
+      "hoeheFlanschMm": 32.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 300,
+      "pn": 25,
+      "anzahlSchrauben": 16,
+      "gewinde": "M27",
+      "hoeheFlanschMm": 34.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 350,
+      "pn": 25,
+      "anzahlSchrauben": 16,
+      "gewinde": "M30",
+      "hoeheFlanschMm": 38.0,
+      "nutRuecksprungMm": 4.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 400,
+      "pn": 25,
+      "anzahlSchrauben": 16,
+      "gewinde": "M33",
+      "hoeheFlanschMm": 40.0,
+      "nutRuecksprungMm": 4.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 500,
+      "pn": 25,
+      "anzahlSchrauben": 20,
+      "gewinde": "M33",
+      "hoeheFlanschMm": 44.0,
+      "nutRuecksprungMm": 4.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 10,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 15,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 20,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 25,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 32,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 40,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 50,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 20.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 65,
+      "pn": 40,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 22.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 80,
+      "pn": 40,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 24.0,
+      "nutRuecksprungMm": 3.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 100,
+      "pn": 40,
+      "anzahlSchrauben": 8,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 24.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 125,
+      "pn": 40,
+      "anzahlSchrauben": 8,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 150,
+      "pn": 40,
+      "anzahlSchrauben": 8,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 28.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 200,
+      "pn": 40,
+      "anzahlSchrauben": 12,
+      "gewinde": "M27",
+      "hoeheFlanschMm": 34.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 250,
+      "pn": 40,
+      "anzahlSchrauben": 12,
+      "gewinde": "M30",
+      "hoeheFlanschMm": 38.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 300,
+      "pn": 40,
+      "anzahlSchrauben": 16,
+      "gewinde": "M30",
+      "hoeheFlanschMm": 42.0,
+      "nutRuecksprungMm": 3.5,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Vor- und Rücksprung",
+      "dn": 350,
+      "pn": 40,
+      "anzahlSchrauben": 16,
+      "gewinde": "M33",
+      "hoeheFlanschMm": 46.0,
+      "nutRuecksprungMm": 4.0,
+      "bundMm": 0.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 10,
+      "pn": 6,
+      "anzahlSchrauben": 4,
+      "gewinde": "M10",
+      "hoeheFlanschMm": 12.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 10.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 15,
+      "pn": 6,
+      "anzahlSchrauben": 4,
+      "gewinde": "M10",
+      "hoeheFlanschMm": 12.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 10.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 20,
+      "pn": 6,
+      "anzahlSchrauben": 4,
+      "gewinde": "M10",
+      "hoeheFlanschMm": 14.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 10.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 25,
+      "pn": 6,
+      "anzahlSchrauben": 4,
+      "gewinde": "M10",
+      "hoeheFlanschMm": 14.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 10.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 32,
+      "pn": 6,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 10.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 40,
+      "pn": 6,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 10.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 50,
+      "pn": 6,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 12.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 65,
+      "pn": 6,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 12.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 80,
+      "pn": 6,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 12.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 100,
+      "pn": 6,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 14.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 125,
+      "pn": 6,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 20.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 14.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 150,
+      "pn": 6,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 20.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 14.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 200,
+      "pn": 6,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 22.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 16.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 250,
+      "pn": 6,
+      "anzahlSchrauben": 12,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 24.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 18.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 300,
+      "pn": 6,
+      "anzahlSchrauben": 12,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 24.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 18.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 350,
+      "pn": 6,
+      "anzahlSchrauben": 12,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 18.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 400,
+      "pn": 6,
+      "anzahlSchrauben": 16,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 28.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 20.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 450,
+      "pn": 6,
+      "anzahlSchrauben": 16,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 30.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 20.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 500,
+      "pn": 6,
+      "anzahlSchrauben": 20,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 30.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 22.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 600,
+      "pn": 6,
+      "anzahlSchrauben": 20,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 32.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 22.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 200,
+      "pn": 10,
+      "anzahlSchrauben": 8,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 24.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 20.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 250,
+      "pn": 10,
+      "anzahlSchrauben": 12,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 22.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 300,
+      "pn": 10,
+      "anzahlSchrauben": 12,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 22.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 350,
+      "pn": 10,
+      "anzahlSchrauben": 16,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 30.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 22.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 400,
+      "pn": 10,
+      "anzahlSchrauben": 16,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 32.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 24.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 450,
+      "pn": 10,
+      "anzahlSchrauben": 20,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 36.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 24.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 500,
+      "pn": 10,
+      "anzahlSchrauben": 20,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 38.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 26.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 600,
+      "pn": 10,
+      "anzahlSchrauben": 20,
+      "gewinde": "M27",
+      "hoeheFlanschMm": 42.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 26.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 10,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 14.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 12.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 15,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 14.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 12.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 20,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 14.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 25,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M12",
+      "hoeheFlanschMm": 16.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 14.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 32,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 14.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 40,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 18.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 14.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 50,
+      "pn": 40,
+      "anzahlSchrauben": 4,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 20.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 16.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 65,
+      "pn": 40,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 22.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 16.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 80,
+      "pn": 40,
+      "anzahlSchrauben": 8,
+      "gewinde": "M16",
+      "hoeheFlanschMm": 24.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 18.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 100,
+      "pn": 40,
+      "anzahlSchrauben": 8,
+      "gewinde": "M20",
+      "hoeheFlanschMm": 26.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 20.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 125,
+      "pn": 40,
+      "anzahlSchrauben": 8,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 28.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 22.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 150,
+      "pn": 40,
+      "anzahlSchrauben": 8,
+      "gewinde": "M24",
+      "hoeheFlanschMm": 30.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 24.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 200,
+      "pn": 40,
+      "anzahlSchrauben": 12,
+      "gewinde": "M27",
+      "hoeheFlanschMm": 36.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 28.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 250,
+      "pn": 40,
+      "anzahlSchrauben": 12,
+      "gewinde": "M30",
+      "hoeheFlanschMm": 42.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 30.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 300,
+      "pn": 40,
+      "anzahlSchrauben": 16,
+      "gewinde": "M30",
+      "hoeheFlanschMm": 52.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 34.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 350,
+      "pn": 40,
+      "anzahlSchrauben": 16,
+      "gewinde": "M33",
+      "hoeheFlanschMm": 58.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 36.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 400,
+      "pn": 40,
+      "anzahlSchrauben": 16,
+      "gewinde": "M36",
+      "hoeheFlanschMm": 65.0,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 42.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 450,
+      "pn": 40,
+      "anzahlSchrauben": 20,
+      "gewinde": "M36",
+      "hoeheFlanschMm": null,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 46.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 500,
+      "pn": 40,
+      "anzahlSchrauben": 20,
+      "gewinde": "M39",
+      "hoeheFlanschMm": null,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 50.0
+    },
+    {
+      "art": "Fl. Typ 2 Bund Typ 32",
+      "dn": 600,
+      "pn": 40,
+      "anzahlSchrauben": 20,
+      "gewinde": "M45",
+      "hoeheFlanschMm": null,
+      "nutRuecksprungMm": 0.0,
+      "bundMm": 54.0
+    }
+  ],
+  "steigung": [
+    {
+      "gewinde": "M 1",
+      "steigungMm": 0.25
+    },
+    {
+      "gewinde": "M1,1",
+      "steigungMm": 0.25
+    },
+    {
+      "gewinde": "M1,2",
+      "steigungMm": 0.25
+    },
+    {
+      "gewinde": "M1,4",
+      "steigungMm": 0.3
+    },
+    {
+      "gewinde": "M1,6",
+      "steigungMm": 0.35
+    },
+    {
+      "gewinde": "M1,8",
+      "steigungMm": 0.35
+    },
+    {
+      "gewinde": "M2",
+      "steigungMm": 0.4
+    },
+    {
+      "gewinde": "M2,2",
+      "steigungMm": 0.45
+    },
+    {
+      "gewinde": "M2,5",
+      "steigungMm": 0.45
+    },
+    {
+      "gewinde": "M3",
+      "steigungMm": 0.5
+    },
+    {
+      "gewinde": "M3,5",
+      "steigungMm": 0.6
+    },
+    {
+      "gewinde": "M4",
+      "steigungMm": 0.7
+    },
+    {
+      "gewinde": "M5",
+      "steigungMm": 0.8
+    },
+    {
+      "gewinde": "M6",
+      "steigungMm": 1.0
+    },
+    {
+      "gewinde": "M8",
+      "steigungMm": 1.25
+    },
+    {
+      "gewinde": "M10",
+      "steigungMm": 1.5
+    },
+    {
+      "gewinde": "M12",
+      "steigungMm": 1.75
+    },
+    {
+      "gewinde": "M14",
+      "steigungMm": 2.0
+    },
+    {
+      "gewinde": "M16",
+      "steigungMm": 2.0
+    },
+    {
+      "gewinde": "M18",
+      "steigungMm": 2.5
+    },
+    {
+      "gewinde": "M20",
+      "steigungMm": 2.5
+    },
+    {
+      "gewinde": "M22",
+      "steigungMm": 2.5
+    },
+    {
+      "gewinde": "M24",
+      "steigungMm": 3.0
+    },
+    {
+      "gewinde": "M27",
+      "steigungMm": 3.0
+    },
+    {
+      "gewinde": "M30",
+      "steigungMm": 3.5
+    },
+    {
+      "gewinde": "M36",
+      "steigungMm": 4.0
+    },
+    {
+      "gewinde": "M42",
+      "steigungMm": 4.5
+    },
+    {
+      "gewinde": "M48",
+      "steigungMm": 5.0
+    },
+    {
+      "gewinde": "M56",
+      "steigungMm": 5.5
+    },
+    {
+      "gewinde": "M64",
+      "steigungMm": 6.0
+    },
+    {
+      "gewinde": "M33",
+      "steigungMm": 3.5
+    }
+  ],
+  "mutterHoehe": [
+    {
+      "gewinde": "M 1",
+      "hoeheMm": 0.8
+    },
+    {
+      "gewinde": "M1,2",
+      "hoeheMm": 1.0
+    },
+    {
+      "gewinde": "M1,4",
+      "hoeheMm": 1.2
+    },
+    {
+      "gewinde": "M1,6",
+      "hoeheMm": 1.3
+    },
+    {
+      "gewinde": "M1,8",
+      "hoeheMm": 1.4
+    },
+    {
+      "gewinde": "M2",
+      "hoeheMm": 1.6
+    },
+    {
+      "gewinde": "M2,5",
+      "hoeheMm": 2.0
+    },
+    {
+      "gewinde": "M3",
+      "hoeheMm": 2.4
+    },
+    {
+      "gewinde": "M3,5",
+      "hoeheMm": 2.8
+    },
+    {
+      "gewinde": "M4",
+      "hoeheMm": 3.2
+    },
+    {
+      "gewinde": "M5",
+      "hoeheMm": 4.7
+    },
+    {
+      "gewinde": "M6",
+      "hoeheMm": 5.2
+    },
+    {
+      "gewinde": "M8",
+      "hoeheMm": 6.8
+    },
+    {
+      "gewinde": "M10",
+      "hoeheMm": 8.4
+    },
+    {
+      "gewinde": "M12",
+      "hoeheMm": 10.8
+    },
+    {
+      "gewinde": "M14",
+      "hoeheMm": 12.8
+    },
+    {
+      "gewinde": "M16",
+      "hoeheMm": 14.8
+    },
+    {
+      "gewinde": "M18",
+      "hoeheMm": 15.8
+    },
+    {
+      "gewinde": "M20",
+      "hoeheMm": 18.0
+    },
+    {
+      "gewinde": "M22",
+      "hoeheMm": 19.4
+    },
+    {
+      "gewinde": "M24",
+      "hoeheMm": 21.5
+    },
+    {
+      "gewinde": "M27",
+      "hoeheMm": 23.8
+    },
+    {
+      "gewinde": "M30",
+      "hoeheMm": 25.6
+    },
+    {
+      "gewinde": "M33",
+      "hoeheMm": 28.7
+    },
+    {
+      "gewinde": "M36",
+      "hoeheMm": 31.0
+    },
+    {
+      "gewinde": "M42",
+      "hoeheMm": 34.0
+    },
+    {
+      "gewinde": "M48",
+      "hoeheMm": 38.0
+    },
+    {
+      "gewinde": "M56",
+      "hoeheMm": 45.0
+    },
+    {
+      "gewinde": "M64",
+      "hoeheMm": 51.0
+    }
+  ],
+  "scheibeHoehe": [
+    {
+      "gewinde": "M 1",
+      "hoeheMm": 0.3
+    },
+    {
+      "gewinde": "M1,1",
+      "hoeheMm": 0.3
+    },
+    {
+      "gewinde": "M1,2",
+      "hoeheMm": 0.3
+    },
+    {
+      "gewinde": "M1,4",
+      "hoeheMm": 0.3
+    },
+    {
+      "gewinde": "M1,6",
+      "hoeheMm": 0.3
+    },
+    {
+      "gewinde": "M1,8",
+      "hoeheMm": 0.3
+    },
+    {
+      "gewinde": "M2",
+      "hoeheMm": 0.3
+    },
+    {
+      "gewinde": "M2,2",
+      "hoeheMm": 0.5
+    },
+    {
+      "gewinde": "M2,5",
+      "hoeheMm": 0.5
+    },
+    {
+      "gewinde": "M3",
+      "hoeheMm": 0.5
+    },
+    {
+      "gewinde": "M3,5",
+      "hoeheMm": 0.5
+    },
+    {
+      "gewinde": "M4",
+      "hoeheMm": 0.8
+    },
+    {
+      "gewinde": "M5",
+      "hoeheMm": 1.0
+    },
+    {
+      "gewinde": "M6",
+      "hoeheMm": 1.6
+    },
+    {
+      "gewinde": "M8",
+      "hoeheMm": 1.6
+    },
+    {
+      "gewinde": "M10",
+      "hoeheMm": 2.0
+    },
+    {
+      "gewinde": "M12",
+      "hoeheMm": 2.5
+    },
+    {
+      "gewinde": "M14",
+      "hoeheMm": 2.5
+    },
+    {
+      "gewinde": "M16",
+      "hoeheMm": 3.0
+    },
+    {
+      "gewinde": "M18",
+      "hoeheMm": 3.0
+    },
+    {
+      "gewinde": "M20",
+      "hoeheMm": 3.0
+    },
+    {
+      "gewinde": "M22",
+      "hoeheMm": 3.0
+    },
+    {
+      "gewinde": "M24",
+      "hoeheMm": 4.0
+    },
+    {
+      "gewinde": "M27",
+      "hoeheMm": 4.0
+    },
+    {
+      "gewinde": "M30",
+      "hoeheMm": 4.0
+    },
+    {
+      "gewinde": "M33",
+      "hoeheMm": 5.0
+    },
+    {
+      "gewinde": "M36",
+      "hoeheMm": 5.0
+    },
+    {
+      "gewinde": "M42",
+      "hoeheMm": 8.0
+    },
+    {
+      "gewinde": "M48",
+      "hoeheMm": 8.0
+    },
+    {
+      "gewinde": "M56",
+      "hoeheMm": 10.0
+    },
+    {
+      "gewinde": "M64",
+      "hoeheMm": 10.0
+    }
+  ]
+}
