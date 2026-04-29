@@ -1155,6 +1155,25 @@ code {
   font-variant-numeric: tabular-nums;
 }
 
+.support-sketch-card .support-sketch-lead {
+  margin-top: 0;
+  margin-bottom: 0.7rem;
+}
+
+.support-sketch-host {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.14);
+}
+
+.support-sketch-host svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 /* Einheiten & Taschenrechner */
 .card--flat {
   padding: 0.45rem;
