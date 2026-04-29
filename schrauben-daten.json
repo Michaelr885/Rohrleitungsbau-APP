@@ -2755,8 +2755,16 @@
       "steigungMm": 4.0
     },
     {
+      "gewinde": "M39",
+      "steigungMm": 4.25
+    },
+    {
       "gewinde": "M42",
       "steigungMm": 4.5
+    },
+    {
+      "gewinde": "M45",
+      "steigungMm": 4.75
     },
     {
       "gewinde": "M48",
@@ -2877,8 +2885,16 @@
       "hoeheMm": 31.0
     },
     {
+      "gewinde": "M39",
+      "hoeheMm": 32.5
+    },
+    {
       "gewinde": "M42",
       "hoeheMm": 34.0
+    },
+    {
+      "gewinde": "M45",
+      "hoeheMm": 36.0
     },
     {
       "gewinde": "M48",
@@ -3003,7 +3019,15 @@
       "hoeheMm": 5.0
     },
     {
+      "gewinde": "M39",
+      "hoeheMm": 6.5
+    },
+    {
       "gewinde": "M42",
+      "hoeheMm": 8.0
+    },
+    {
+      "gewinde": "M45",
       "hoeheMm": 8.0
     },
     {

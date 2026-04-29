@@ -72,7 +72,7 @@
               inputmode="decimal"
               placeholder="nur bei fehlendem Wert nötig"
             />
-            <p class="hint">Wird ignoriert, wenn die Tabelle eine Höhe liefert.</p>
+            <p class="hint">Wird nur genutzt, wenn für den gewählten Flansch keine Höhe hinterlegt ist.</p>
           </div>
         </div>
       </div>
@@ -105,10 +105,9 @@
       </div>
 
       <p class="footnote">
-        Stammdaten: <code>schrauben-daten.json</code>. Für fehlende Gewindegrößen M39/M45
-        wird linear zwischen den Nachbargrößen interpoliert.
+        Stammdaten: <code>schrauben-daten.json</code>. Fehlende Werte zu einem Gewinde führen zu einer Fehlermeldung statt einer Schätzung.
       </p>
     </div>
-    <script src="app.js?v=3" defer></script>
+    <script src="app.js?v=4" defer></script>
   </body>
 </html>

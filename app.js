@@ -7,13 +7,6 @@ const STATE = {
   mapKey: new Map(),
 };
 
-function parseThreadNumeric(thread) {
-  if (!thread || typeof thread !== "string") return null;
-  const m = thread.replace(",", ".").match(/^M([\d.]+)/i);
-  if (!m) return null;
-  return parseFloat(m[1]);
-}
-
 function buildLookupMaps(data) {
   const pitch = new Map();
   const mutter = new Map();
@@ -24,34 +17,9 @@ function buildLookupMaps(data) {
   return { pitch, mutter, scheibe };
 }
 
-function sortedKeysBySize(map) {
-  const entries = [...map.entries()]
-    .map(([k, v]) => ({ k, v, n: parseThreadNumeric(k) }))
-    .filter((x) => x.n != null && !Number.isNaN(x.v))
-    .sort((a, b) => a.n - b.n);
-  return entries;
-}
-
-function interpolateValue(map, gewinde) {
-  if (map.has(gewinde)) return map.get(gewinde);
-  const target = parseThreadNumeric(gewinde);
-  if (target == null) return null;
-  const seq = sortedKeysBySize(map);
-  if (seq.length === 0) return null;
-  if (target <= seq[0].n) return seq[0].v;
-  if (target >= seq[seq.length - 1].n) return seq[seq.length - 1].v;
-  let lower = seq[0];
-  let upper = seq[seq.length - 1];
-  for (let i = 0; i < seq.length - 1; i++) {
-    if (seq[i].n <= target && seq[i + 1].n >= target) {
-      lower = seq[i];
-      upper = seq[i + 1];
-      break;
-    }
-  }
-  if (lower.k === upper.k) return lower.v;
-  const t = (target - lower.n) / (upper.n - lower.n);
-  return lower.v + t * (upper.v - lower.v);
+function lookupOrNull(map, gewinde) {
+  if (!gewinde || !map.has(gewinde)) return null;
+  return map.get(gewinde);
 }
 
 function rowKey(art, dn, pn) {
@@ -197,15 +165,20 @@ function compute() {
 
   const maps = buildLookupMaps(STATE.data);
   const gw = fl.gewinde;
-  const pitch = interpolateValue(maps.pitch, gw);
-  const mutH = interpolateValue(maps.mutter, gw);
-  const schH = interpolateValue(maps.scheibe, gw);
-
-  if (pitch == null || mutH == null || schH == null) {
+  const missing = [];
+  if (!lookupOrNull(maps.pitch, gw)) missing.push("Steigung");
+  if (!lookupOrNull(maps.mutter, gw)) missing.push("Mutterhöhe");
+  if (!lookupOrNull(maps.scheibe, gw)) missing.push("Scheibenhöhe");
+  if (missing.length > 0) {
     msg.classList.add("visible", "err");
-    msg.textContent = `Keine Steigung/Mutter/Scheibe für Gewinde ${gw} (auch keine Interpolation möglich).`;
+    msg.textContent = `Für Gewinde ${gw} fehlen in den Stammdaten: ${missing.join(
+      ", "
+    )}. Bitte die Datei schrauben-daten.json ergänzen.`;
     return;
   }
+  const pitch = maps.pitch.get(gw);
+  const mutH = maps.mutter.get(gw);
+  const schH = maps.scheibe.get(gw);
 
   let hoehe = fl.hoeheFlanschMm;
   if (hoehe == null || Number.isNaN(hoehe)) {
@@ -258,13 +231,7 @@ function compute() {
     <strong>Gewinde:</strong> ${gw} · <strong>Anzahl Schrauben:</strong> ${fl.anzahlSchrauben ?? "—"}<br/>
     Steigung ${fmt(pitch)} mm, Mutter ${fmt(mutH)} mm, Scheibe ${fmt(
     schH
-  )} mm
-    ${
-      !STATE.data.mutterHoehe.some((x) => x.gewinde === gw) ||
-      !STATE.data.steigung.some((x) => x.gewinde === gw)
-        ? " <em>(Werte für dieses Gewinde per Interpolation zwischen benachbarten Größen)</em>"
-        : ""
-    }<br/>
+  )} mm<br/>
     Flanschhöhe <strong>${fmt(hoehe)} mm</strong>${
     fl.hoeheFlanschMm == null ? " (manuell)" : ""
   },
