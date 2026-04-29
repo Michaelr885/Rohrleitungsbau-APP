@@ -112,7 +112,7 @@ function computeSpan() {
   document.getElementById("spanNote").innerHTML =
     `DN <strong>${dn}</strong> liegt in der Bandbreite bis DN <strong>${band.dnMax}</strong> · gewählt: <strong>${label}</strong>. ` +
     `Werte sind nur grobe Orientierung — Statik, Isolation und Projektregeln können kleinere Abstände erfordern.`;
-  const sketch = document.getElementById("supportSketchHost");
+  const sketch = document.getElementById("supportSvgHost");
   if (sketch) sketch.innerHTML = renderSupportSketch(span);
 
   out.hidden = false;
@@ -120,6 +120,8 @@ function computeSpan() {
 
 function init() {
   renderTable();
+  const guide = document.getElementById("supportGuideHost");
+  if (guide) guide.innerHTML = renderSupportSketch(3.5);
   document.getElementById("calcSpan").addEventListener("click", computeSpan);
 }
 
