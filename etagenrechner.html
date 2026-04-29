@@ -11,7 +11,7 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=22" />
+    <link rel="stylesheet" href="styles.css?v=23" />
   </head>
   <body>
     <div class="wrap wrap--sub">
@@ -21,6 +21,14 @@
         Zwei Bögen, ein gerades Passstück zwischen den Wendeltangenten: aus Höhe <strong>H</strong>, Versatz <strong>V</strong> und Bezugslänge <strong>L</strong>
         (oder Winkel am Passstück) werden die <strong>Passstücklänge</strong> und ein Schema angezeigt.
       </p>
+
+      <div class="card etagen-guide-card">
+        <h2>Anleitung (Prinzip)</h2>
+        <p class="formula-note etagen-guide-lead">
+          <strong>H</strong> = senkrechte Strecke, <strong>V</strong> = seitlicher Versatz, <strong>L</strong> = Länge entlang der Rohrtrasse in der Grundfläche. Das gerade Stück liegt auf der <strong>Raumdiagonale</strong> durch dieses Quader-Maß.
+        </p>
+        <div id="guideSvgHost" class="etagen-svg-host etagen-svg-host--guide" aria-hidden="true"></div>
+      </div>
 
       <div class="card card--flat etagen-mode-bar" role="tablist" aria-label="Bezugsgröße">
         <button type="button" class="etagen-mode-btn etagen-mode-btn--active" id="mode-length" data-mode="length" role="tab" aria-selected="true">
@@ -160,6 +168,6 @@
         <a href="impressum.html" class="site-footer__link">Impressum &amp; Datenschutz</a>
       </footer>
     </div>
-    <script src="etagenrechner.js?v=1" defer></script>
+    <script src="etagenrechner.js?v=2" defer></script>
   </body>
 </html>

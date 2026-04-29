@@ -1385,6 +1385,10 @@ code {
   margin-bottom: 0;
 }
 
+.etagen-guide-card .etagen-guide-lead {
+  margin-bottom: 0.65rem;
+}
+
 .etagen-result-wrap {
   margin-top: 0.5rem;
 }
@@ -1451,15 +1455,25 @@ code {
 }
 
 .etagen-svg-host {
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 .etagen-svg-host svg {
   display: block;
   width: 100%;
-  max-width: 100%;
+  max-width: min(560px, 100%);
   height: auto;
-  border-radius: 8px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 10px;
+}
+
+.etagen-svg-host--guide svg {
+  max-width: min(500px, 100%);
 }
 
 .etagen-bend-row {

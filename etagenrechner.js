@@ -90,18 +90,143 @@ function Pproj(vx, ly, hz, k, ox, oy) {
   return [sx, sy];
 }
 
+/**
+ * Statische Prinzip-Zeichnung: Bedeutung von H, V, L am Raumprisma (nicht maßstäblich).
+ */
+function renderGuideSvg() {
+  const W = 480;
+  const Hs = 270;
+  const H = 100;
+  const V = 120;
+  const L = 90;
+  const k = 0.65;
+  let ox = 88;
+  let oy = 208;
+
+  function midOf(oxv, oyv) {
+    const pts = [];
+    const add = (vx, ly, hz) => pts.push(Pproj(vx, ly, hz, k, oxv, oyv));
+    [
+      [0, 0, 0],
+      [V, 0, 0],
+      [V, L, 0],
+      [0, L, 0],
+      [0, 0, H],
+      [V, 0, H],
+      [V, L, H],
+      [0, L, H],
+    ].forEach(([a, b, c]) => add(a, b, c));
+    const xs = pts.map((p) => p[0]);
+    const ys = pts.map((p) => p[1]);
+    return { cx: (Math.min(...xs) + Math.max(...xs)) / 2, cy: (Math.min(...ys) + Math.max(...ys)) / 2 };
+  }
+  const { cx, cy } = midOf(ox, oy);
+  ox += W / 2 - cx;
+  oy += (Hs - 55) / 2 + 15 - cy;
+
+  function Lbl(x, y, t, fill = "#b8c5d4") {
+    return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" fill="${fill}" font-size="13" font-weight="700" font-family="DM Sans,system-ui,sans-serif">${escapeHtml(
+      t
+    )}</text>`;
+  }
+
+  const floor = `M ${Pproj(0, 0, 0, k, ox, oy).join(",")} L ${Pproj(V, 0, 0, k, ox, oy).join(",")} L ${Pproj(
+    V,
+    L,
+    0,
+    k,
+    ox,
+    oy
+  ).join(",")} L ${Pproj(0, L, 0, k, ox, oy).join(",")} Z`;
+  const top = `M ${Pproj(0, 0, H, k, ox, oy).join(",")} L ${Pproj(V, 0, H, k, ox, oy).join(",")} L ${Pproj(
+    V,
+    L,
+    H,
+    k,
+    ox,
+    oy
+  ).join(",")} L ${Pproj(0, L, H, k, ox, oy).join(",")} Z`;
+
+  const verts = [
+    [0, 0],
+    [V, 0],
+    [V, L],
+    [0, L],
+  ]
+    .map(([vx, ly]) => {
+      const [x0, y0] = Pproj(vx, ly, 0, k, ox, oy);
+      const [x1, y1] = Pproj(vx, ly, H, k, ox, oy);
+      return `<line x1="${x0.toFixed(1)}" y1="${y0.toFixed(1)}" x2="${x1.toFixed(1)}" y2="${y1.toFixed(1)}" stroke="rgba(139,155,171,0.5)" stroke-width="1.25"/>`;
+    })
+    .join("\n  ");
+
+  const [vxm, vym] = Pproj(V / 2, 0, 0, k, ox, oy);
+  const [lxm, lym] = Pproj(V, L / 2, 0, k, ox, oy);
+  const [hxm, hym] = Pproj(0, 0, H / 2, k, ox, oy);
+
+  const gid = `g-guide-${Math.random().toString(36).slice(2, 9)}`;
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${Hs}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Prinzip H V L">
+  <defs>
+    <linearGradient id="${gid}" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#141d28"/>
+      <stop offset="100%" style="stop-color:#10161d"/>
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#${gid})" rx="10"/>
+  <text x="${W / 2}" y="24" text-anchor="middle" fill="#e8edf2" font-size="13" font-weight="600" font-family="DM Sans,system-ui,sans-serif">So sind H, V und L gemeint</text>
+  <text x="${W / 2}" y="42" text-anchor="middle" fill="#8b9bab" font-size="10" font-family="DM Sans,system-ui,sans-serif">Gerades Passstück liegt auf der Raumdiagonale — H, V und L begrenzen das Einbauprisma.</text>
+  <path d="${floor}" fill="rgba(61,157,240,0.06)" stroke="rgba(139,155,171,0.45)" stroke-width="1.25"/>
+  <path d="${top}" fill="none" stroke="rgba(139,155,171,0.4)" stroke-width="1.25"/>
+  ${verts}
+  <path d="M ${Pproj(0, 0, 0, k, ox, oy).join(" ")} L ${Pproj(V, L, H, k, ox, oy).join(" ")}" fill="none" stroke="rgba(232,147,92,0.65)" stroke-width="3" stroke-dasharray="7 5" stroke-linecap="round"/>
+  ${Lbl(vxm + 4, vym + 4, "V", "#7dd3fc")}
+  ${Lbl(lxm + 6, lym - 2, "L", "#7dd3fc")}
+  ${Lbl(hxm - 18, hym, "H", "#7dd3fc")}
+  <text x="${W / 2}" y="${Hs - 14}" text-anchor="middle" fill="#6b7d8f" font-size="9.5" font-family="DM Sans,system-ui,sans-serif">D = √(H²+V²+L²) · α = Winkel der Diagonale zur Grundfläche (Achse L)</text>
+</svg>`;
+}
+
 function renderSvg(H, V, L, alphaDeg, passMm, Dmm) {
-  const W = 420;
-  const Hs = 300;
-  const ox = 70;
-  const oy = 240;
+  const W = 560;
+  const Hs = 400;
+  const headerH = 52;
   const m = Math.max(H, V, L, 1);
-  const k = Math.min(130 / m, 0.22);
+  const k = Math.min(185 / m, 0.28);
+
+  let ox = 90;
+  let oy = 275;
+
+  function geomMid(oxv, oyv) {
+    const pts = [];
+    const add = (vx, ly, hz) => pts.push(Pproj(vx, ly, hz, k, oxv, oyv));
+    [
+      [0, 0, 0],
+      [V, 0, 0],
+      [V, L, 0],
+      [0, L, 0],
+      [0, 0, H],
+      [V, 0, H],
+      [V, L, H],
+      [0, L, H],
+    ].forEach(([a, b, c]) => add(a, b, c));
+    const xs = pts.map((p) => p[0]);
+    const ys = pts.map((p) => p[1]);
+    return {
+      midX: (Math.min(...xs) + Math.max(...xs)) / 2,
+      midY: (Math.min(...ys) + Math.max(...ys)) / 2,
+    };
+  }
+
+  const targetY = headerH + (Hs - headerH) / 2;
+  const { midX: mx0, midY: my0 } = geomMid(ox, oy);
+  ox += W / 2 - mx0;
+  oy += targetY - my0;
 
   function lineIso(vx0, ly0, hz0, vx1, ly1, hz1) {
     const [x0, y0] = Pproj(vx0, ly0, hz0, k, ox, oy);
     const [x1, y1] = Pproj(vx1, ly1, hz1, k, ox, oy);
-    return `<line x1="${x0.toFixed(1)}" y1="${y0.toFixed(1)}" x2="${x1.toFixed(1)}" y2="${y1.toFixed(1)}" stroke="rgba(139,155,171,0.45)" stroke-width="1"/>`;
+    return `<line x1="${x0.toFixed(1)}" y1="${y0.toFixed(1)}" x2="${x1.toFixed(1)}" y2="${y1.toFixed(1)}" stroke="rgba(139,155,171,0.5)" stroke-width="1.25"/>`;
   }
 
   const floor = `M ${Pproj(0, 0, 0, k, ox, oy).join(",")} L ${Pproj(V, 0, 0, k, ox, oy).join(",")} L ${Pproj(
@@ -138,24 +263,24 @@ function renderSvg(H, V, L, alphaDeg, passMm, Dmm) {
 
   const note = `H=${fmtMm(H)} mm · V=${fmtMm(V)} mm · L=${fmtMm(L)} mm · D=${fmtMm(Dmm)} mm · α≈${fmtDeg(alphaDeg)}° · Passstück≈${fmtMm(passMm)} mm`;
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${Hs}" role="img" aria-label="Schema klassische Etage">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${Hs}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Schema klassische Etage">
   <defs>
     <linearGradient id="${gid}" x1="0%" y1="100%" x2="100%" y2="0%">
       <stop offset="0%" style="stop-color:#131c26"/>
       <stop offset="100%" style="stop-color:#0f1419"/>
     </linearGradient>
   </defs>
-  <rect width="100%" height="100%" fill="url(#${gid})" rx="8"/>
-  <text x="${W / 2}" y="22" text-anchor="middle" fill="#e8edf2" font-size="12" font-weight="600" font-family="DM Sans,system-ui,sans-serif">Raumprisma &amp; Diagonale (schematisch)</text>
-  <text x="${W / 2}" y="38" text-anchor="middle" fill="#8b9bab" font-size="9.5" font-family="DM Sans,system-ui,sans-serif">${escapeHtml(
+  <rect width="100%" height="100%" fill="url(#${gid})" rx="10"/>
+  <text x="${W / 2}" y="26" text-anchor="middle" fill="#e8edf2" font-size="13" font-weight="600" font-family="DM Sans,system-ui,sans-serif">Raumprisma &amp; Diagonale (schematisch)</text>
+  <text x="${W / 2}" y="44" text-anchor="middle" fill="#8b9bab" font-size="10" font-family="DM Sans,system-ui,sans-serif">${escapeHtml(
     note
   )}</text>
-  <path d="${floor}" fill="none" stroke="rgba(139,155,171,0.28)" stroke-width="1"/>
-  <path d="${top}" fill="none" stroke="rgba(139,155,171,0.35)" stroke-width="1"/>
+  <path d="${floor}" fill="none" stroke="rgba(139,155,171,0.32)" stroke-width="1.25"/>
+  <path d="${top}" fill="none" stroke="rgba(139,155,171,0.42)" stroke-width="1.25"/>
   ${verts}
-  <path d="${pipePath}" fill="none" stroke="#e8935c" stroke-width="5" stroke-linecap="round"/>
-  <circle cx="${p0x.toFixed(1)}" cy="${p0y.toFixed(1)}" r="5" fill="#5eb0f0"/>
-  <circle cx="${p1x.toFixed(1)}" cy="${p1y.toFixed(1)}" r="5" fill="#6ee7b7"/>
+  <path d="${pipePath}" fill="none" stroke="#e8935c" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="${p0x.toFixed(1)}" cy="${p0y.toFixed(1)}" r="6" fill="#5eb0f0"/>
+  <circle cx="${p1x.toFixed(1)}" cy="${p1y.toFixed(1)}" r="6" fill="#6ee7b7"/>
 </svg>`;
 }
 
@@ -505,6 +630,8 @@ async function init() {
   }
 
   populateFromData();
+  const guideHost = document.getElementById("guideSvgHost");
+  if (guideHost) guideHost.innerHTML = renderGuideSvg();
 
   document.getElementById("pipeSeries").addEventListener("change", () => {
     wireDnDropdown();
