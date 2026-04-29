@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0c1218" />
+    <title>Parallele Rohre</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="wrap wrap--sub">
+      <a href="index.html" class="back-link">← Index</a>
+      <h1>Parallele Rohre</h1>
+      <p class="sub">
+        Gleicher Biegewinkel, gleicher Achsabstand: vertikaler Versatz der Biegungsanfänge.
+      </p>
+
+      <div class="card">
+        <h2>Eingabe</h2>
+        <div class="row row--mobile-stack">
+          <div>
+            <label for="spacingMm">Achsabstand der Rohre (mm)</label>
+            <input id="spacingMm" type="text" inputmode="decimal" value="600" autocomplete="off" />
+          </div>
+          <div>
+            <label for="angleDeg">Biegewinkel α (°)</label>
+            <input id="angleDeg" type="text" inputmode="decimal" value="45" autocomplete="off" />
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label for="pipeCount">Anzahl paralleler Rohre</label>
+            <select id="pipeCount">
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4" selected>4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="btn" id="calc">Berechnen</button>
+
+      <div id="msg" class="msg" role="status"></div>
+
+      <div id="resultBlock" hidden>
+        <div class="card card--diagram">
+          <h2>Schema</h2>
+          <p class="diagram-caption">
+            Skizze zur Einordnung: Jede Linie ist ein Rohr; die Punkte markieren den Beginn der Biegung.
+            Maße im Bild sind nur vereinfacht — die mm-Werte stehen in der Tabelle.
+          </p>
+          <div id="diagram" class="diagram-svg-wrap" aria-live="polite"></div>
+        </div>
+
+        <div class="card">
+          <h2>Berechnung</h2>
+          <p class="formula-box">
+            Höhenversatz zwischen zwei benachbarten Rohren (Schritt <var>h</var>):<br />
+            <code>h = a · tan(α/2)</code> mit Achsabstand <var>a</var> und Biegewinkel <var>α</var>.<br />
+            Aktuell: <strong><span id="formulaStep">—</span> mm</strong> pro Rohrstufe.
+          </p>
+          <div class="table-wrap">
+            <table class="data-table" id="resultTable">
+              <thead>
+                <tr>
+                  <th>Rohr</th>
+                  <th>Versatz zu Rohr 1 (mm)</th>
+                  <th>Schritt ab vorherigem (mm)</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <p class="disclaimer">
+        Hinweis: Die Ergebnisse dienen nur der Orientierung. Keine Gewähr für die Richtigkeit — vor
+        dem Einbau Normen, Vor-Ort-Maße und Herstellervorgaben prüfen.
+      </p>
+    </div>
+    <script src="parallelrohre.js?v=1" defer></script>
+  </body>
+</html>

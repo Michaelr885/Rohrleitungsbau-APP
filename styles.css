@@ -388,9 +388,30 @@ code {
   );
 }
 
-.glass-btn--placeholder {
-  opacity: 0.55;
-  cursor: not-allowed;
+.glass-btn--secondary {
+  border-color: rgba(74, 222, 128, 0.28);
+  background: linear-gradient(
+    135deg,
+    rgba(74, 222, 128, 0.12) 0%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+}
+
+.glass-btn--secondary:hover {
+  border-color: rgba(74, 222, 128, 0.45);
+  background: linear-gradient(
+    135deg,
+    rgba(74, 222, 128, 0.2) 0%,
+    rgba(255, 255, 255, 0.09) 100%
+  );
+}
+
+.glass-btn--secondary .glass-btn__icon {
+  color: #86efac;
+}
+
+.glass-btn--secondary .glass-btn__chev {
+  color: rgba(134, 239, 172, 0.65);
 }
 
 .glass-btn__icon {
@@ -456,5 +477,67 @@ code {
 
 .back-link:hover {
   color: var(--accent);
+}
+
+/* Parallele Rohre — Diagramm & Tabelle */
+.diagram-caption {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin: 0 0 0.85rem;
+  line-height: 1.45;
+}
+
+.diagram-svg-wrap {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #0d1218;
+}
+
+.diagram-svg-wrap svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+
+.formula-box {
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.55;
+  margin: 0 0 1rem;
+}
+
+.formula-box code {
+  font-size: 0.95em;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 -0.25rem;
+  padding: 0 0.25rem;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.65rem 0.5rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.data-table th {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
 }
 
