@@ -171,13 +171,15 @@ function renderGuideSvgPlanar() {
   const W = 480;
   const Hs = 260;
   const m = Math.max(H, V);
-  const s = (Math.min(W, Hs) - 100) / m;
-  const x0 = 70;
-  const y0 = Hs - 50;
-  const x1 = x0 + V * s;
+  const s = (Math.min(W, Hs) - 120) / m;
+  const triW = V * s;
+  const triH = H * s;
+  const x0 = (W - triW) / 2;
+  const y0 = (Hs + triH) / 2 - 10;
+  const x1 = x0 + triW;
   const y1 = y0;
   const x2 = x0;
-  const y2 = y0 - H * s;
+  const y2 = y0 - triH;
 
   const gid = `g-gpl-${Math.random().toString(36).slice(2, 9)}`;
 
