@@ -11,20 +11,30 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=25" />
+    <link rel="stylesheet" href="styles.css?v=27" />
   </head>
   <body>
     <div class="wrap wrap--sub">
       <a href="index.html" class="back-link">← Index</a>
       <h1>Etagenrechner (klassisch)</h1>
       <p class="sub">
-        Zwei Bögen, ein gerades Passstück zwischen den Wendeltangenten: aus Höhe <strong>H</strong>, Versatz <strong>V</strong> und Bezugslänge <strong>L</strong>
-        (oder Winkel am Passstück) werden die <strong>Passstücklänge</strong> und ein Schema angezeigt.
+        Zwei Bögen, ein gerades Passstück: wähle <strong>Raumsprung</strong> (H, V, L / Raumdiagonale) oder
+        <strong>Plansprung</strong> (nur H und V, Schräge in der Ansicht). Umschalten oben; darunter ggf. Länge L oder Winkel α
+        für den Raumsprung.
       </p>
+
+      <div class="card card--flat etagen-sprung-bar" role="tablist" aria-label="Sprung-Typ">
+        <button type="button" class="etagen-sprung-btn etagen-sprung-btn--active" id="sprung-space" data-sprung="space" role="tab" aria-selected="true">
+          Raumsprung
+        </button>
+        <button type="button" class="etagen-sprung-btn" id="sprung-planar" data-sprung="planar" role="tab" aria-selected="false">
+          Plansprung
+        </button>
+      </div>
 
       <div class="card etagen-guide-card">
         <h2>Anleitung (Prinzip)</h2>
-        <p class="formula-note etagen-guide-lead">
+        <p class="formula-note etagen-guide-lead" id="guideLead">
           <strong>H</strong> = senkrechte Strecke, <strong>V</strong> = seitlicher Versatz, <strong>L</strong> = Länge entlang der Rohrtrasse in der Grundfläche. Das gerade Stück liegt auf der <strong>Raumdiagonale</strong> durch dieses Quader-Maß.
         </p>
         <div id="guideSvgHost" class="etagen-svg-host etagen-svg-host--guide" aria-hidden="true"></div>
@@ -61,7 +71,7 @@
             <input id="inputAlpha" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 29,2" />
           </div>
         </div>
-        <p class="formula-note etagen-formula-hint">
+        <p class="formula-note etagen-formula-hint" id="etagenFormulaHint">
           Raumdiagonale <strong>D</strong> = √(H² + V² + L²) im Modus „Länge L“; im Modus „Winkel α“ gilt <strong>L = D·cos α</strong> (wird aus H, V, α ermittelt).
         </p>
       </div>
@@ -144,7 +154,7 @@
 
         <div class="card">
           <h2>Schema (schematisch)</h2>
-          <p class="formula-note">Nicht maßstäblich; nur zur Veranschaulichung der Maße H, V, L und der Raumdiagonale.</p>
+          <p class="formula-note" id="schemaHint">Nicht maßstäblich; nur zur Veranschaulichung der Maße H, V, L und der Raumdiagonale.</p>
           <p id="svgCaption" class="etagen-schema-caption" hidden aria-live="polite"></p>
           <div id="svgHost" class="etagen-svg-host etagen-svg-host--schema"></div>
         </div>
@@ -162,13 +172,14 @@
       </div>
 
       <p class="disclaimer">
-        Modell: gerades Passstück liegt auf der Raumdiagonale; Abzug je Bogen ≈ <strong>R·tan(α/2)</strong> (R = Krümmungsradius Rohrmitte, grob aus DN/BA-Typ), zuzüglich Schweißspalt je Naht.
+        Modell (Raumsprung): Passstück auf der Raumdiagonale; Abzug je Bogen ≈ <strong>R·tan(α/2)</strong>.
+        <strong>Plansprung:</strong> nur H und V, <strong>D = √(H²+V²)</strong>, <strong>α = atan(H/V)</strong>.
         Stammdaten und Radien sind Näherungen — Herstellerunterlagen gehen vor.
       </p>
       <footer class="site-footer">
         <a href="impressum.html" class="site-footer__link">Impressum &amp; Datenschutz</a>
       </footer>
     </div>
-    <script src="etagenrechner.js?v=4" defer></script>
+    <script src="etagenrechner.js?v=6" defer></script>
   </body>
 </html>

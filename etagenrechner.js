@@ -3,7 +3,15 @@
  * Passstück ≈ D − R1·tan(α/2) − R2·tan(α/2) − 2·Schweißspalt (R = Krümmungsradius Rohrmitte, grob aus DN·Faktor).
  */
 
-const STORAGE_KEY = "etagenrechner-v1";
+const STORAGE_KEY = "etagenrechner-v2";
+
+/** Leittexte je Sprung-Typ */
+const GUIDE_LEAD = {
+  space:
+    "<strong>H</strong> = senkrechte Strecke, <strong>V</strong> = seitlicher Versatz, <strong>L</strong> = Länge entlang der Rohrtrasse in der Grundfläche. Das gerade Stück liegt auf der <strong>Raumdiagonale</strong> durch dieses Quader-Maß.",
+  planar:
+    "<strong>H</strong> = senkrechte Strecke, <strong>V</strong> = waagerechter Versatz (Ansicht von vorn). Das gerade Passstück liegt in der <strong>Schrägen</strong> zwischen beiden Achsen — <strong>D = √(H² + V²)</strong>, ohne zusätzliche Länge L.",
+};
 
 /** @type {any} */
 let DATA = null;
@@ -154,9 +162,50 @@ function isoProjectedBBox(H, V, L, k, ox, oy) {
 }
 
 /**
- * Statische Prinzip-Zeichnung: Bedeutung von H, V, L am Raumprisma (nicht maßstäblich).
+ * Statische Leitgrafik Plansprung: rechtwinkliges Dreieck H–V–D.
  */
-function renderGuideSvg() {
+function renderGuideSvgPlanar() {
+  const H = 100;
+  const V = 120;
+  const W = 480;
+  const Hs = 260;
+  const m = Math.max(H, V);
+  const s = (Math.min(W, Hs) - 100) / m;
+  const x0 = 70;
+  const y0 = Hs - 50;
+  const x1 = x0 + V * s;
+  const y1 = y0;
+  const x2 = x0;
+  const y2 = y0 - H * s;
+
+  const gid = `g-gpl-${Math.random().toString(36).slice(2, 9)}`;
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${Hs}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Prinzip Plansprung">
+  <defs>
+    <linearGradient id="${gid}" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#141d28"/>
+      <stop offset="100%" style="stop-color:#10161d"/>
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#${gid})" rx="10"/>
+  <text x="${W / 2}" y="22" text-anchor="middle" fill="#e8edf2" font-size="13" font-weight="600" font-family="DM Sans,system-ui,sans-serif">Plansprung (Ansicht)</text>
+  <text x="${W / 2}" y="40" text-anchor="middle" fill="#8b9bab" font-size="10" font-family="DM Sans,system-ui,sans-serif">Rechtwinklig: Katheten H und V, Hypotenuse D = √(H²+V²). Kein weiteres L.</text>
+  <path d="M ${x0} ${y0} L ${x1} ${y1} L ${x2} ${y2} Z" fill="rgba(61,157,240,0.08)" stroke="rgba(139,155,171,0.5)" stroke-width="1.5"/>
+  <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="rgba(232,147,92,0.85)" stroke-width="3" stroke-linecap="round"/>
+  <text x="${(x0 + x1) / 2 + 6}" y="${y0 + 16}" fill="#7dd3fc" font-size="13" font-weight="700" font-family="DM Sans,system-ui,sans-serif">V</text>
+  <text x="${x0 - 22}" y="${(y0 + y2) / 2}" fill="#7dd3fc" font-size="13" font-weight="700" font-family="DM Sans,system-ui,sans-serif">H</text>
+  <text x="${W / 2}" y="${Hs - 18}" text-anchor="middle" fill="#6b7d8f" font-size="9.5" font-family="DM Sans,system-ui,sans-serif">α = atan(H/V) · Passstück auf der Hypotenuse</text>
+</svg>`;
+}
+
+function renderGuideSvgPick(sprung) {
+  return sprung === "planar" ? renderGuideSvgPlanar() : renderGuideSvgSpace();
+}
+
+/**
+ * Statische Prinzip-Zeichnung Raumsprung: Bedeutung von H, V, L am Raumprisma (nicht maßstäblich).
+ */
+function renderGuideSvgSpace() {
   const W = 480;
   const Hs = 290;
   const H = 100;
@@ -230,7 +279,53 @@ function renderGuideSvg() {
 </svg>`;
 }
 
-function renderSvg(H, V, L, alphaDeg, passMm, Dmm) {
+/**
+ * Schema Plansprung: rechter Winkel, Katheten H und V, Hypotenuse = D.
+ */
+function renderSvgPlanar(H, V, alphaDeg, passMm, Dmm) {
+  const Wb = 400;
+  const Hb = 300;
+  const m = Math.max(H, V, 1e-6);
+  const s = 0.88 * (Math.min(Wb, Hb) - 48) / m;
+  const x0 = 32;
+  const y0 = Hb - 36;
+  const x1 = x0 + V * s;
+  const y1 = y0;
+  const x2 = x0;
+  const y2 = y0 - H * s;
+  const padG = 24;
+  const minx = Math.min(x0, x1, x2) - padG;
+  const maxx = Math.max(x0, x1, x2) + padG;
+  const miny = Math.min(y0, y1, y2) - padG;
+  const maxy = Math.max(y0, y1, y2) + padG;
+  const vbW = Math.max(maxx - minx, 1);
+  const vbH = Math.max(maxy - miny, 1);
+  const sw = Math.max(2, Math.min(10, 0.022 * Math.min(vbW, vbH)));
+  const swP = Math.max(4, Math.min(14, 0.032 * Math.min(vbW, vbH)));
+  const r = Math.max(5, Math.min(12, 0.02 * Math.min(vbW, vbH)));
+
+  const gid = `g-pl-${Math.random().toString(36).slice(2, 9)}`;
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${minx.toFixed(2)} ${miny.toFixed(2)} ${vbW.toFixed(2)} ${vbH.toFixed(2)}" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Plansprung Schema">
+  <defs>
+    <linearGradient id="${gid}" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#131c26"/>
+      <stop offset="100%" style="stop-color:#0f1419"/>
+    </linearGradient>
+  </defs>
+  <rect x="${minx.toFixed(2)}" y="${miny.toFixed(2)}" width="${vbW.toFixed(2)}" height="${vbH.toFixed(2)}" fill="url(#${gid})"/>
+  <path d="M ${x0.toFixed(1)} ${y0.toFixed(1)} L ${x1.toFixed(1)} ${y1.toFixed(1)} L ${x2.toFixed(1)} ${y2.toFixed(1)} Z" fill="rgba(61,157,240,0.08)" stroke="rgba(139,155,171,0.45)" stroke-width="${sw.toFixed(2)}"/>
+  <line x1="${x0.toFixed(1)}" y1="${y0.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="rgba(139,155,171,0.35)" stroke-width="${(sw * 0.85).toFixed(2)}" stroke-dasharray="6 5"/>
+  <line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#e8935c" stroke-width="${swP.toFixed(2)}" stroke-linecap="round"/>
+  <circle cx="${x0.toFixed(1)}" cy="${y0.toFixed(1)}" r="${r.toFixed(2)}" fill="#5eb0f0"/>
+  <circle cx="${x1.toFixed(1)}" cy="${y1.toFixed(1)}" r="${r.toFixed(2)}" fill="#8b9bab"/>
+  <circle cx="${x2.toFixed(1)}" cy="${y2.toFixed(1)}" r="${r.toFixed(2)}" fill="#6ee7b7"/>
+  <text x="${((x0 + x1) / 2 + 6).toFixed(1)}" y="${(y0 + 14).toFixed(1)}" fill="#7dd3fc" font-size="12" font-weight="700" font-family="DM Sans,system-ui,sans-serif">V</text>
+  <text x="${(x0 - 18).toFixed(1)}" y="${((y0 + y2) / 2).toFixed(1)}" fill="#7dd3fc" font-size="12" font-weight="700" font-family="DM Sans,system-ui,sans-serif">H</text>
+</svg>`;
+}
+
+function renderSvgSpace(H, V, L, alphaDeg, passMm, Dmm) {
   const W = 560;
   const Hs = 420;
   const pad = 14;
@@ -408,6 +503,42 @@ function applyPipeSelection() {
   }
 }
 
+function getSprungMode() {
+  return document.getElementById("sprung-space").classList.contains("etagen-sprung-btn--active") ? "space" : "planar";
+}
+
+function setSprungMode(sprung) {
+  const space = sprung === "space";
+  document.getElementById("sprung-space").classList.toggle("etagen-sprung-btn--active", space);
+  document.getElementById("sprung-planar").classList.toggle("etagen-sprung-btn--active", !space);
+  document.getElementById("sprung-space").setAttribute("aria-selected", space ? "true" : "false");
+  document.getElementById("sprung-planar").setAttribute("aria-selected", !space ? "true" : "false");
+  const lead = document.getElementById("guideLead");
+  if (lead) lead.innerHTML = GUIDE_LEAD[sprung] ?? GUIDE_LEAD.space;
+  const hint = document.getElementById("etagenFormulaHint");
+  if (hint) {
+    hint.innerHTML = space
+      ? 'Raumdiagonale <strong>D</strong> = √(H² + V² + L²) im Modus „Länge L“; im Modus „Winkel α“ wird <strong>L</strong> aus H, V und α ermittelt (<strong>D·cos α</strong>).'
+      : 'Plansprung: <strong>D</strong> = √(H² + V²). Der Winkel α zwischen den Rohrachsen ist <strong>α = atan(H/V)</strong>. Die Felder „Länge L“ / „Winkel α“ gelten hier nicht.';
+  }
+  const gh = document.getElementById("guideSvgHost");
+  if (gh) gh.innerHTML = renderGuideSvgPick(sprung);
+  const wrL = document.getElementById("wrapL");
+  const wrA = document.getElementById("wrapAlpha");
+  const modeBar = document.querySelector(".etagen-mode-bar");
+  if (wrL && wrA && modeBar) {
+    wrL.hidden = !space;
+    wrA.hidden = !space;
+    modeBar.hidden = !space;
+  }
+  const sh = document.getElementById("schemaHint");
+  if (sh) {
+    sh.textContent = space
+      ? "Nicht maßstäblich; Maße H, V, L und Raumdiagonale."
+      : "Nicht maßstäblich; rechtwinkliges Dreieck H–V–D (Ansicht).";
+  }
+}
+
 function setMode(mode) {
   const isLen = mode === "length";
   document.getElementById("mode-length").classList.toggle("etagen-mode-btn--active", isLen);
@@ -419,9 +550,13 @@ function setMode(mode) {
 }
 
 function collectInputs() {
-  const mode = document.getElementById("mode-length").classList.contains("etagen-mode-btn--active")
-    ? "length"
-    : "angle";
+  const sprung = getSprungMode();
+  const mode =
+    sprung === "planar"
+      ? "planar"
+      : document.getElementById("mode-length").classList.contains("etagen-mode-btn--active")
+        ? "length"
+        : "angle";
   const H = parseNum(document.getElementById("inputH").value);
   const V = parseNum(document.getElementById("inputV").value);
   const Lraw = parseNum(document.getElementById("inputL").value);
@@ -449,6 +584,7 @@ function collectInputs() {
     elbow1: document.getElementById("elbow1").value,
     elbow2: document.getElementById("elbow2").value,
     material: document.getElementById("material").value,
+    sprung,
   };
 }
 
@@ -456,6 +592,13 @@ function computeGeometry(inp) {
   const { H, V, mode } = inp;
   if (!Number.isFinite(H) || H <= 0) return { err: "Bitte eine positive Höhe H (mm) angeben." };
   if (!Number.isFinite(V) || V <= 0) return { err: "Bitte einen positiven Versatz V (mm) angeben." };
+
+  if (mode === "planar") {
+    const D = Math.sqrt(H * H + V * V);
+    const alphaRad = Math.atan2(H, V);
+    const alphaDeg = (alphaRad * 180) / Math.PI;
+    return { H, V, L: NaN, D, alphaRad, alphaDeg, base: Math.sqrt(H * H + V * V), sprung: "planar" };
+  }
 
   const base = Math.sqrt(H * H + V * V);
   let L;
@@ -484,7 +627,7 @@ function computeGeometry(inp) {
 
   if (!Number.isFinite(D) || D <= 0) return { err: "Berechnung der Raumdiagonale fehlgeschlagen." };
 
-  return { H, V, L, D, alphaRad, alphaDeg, base };
+  return { H, V, L, D, alphaRad, alphaDeg, base, sprung: "space" };
 }
 
 function run() {
@@ -548,10 +691,14 @@ function run() {
 
   const kv = document.getElementById("kvList");
   kv.innerHTML = "";
+  const isPlanar = inp.mode === "planar";
   const items = [
-    ["Raumdiagonale D", `${fmtMm(D)} mm`],
-    ["Winkel α (am Passstück / Diagonale)", `${fmtDeg(alphaDeg)}°`],
-    ["Projektion L", `${fmtMm(L)} mm`],
+    [isPlanar ? "Schräge D (Hypotenuse)" : "Raumdiagonale D", `${fmtMm(D)} mm`],
+    [
+      isPlanar ? "Winkel α (Achsen, atan H/V)" : "Winkel α (am Passstück / Diagonale)",
+      `${fmtDeg(alphaDeg)}°`,
+    ],
+    ...(isPlanar ? [] : [["Projektion L", `${fmtMm(L)} mm`]]),
     ["R₁ (Mitte, Bogen 1)", `${fmtMm(R1)} mm`],
     ["R₂ (Mitte, Bogen 2)", `${fmtMm(R2)} mm`],
     ["Summe Bogenbögen (Mitte)", `${fmtMm(arcLen)} mm`],
@@ -587,17 +734,26 @@ function run() {
   fillBend("bendTitle1", "bendDl1", "Bogen 1", inp.elbow1, R1);
   fillBend("bendTitle2", "bendDl2", "Bogen 2", inp.elbow2, R2);
 
-  document.getElementById("svgHost").innerHTML = renderSvg(H, V, L, alphaDeg, pass, D);
+  document.getElementById("svgHost").innerHTML = isPlanar
+    ? renderSvgPlanar(H, V, alphaDeg, pass, D)
+    : renderSvgSpace(H, V, L, alphaDeg, pass, D);
   const cap = document.getElementById("svgCaption");
   cap.hidden = false;
-  cap.innerHTML = `<strong>Maße:</strong> H=${escapeHtml(fmtMm(H))} mm · V=${escapeHtml(fmtMm(V))} mm · L=${escapeHtml(
-    fmtMm(L)
-  )} mm · D=${escapeHtml(fmtMm(D))} mm · α≈${escapeHtml(fmtDeg(alphaDeg))}° · Passstück≈${escapeHtml(fmtMm(pass))} mm`;
+  if (isPlanar) {
+    cap.innerHTML = `<strong>Maße:</strong> H=${escapeHtml(fmtMm(H))} mm · V=${escapeHtml(fmtMm(V))} mm · D=${escapeHtml(
+      fmtMm(D)
+    )} mm · α≈${escapeHtml(fmtDeg(alphaDeg))}° · Passstück≈${escapeHtml(fmtMm(pass))} mm`;
+  } else {
+    cap.innerHTML = `<strong>Maße:</strong> H=${escapeHtml(fmtMm(H))} mm · V=${escapeHtml(fmtMm(V))} mm · L=${escapeHtml(
+      fmtMm(L)
+    )} mm · D=${escapeHtml(fmtMm(D))} mm · α≈${escapeHtml(fmtDeg(alphaDeg))}° · Passstück≈${escapeHtml(fmtMm(pass))} mm`;
+  }
 
   block.hidden = false;
 
   saveState({
-    mode: inp.mode,
+    sprung: getSprungMode(),
+    mode: document.getElementById("mode-length").classList.contains("etagen-mode-btn--active") ? "length" : "angle",
     H: document.getElementById("inputH").value,
     V: document.getElementById("inputV").value,
     L: document.getElementById("inputL").value,
@@ -615,10 +771,12 @@ function run() {
   });
 }
 
-function restore() {
-  const s = loadSaved();
+function restore(preloaded) {
+  const s = preloaded !== undefined ? preloaded : loadSaved();
   if (!s || typeof s !== "object") return;
-  if (s.mode === "length" || s.mode === "angle") setMode(s.mode);
+  const sprung = s.sprung === "planar" ? "planar" : "space";
+  setSprungMode(sprung);
+  if (sprung === "space" && (s.mode === "length" || s.mode === "angle")) setMode(s.mode);
   if (s.H != null) document.getElementById("inputH").value = String(s.H);
   if (s.V != null) document.getElementById("inputV").value = String(s.V);
   if (s.L != null) document.getElementById("inputL").value = String(s.L);
@@ -654,8 +812,15 @@ async function init() {
   }
 
   populateFromData();
-  const guideHost = document.getElementById("guideSvgHost");
-  if (guideHost) guideHost.innerHTML = renderGuideSvg();
+
+  document.getElementById("sprung-space").addEventListener("click", () => {
+    setSprungMode("space");
+    run();
+  });
+  document.getElementById("sprung-planar").addEventListener("click", () => {
+    setSprungMode("planar");
+    run();
+  });
 
   document.getElementById("pipeSeries").addEventListener("change", () => {
     wireDnDropdown();
@@ -696,7 +861,9 @@ async function init() {
   });
 
   wireDnDropdown();
-  restore();
+  const initialSaved = loadSaved();
+  restore(initialSaved);
+  if (!initialSaved) setSprungMode("space");
 
   [
     "inputH",
