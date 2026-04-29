@@ -11,14 +11,15 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=17" />
+    <link rel="stylesheet" href="styles.css?v=19" />
   </head>
   <body>
     <div class="wrap wrap--sub">
       <a href="index.html" class="back-link">← Index</a>
       <h1>Einheiten &amp; Taschenrechner</h1>
       <p class="sub">
-        Schnelle Umrechnungen für den Rohrleitungsbau und einen einfachen Taschenrechner — per Schalter umschalten.
+        Schnelle Umrechnungen für den Rohrleitungsbau und einen Taschenrechner — per Schalter umschalten. Im Modus
+        <strong>Winkel</strong>: sin, cos, tan, atan sowie Umrechnung Grad ↔ Radiant.
       </p>
 
       <div class="calc-mode-bar card card--flat" role="tablist" aria-label="Ansicht wechseln">
@@ -77,11 +78,30 @@
       </div>
 
       <div id="panel-calc" class="calc-panel" hidden>
+        <div class="calc-angle-toolbar card card--flat">
+          <span class="calc-angle-toolbar-label">Rechner:</span>
+          <button type="button" class="calc-submode-btn calc-submode-btn--active" id="calc-sub-basic" data-submode="basic">
+            Normal
+          </button>
+          <button type="button" class="calc-submode-btn" id="calc-sub-angle" data-submode="angle">Winkel</button>
+          <span id="calcAngleUnitWrap" class="calc-angle-unit-wrap" hidden>
+            <span class="calc-angle-toolbar-label">Eingabe:</span>
+            <button type="button" class="calc-unit-toggle" id="calcAngleUnitToggle" aria-pressed="true">
+              Grad (°)
+            </button>
+          </span>
+        </div>
+        <p id="calcAngleHint" class="formula-note calc-angle-hint" hidden>
+          Winkel-Funktionen verwenden die angezeigte Zahl. Bei <strong>Grad (°)</strong> wird sie als Gradmaß interpretiert, bei <strong>Radiant</strong> als Bogenmaß —
+          außer bei <strong>°→rad</strong> und <strong>rad→°</strong> (reine Umrechnung). <strong>atan</strong> liefert das Ergebnis in der gewählten Eingabe-Einheit.
+        </p>
+
         <div class="card calc-card">
           <div class="calc-display-wrap">
             <output id="calcDisplay" class="calc-display" aria-live="polite">0</output>
           </div>
-          <div class="calc-keys" id="calcKeys">
+
+          <div class="calc-keys" id="calcKeysBasic">
             <button type="button" class="calc-key calc-key--wide" data-act="clear">C</button>
             <button type="button" class="calc-key" data-act="back">⌫</button>
             <button type="button" class="calc-key calc-key--op" data-op="/">÷</button>
@@ -105,6 +125,38 @@
             <button type="button" class="calc-key" data-act="dot">,</button>
             <button type="button" class="calc-key calc-key--eq calc-key--op" data-act="eq">=</button>
           </div>
+
+          <div class="calc-keys calc-keys--angle" id="calcKeysAngle" hidden>
+            <button type="button" class="calc-key calc-key--fn" data-fn="sin">sin</button>
+            <button type="button" class="calc-key calc-key--fn" data-fn="cos">cos</button>
+            <button type="button" class="calc-key calc-key--fn" data-fn="tan">tan</button>
+            <button type="button" class="calc-key calc-key--fn" data-fn="atan">atan</button>
+
+            <button type="button" class="calc-key calc-key--fn" data-fn="deg2rad">°→rad</button>
+            <button type="button" class="calc-key calc-key--fn" data-fn="rad2deg">rad→°</button>
+            <button type="button" class="calc-key calc-key--wide" data-act="clear">C</button>
+            <button type="button" class="calc-key" data-act="back">⌫</button>
+
+            <button type="button" class="calc-key" data-digit="7">7</button>
+            <button type="button" class="calc-key" data-digit="8">8</button>
+            <button type="button" class="calc-key" data-digit="9">9</button>
+            <button type="button" class="calc-key calc-key--op" data-op="/">÷</button>
+
+            <button type="button" class="calc-key" data-digit="4">4</button>
+            <button type="button" class="calc-key" data-digit="5">5</button>
+            <button type="button" class="calc-key" data-digit="6">6</button>
+            <button type="button" class="calc-key calc-key--op" data-op="*">×</button>
+
+            <button type="button" class="calc-key" data-digit="1">1</button>
+            <button type="button" class="calc-key" data-digit="2">2</button>
+            <button type="button" class="calc-key" data-digit="3">3</button>
+            <button type="button" class="calc-key calc-key--op" data-op="-">−</button>
+
+            <button type="button" class="calc-key calc-key--wide" data-digit="0">0</button>
+            <button type="button" class="calc-key" data-act="dot">,</button>
+            <button type="button" class="calc-key calc-key--op" data-op="+">+</button>
+            <button type="button" class="calc-key calc-key--eq calc-key--op" data-act="eq">=</button>
+          </div>
         </div>
       </div>
 
@@ -115,6 +167,6 @@
         <a href="impressum.html" class="site-footer__link">Impressum &amp; Datenschutz</a>
       </footer>
     </div>
-    <script src="einheiten-rechner.js?v=1" defer></script>
+    <script src="einheiten-rechner.js?v=2" defer></script>
   </body>
 </html>

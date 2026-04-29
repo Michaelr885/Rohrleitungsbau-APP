@@ -1,8 +1,10 @@
 /**
- * Einheiten-Umrechner + einfacher Taschenrechner.
+ * Einheiten-Umrechner + Taschenrechner (Normal / Winkel).
  */
 
 const STORAGE_MODE = "einheiten-rechner-mode-v1";
+const STORAGE_CALC_SUB = "einheiten-rechner-calc-sub-v1";
+const STORAGE_ANGLE_DEG = "einheiten-rechner-angle-deg-v1";
 
 function parseNum(str) {
   const t = String(str ?? "")
@@ -126,18 +128,74 @@ function formatCalcEntry(r) {
   if (!Number.isFinite(r)) return "0";
   const x = Number(r.toPrecision(14));
   let s = String(x);
-  if (s.includes("e") || s.includes("E")) s = x.toFixed(8).replace(/\.?0+$/, "");
+  if (s.includes("e") || s.includes("E")) s = x.toFixed(10).replace(/\.?0+$/, "");
   return s;
+}
+
+function applyAngleFn(fn, displayVal, inputIsDeg) {
+  const v = displayVal;
+  const radFromInput = inputIsDeg ? (v * Math.PI) / 180 : v;
+
+  switch (fn) {
+    case "sin":
+      return Math.sin(radFromInput);
+    case "cos":
+      return Math.cos(radFromInput);
+    case "tan": {
+      const t = Math.tan(radFromInput);
+      if (!Number.isFinite(t) || Math.abs(t) > 1e15) return NaN;
+      return t;
+    }
+    case "atan": {
+      const ar = Math.atan(v);
+      return inputIsDeg ? (ar * 180) / Math.PI : ar;
+    }
+    case "deg2rad":
+      return (v * Math.PI) / 180;
+    case "rad2deg":
+      return (v * 180) / Math.PI;
+    default:
+      return NaN;
+  }
 }
 
 function createCalculator() {
   const display = document.getElementById("calcDisplay");
+  const panelCalc = document.getElementById("panel-calc");
+  const keysBasic = document.getElementById("calcKeysBasic");
+  const keysAngle = document.getElementById("calcKeysAngle");
+  const btnBasic = document.getElementById("calc-sub-basic");
+  const btnAngle = document.getElementById("calc-sub-angle");
+  const angleUnitWrap = document.getElementById("calcAngleUnitWrap");
+  const angleUnitToggle = document.getElementById("calcAngleUnitToggle");
+  const angleHint = document.getElementById("calcAngleHint");
+
   let operand = null;
   let pendingOp = null;
-  /** aktuelle Zeichenkette der eingebenen Zahl */
   let entry = "0";
-  /** nach Operator oder Start: nächste Ziffer beginnt neu */
   let newEntry = true;
+
+  /** @type {'basic' | 'angle'} */
+  let calcSubMode = "basic";
+  /** sin/cos/tan: Eingabe als Grad vs. Radiant (atan-Ausgabe followt) */
+  let angleInputDeg = true;
+
+  function loadCalcPrefs() {
+    try {
+      const s = localStorage.getItem(STORAGE_CALC_SUB);
+      if (s === "basic" || s === "angle") calcSubMode = s;
+      const d = localStorage.getItem(STORAGE_ANGLE_DEG);
+      if (d === "0") angleInputDeg = false;
+      if (d === "1") angleInputDeg = true;
+    } catch (_) {}
+  }
+
+  function saveCalcPrefs() {
+    try {
+      localStorage.setItem(STORAGE_CALC_SUB, calcSubMode);
+      localStorage.setItem(STORAGE_ANGLE_DEG, angleInputDeg ? "1" : "0");
+    } catch (_) {}
+  }
 
   function entryNum() {
     const n = parseFloat(entry);
@@ -147,6 +205,21 @@ function createCalculator() {
   function showEntry() {
     const s = entry.replace(".", ",");
     display.textContent = s.length ? s : "0";
+  }
+
+  function updateSubModeUi() {
+    const angle = calcSubMode === "angle";
+    keysBasic.hidden = angle;
+    keysAngle.hidden = !angle;
+    btnBasic.classList.toggle("calc-submode-btn--active", !angle);
+    btnAngle.classList.toggle("calc-submode-btn--active", angle);
+    angleUnitWrap.hidden = !angle;
+    angleHint.hidden = !angle;
+    if (angleUnitToggle) {
+      angleUnitToggle.textContent = angleInputDeg ? "Grad (°)" : "Radiant (rad)";
+      angleUnitToggle.setAttribute("aria-pressed", angleInputDeg ? "true" : "false");
+    }
+    saveCalcPrefs();
   }
 
   function clearAll() {
@@ -224,9 +297,53 @@ function createCalculator() {
     showEntry();
   }
 
-  document.getElementById("calcKeys").addEventListener("click", (e) => {
+  function pressAngleFn(fn) {
+    const v = entryNum();
+    let r;
+    if (fn === "deg2rad") {
+      r = applyAngleFn(fn, v, true);
+    } else if (fn === "rad2deg") {
+      r = applyAngleFn(fn, v, false);
+    } else {
+      r = applyAngleFn(fn, v, angleInputDeg);
+    }
+    if (!Number.isFinite(r)) {
+      display.textContent = "Fehler";
+      clearAll();
+      return;
+    }
+    entry = formatCalcEntry(r);
+    newEntry = true;
+    showEntry();
+  }
+
+  loadCalcPrefs();
+  updateSubModeUi();
+
+  btnBasic.addEventListener("click", () => {
+    calcSubMode = "basic";
+    updateSubModeUi();
+  });
+  btnAngle.addEventListener("click", () => {
+    calcSubMode = "angle";
+    updateSubModeUi();
+  });
+
+  angleUnitToggle.addEventListener("click", () => {
+    angleInputDeg = !angleInputDeg;
+    updateSubModeUi();
+  });
+
+  panelCalc.addEventListener("click", (e) => {
     const btn = e.target.closest("button");
-    if (!btn) return;
+    if (!btn || !panelCalc.contains(btn)) return;
+
+    const fn = btn.getAttribute("data-fn");
+    if (fn) {
+      pressAngleFn(fn);
+      return;
+    }
+
     const digit = btn.getAttribute("data-digit");
     const op = btn.getAttribute("data-op");
     const act = btn.getAttribute("data-act");

@@ -1173,6 +1173,66 @@ code {
   margin-bottom: 0.5rem;
 }
 
+.calc-angle-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 0.65rem;
+}
+
+.calc-angle-toolbar-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.calc-submode-btn {
+  padding: 0.45rem 0.85rem;
+  min-height: 40px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.15);
+  color: var(--muted);
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.calc-submode-btn--active {
+  border-color: rgba(61, 157, 240, 0.45);
+  background: rgba(61, 157, 240, 0.15);
+  color: var(--text);
+}
+
+.calc-angle-unit-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.calc-unit-toggle {
+  padding: 0.45rem 0.75rem;
+  min-height: 40px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--accent);
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.calc-angle-hint {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
 .calc-card {
   padding-bottom: 1.25rem;
 }
@@ -1233,6 +1293,19 @@ code {
   background: linear-gradient(180deg, #4ba3f0 0%, var(--accent) 100%);
   border-color: rgba(61, 157, 240, 0.55);
   color: #0a0f14;
+}
+
+.calc-key--fn {
+  font-size: 0.8rem;
+  background: rgba(52, 211, 153, 0.1);
+  border-color: rgba(52, 211, 153, 0.3);
+  color: #6ee7b7;
+}
+
+.calc-keys--angle {
+  padding-top: 0.15rem;
+  border-top: 1px solid var(--border);
+  margin-top: 0.15rem;
 }
 
 .unit-pair-row input {
