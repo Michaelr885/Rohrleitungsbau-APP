@@ -1059,6 +1059,18 @@ code {
   font-size: 0.88em;
 }
 
+.pipe-marker-foot {
+  margin-top: 0.75rem;
+}
+
+.pipe-marker-gap {
+  margin-top: 0.85rem;
+}
+
+.pipe-marker-table--compact {
+  font-size: 0.82rem;
+}
+
 .cut-heuristic-note {
   margin-bottom: 1rem;
 }
