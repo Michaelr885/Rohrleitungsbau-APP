@@ -120,8 +120,6 @@ function computeSpan() {
 
 function init() {
   renderTable();
-  const guide = document.getElementById("supportGuideHost");
-  if (guide) guide.innerHTML = renderSupportSketch(3.5);
   document.getElementById("calcSpan").addEventListener("click", computeSpan);
 }
 
