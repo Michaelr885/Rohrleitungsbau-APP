@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0c1218" />
+    <title>Rohrhalter — Stützabstände</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css?v=15" />
+  </head>
+  <body>
+    <div class="wrap wrap--sub">
+      <a href="index.html" class="back-link">← Index</a>
+      <h1>Rohrhalter — Stützabstände</h1>
+      <p class="sub">
+        <strong>Richtwerte</strong> für horizontale Stahlrohrleitungen (ungefähre größte Stützweite zwischen Auflagepunkten). Abhängig von Werkstoff,
+        Wanddicke, Isolierung, Temperatur und örtlichen Vorschriften können die tatsächlichen Abstände stark abweichen — siehe Normhinweise unten.
+      </p>
+
+      <div class="card">
+        <h2>Richtwert ermitteln</h2>
+        <div class="row row--mobile-stack">
+          <div>
+            <label for="dnNom">Nennweite DN</label>
+            <input id="dnNom" type="text" inputmode="numeric" autocomplete="off" placeholder="z. B. 100" />
+          </div>
+          <div>
+            <label for="mediumSpan">Medium / Temperatur</label>
+            <select id="mediumSpan">
+              <option value="cold">flüssig / kalt · unbeheizt</option>
+              <option value="hot">Dampf · warm · ausgebaute Rohre</option>
+            </select>
+          </div>
+        </div>
+        <button type="button" class="btn" id="calcSpan">Stützabstand anzeigen</button>
+        <div id="msgSpan" class="msg" role="status" hidden></div>
+        <div id="resultSpan" class="card card--nest" hidden>
+          <p class="support-result-line">
+            <strong>Richtwert Stützabstand:</strong>
+            <span id="spanValM">—</span> m <span class="support-result-hint">(ungefähr)</span>
+          </p>
+          <p class="formula-note" id="spanNote"></p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Merker-Tabelle (Stahl, Freiverlegung innen — grob)</h2>
+        <p class="formula-note">
+          Spalten „kalt“ und „warm/Dampf“ sind **vereinfachte Praxisgrößen**, keine Tabellen aus einer einzelnen Normseite.
+        </p>
+        <div class="table-wrap">
+          <table class="data-table support-merker-table">
+            <thead>
+              <tr>
+                <th scope="col">DN bis</th>
+                <th scope="col">kalt / unbeheizt (m)</th>
+                <th scope="col">warm / Dampf (m)</th>
+              </tr>
+            </thead>
+            <tbody id="supportTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Normen &amp; Planung</h2>
+        <ul class="pipe-marker-list">
+          <li>
+            <strong>Regelwerke</strong> für metallische Rohrleitungen (Auswahl): <strong>EN 13480</strong> (metallische industrielle Rohrleitungen),
+            <strong>AD 2000</strong>-Regelwerk / TRD (historisch in Kraftwerken relevant — jeweils gültige Ausgabe prüfen).
+          </li>
+          <li>
+            <strong>Stützweiten</strong> ergeben sich aus Durchbiegung, Spannung, Flächenlast, Auflager und oft aus <strong>Herstellerangaben</strong> zu
+            Halterungen / Rohrschalen.
+          </li>
+          <li>
+            Vertikale Leitungen, Kunststoffrohre, schwere Isolation oder <strong>seismische</strong> Anforderungen brauchen <strong>gesonderte</strong> Absicherung.
+          </li>
+        </ul>
+      </div>
+
+      <p class="disclaimer">
+        Keine technische Planungsberatung. Maßgeblich sind Genehmigungen, Statik, Werknormen des Auftraggebers und die zum Projekt passenden Regelwerke.
+      </p>
+    </div>
+    <script src="rohrhalter.js?v=1" defer></script>
+  </body>
+</html>

@@ -926,6 +926,27 @@ code {
   color: rgba(147, 197, 253, 0.7);
 }
 
+.glass-btn--support {
+  border-color: rgba(52, 211, 153, 0.32);
+  background: linear-gradient(
+    135deg,
+    rgba(52, 211, 153, 0.12) 0%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+}
+
+.glass-btn--support:hover {
+  border-color: rgba(52, 211, 153, 0.48);
+}
+
+.glass-btn--support .glass-btn__icon {
+  color: #6ee7b7;
+}
+
+.glass-btn--support .glass-btn__chev {
+  color: rgba(110, 231, 183, 0.65);
+}
+
 .assign-card {
   background: var(--panel);
   border: 1px solid var(--border);
@@ -1065,6 +1086,31 @@ code {
 
 .pipe-marker-gap {
   margin-top: 0.85rem;
+}
+
+.card--nest {
+  margin-top: 1rem;
+  margin-bottom: 0;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.support-result-line {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+.support-result-hint {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.support-merker-table {
+  font-size: 0.84rem;
+}
+
+.support-merker-table td {
+  font-variant-numeric: tabular-nums;
 }
 
 .pipe-marker-table--compact {
