@@ -822,6 +822,27 @@ code {
   color: rgba(196, 181, 253, 0.75);
 }
 
+.glass-btn--pipe {
+  border-color: rgba(251, 191, 36, 0.32);
+  background: linear-gradient(
+    135deg,
+    rgba(251, 191, 36, 0.14) 0%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+}
+
+.glass-btn--pipe:hover {
+  border-color: rgba(251, 191, 36, 0.48);
+}
+
+.glass-btn--pipe .glass-btn__icon {
+  color: var(--warn);
+}
+
+.glass-btn--pipe .glass-btn__chev {
+  color: rgba(251, 191, 36, 0.65);
+}
+
 .assign-card {
   background: var(--panel);
   border: 1px solid var(--border);
@@ -925,6 +946,34 @@ code {
 
 .assign-row--done td:first-child {
   font-weight: 600;
+}
+
+.data-table--rohr th[scope="row"] {
+  width: 52%;
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.data-table--rohr td {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.data-table__emph th,
+.data-table__emph td {
+  border-top: 1px solid var(--border);
+  padding-top: 0.65rem;
+}
+
+.rohr-density-note {
+  margin-bottom: 1rem;
+}
+
+.rohr-sub {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 0.88em;
 }
 
 .cut-heuristic-note {

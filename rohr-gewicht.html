@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0c1218" />
+    <title>Rohr — Gewicht &amp; Volumen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css?v=11" />
+  </head>
+  <body>
+    <div class="wrap wrap--sub">
+      <a href="index.html" class="back-link">← Index</a>
+      <h1>Rohr — Gewicht &amp; Volumen</h1>
+      <p class="sub">
+        Zylindrisches Rohr: aus Außenmaß, Wand und Länge werden Metallmasse, Innenvolumen und Füllung mit Wasser
+        berechnet (Nennmaße, ideal rund).
+      </p>
+
+      <div class="card">
+        <h2>Eingabe</h2>
+        <div class="row">
+          <div>
+            <label for="material">Werkstoff</label>
+            <select id="material" name="material">
+              <option value="steel">Stahl</option>
+              <option value="stainless">Edelstahl</option>
+            </select>
+          </div>
+        </div>
+        <div class="row row--mobile-stack">
+          <div>
+            <label for="lengthM">Länge (m)</label>
+            <input id="lengthM" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 12" />
+          </div>
+          <div>
+            <label for="outerMm">Außen-Ø (mm)</label>
+            <input id="outerMm" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 88,9" />
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label for="wallMm">Wandstärke (mm)</label>
+            <input id="wallMm" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 3" />
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="btn" id="calc">Berechnen</button>
+
+      <div id="msg" class="msg" role="alert" hidden></div>
+
+      <div id="resultBlock" hidden>
+        <div class="card">
+          <h2>Ergebnis</h2>
+          <p class="formula-note rohr-density-note">
+            <strong>Dichte Metall (Rechnung):</strong> <span id="densityLabel">—</span>
+          </p>
+          <div class="table-wrap">
+            <table class="data-table data-table--rohr">
+              <tbody>
+                <tr>
+                  <th scope="row">Innen-Ø</th>
+                  <td id="innerDiamMm">—</td>
+                </tr>
+                <tr>
+                  <th scope="row">Innenvolumen (Wasser)</th>
+                  <td><span id="volWaterL">—</span> L <span class="rohr-sub">(<span id="volWaterM3">—</span> m³)</span></td>
+                </tr>
+                <tr>
+                  <th scope="row">Metallvolumen (Wand)</th>
+                  <td><span id="volMetalDm3">—</span> dm³</td>
+                </tr>
+                <tr>
+                  <th scope="row">Leergewicht (nur Rohr)</th>
+                  <td><span id="massPipeKg">—</span> kg</td>
+                </tr>
+                <tr>
+                  <th scope="row">Wasserfüllung</th>
+                  <td><span id="massWaterKg">—</span> kg</td>
+                </tr>
+                <tr class="data-table__emph">
+                  <th scope="row">Gesamtmasse (Rohr + Wasser)</th>
+                  <td><span id="massTotalKg">—</span> kg</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <p class="disclaimer">
+        Hinweis: Rechnung mit Nennmaßen und angenommenen Dichten; keine Gewähr — vor Abstützungen oder Transport
+        gesondert prüfen (Toleranzen, Schweißnaht, Medium).
+      </p>
+    </div>
+    <script src="rohr-gewicht.js?v=1" defer></script>
+  </body>
+</html>
