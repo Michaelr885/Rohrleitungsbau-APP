@@ -1256,10 +1256,32 @@ code {
   color: var(--text);
 }
 
+.calc-keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.calc-fn-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.45rem;
+}
+
+@media (min-width: 420px) {
+  .calc-fn-strip {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
 .calc-keys {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0.45rem;
+}
+
+.calc-keys-pad {
+  margin: 0;
 }
 
 .calc-key {
@@ -1300,19 +1322,6 @@ code {
   background: rgba(52, 211, 153, 0.1);
   border-color: rgba(52, 211, 153, 0.3);
   color: #6ee7b7;
-}
-
-.calc-keys--fn-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.45rem;
-  margin-bottom: 0.45rem;
-}
-
-@media (min-width: 420px) {
-  .calc-keys--fn-row {
-    grid-template-columns: repeat(6, 1fr);
-  }
 }
 
 .unit-pair-row input {
