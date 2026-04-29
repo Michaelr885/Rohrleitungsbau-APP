@@ -90,39 +90,66 @@ function Pproj(vx, ly, hz, k, ox, oy) {
   return [sx, sy];
 }
 
+/** Eckpunkte des Einbauprismas (mm-Raum: x=V, y=L, z=H) */
+function isoPrismCorners(H, V, L) {
+  return [
+    [0, 0, 0],
+    [V, 0, 0],
+    [V, L, 0],
+    [0, L, 0],
+    [0, 0, H],
+    [V, 0, H],
+    [V, L, H],
+    [0, L, H],
+  ];
+}
+
+/**
+ * Skaliert und verschiebt die Iso-Projektion so, dass sie den Bereich
+ * [pad, W-pad] × [drawTop, drawBottom] optimal ausfüllt (ohne Verzerrung).
+ */
+function fitIsoToRect(H, V, L, W, Hs, drawTop, drawBottom, pad, margin = 0.96) {
+  const corners = isoPrismCorners(H, V, L);
+  let minx = Infinity;
+  let maxx = -Infinity;
+  let miny = Infinity;
+  let maxy = -Infinity;
+  for (const [vx, ly, hz] of corners) {
+    const [x, y] = Pproj(vx, ly, hz, 1, 0, 0);
+    minx = Math.min(minx, x);
+    maxx = Math.max(maxx, x);
+    miny = Math.min(miny, y);
+    maxy = Math.max(maxy, y);
+  }
+  const wu = Math.max(maxx - minx, 1e-6);
+  const hu = Math.max(maxy - miny, 1e-6);
+  const cxu = (minx + maxx) / 2;
+  const cyu = (miny + maxy) / 2;
+
+  const dw = Math.max(W - 2 * pad, 1);
+  const dh = Math.max(drawBottom - drawTop, 1);
+  const k = Math.min(dw / wu, dh / hu) * margin;
+
+  const cxDraw = W / 2;
+  const cyDraw = (drawTop + drawBottom) / 2;
+  const ox = cxDraw - k * cxu;
+  const oy = cyDraw - k * cyu;
+  return { k, ox, oy };
+}
+
 /**
  * Statische Prinzip-Zeichnung: Bedeutung von H, V, L am Raumprisma (nicht maßstäblich).
  */
 function renderGuideSvg() {
   const W = 480;
-  const Hs = 270;
+  const Hs = 290;
   const H = 100;
   const V = 120;
   const L = 90;
-  const k = 0.65;
-  let ox = 88;
-  let oy = 208;
-
-  function midOf(oxv, oyv) {
-    const pts = [];
-    const add = (vx, ly, hz) => pts.push(Pproj(vx, ly, hz, k, oxv, oyv));
-    [
-      [0, 0, 0],
-      [V, 0, 0],
-      [V, L, 0],
-      [0, L, 0],
-      [0, 0, H],
-      [V, 0, H],
-      [V, L, H],
-      [0, L, H],
-    ].forEach(([a, b, c]) => add(a, b, c));
-    const xs = pts.map((p) => p[0]);
-    const ys = pts.map((p) => p[1]);
-    return { cx: (Math.min(...xs) + Math.max(...xs)) / 2, cy: (Math.min(...ys) + Math.max(...ys)) / 2 };
-  }
-  const { cx, cy } = midOf(ox, oy);
-  ox += W / 2 - cx;
-  oy += (Hs - 55) / 2 + 15 - cy;
+  const pad = 14;
+  const drawTop = 54;
+  const drawBottom = Hs - 36;
+  const { k, ox, oy } = fitIsoToRect(H, V, L, W, Hs, drawTop, drawBottom, pad, 0.98);
 
   function Lbl(x, y, t, fill = "#b8c5d4") {
     return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" fill="${fill}" font-size="13" font-weight="700" font-family="DM Sans,system-ui,sans-serif">${escapeHtml(
@@ -183,45 +210,17 @@ function renderGuideSvg() {
   ${Lbl(vxm + 4, vym + 4, "V", "#7dd3fc")}
   ${Lbl(lxm + 6, lym - 2, "L", "#7dd3fc")}
   ${Lbl(hxm - 18, hym, "H", "#7dd3fc")}
-  <text x="${W / 2}" y="${Hs - 14}" text-anchor="middle" fill="#6b7d8f" font-size="9.5" font-family="DM Sans,system-ui,sans-serif">D = √(H²+V²+L²) · α = Winkel der Diagonale zur Grundfläche (Achse L)</text>
+  <text x="${W / 2}" y="${Hs - 18}" text-anchor="middle" fill="#6b7d8f" font-size="9.5" font-family="DM Sans,system-ui,sans-serif">D = √(H²+V²+L²) · α = Winkel der Diagonale zur Grundfläche (Achse L)</text>
 </svg>`;
 }
 
 function renderSvg(H, V, L, alphaDeg, passMm, Dmm) {
   const W = 560;
-  const Hs = 400;
-  const headerH = 52;
-  const m = Math.max(H, V, L, 1);
-  const k = Math.min(185 / m, 0.28);
-
-  let ox = 90;
-  let oy = 275;
-
-  function geomMid(oxv, oyv) {
-    const pts = [];
-    const add = (vx, ly, hz) => pts.push(Pproj(vx, ly, hz, k, oxv, oyv));
-    [
-      [0, 0, 0],
-      [V, 0, 0],
-      [V, L, 0],
-      [0, L, 0],
-      [0, 0, H],
-      [V, 0, H],
-      [V, L, H],
-      [0, L, H],
-    ].forEach(([a, b, c]) => add(a, b, c));
-    const xs = pts.map((p) => p[0]);
-    const ys = pts.map((p) => p[1]);
-    return {
-      midX: (Math.min(...xs) + Math.max(...xs)) / 2,
-      midY: (Math.min(...ys) + Math.max(...ys)) / 2,
-    };
-  }
-
-  const targetY = headerH + (Hs - headerH) / 2;
-  const { midX: mx0, midY: my0 } = geomMid(ox, oy);
-  ox += W / 2 - mx0;
-  oy += targetY - my0;
+  const Hs = 420;
+  const pad = 14;
+  const drawTop = 52;
+  const drawBottom = Hs - 6;
+  const { k, ox, oy } = fitIsoToRect(H, V, L, W, Hs, drawTop, drawBottom, pad, 0.98);
 
   function lineIso(vx0, ly0, hz0, vx1, ly1, hz1) {
     const [x0, y0] = Pproj(vx0, ly0, hz0, k, ox, oy);

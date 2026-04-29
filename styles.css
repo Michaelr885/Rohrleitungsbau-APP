@@ -1465,7 +1465,7 @@ code {
 .etagen-svg-host svg {
   display: block;
   width: 100%;
-  max-width: min(560px, 100%);
+  max-width: 100%;
   height: auto;
   margin-left: auto;
   margin-right: auto;
@@ -1473,7 +1473,7 @@ code {
 }
 
 .etagen-svg-host--guide svg {
-  max-width: min(500px, 100%);
+  max-width: 100%;
 }
 
 .etagen-bend-row {
