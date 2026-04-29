@@ -278,6 +278,22 @@ textarea::placeholder {
   color: var(--muted);
 }
 
+.disclaimer {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(42, 54, 68, 0.85);
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: rgba(139, 155, 171, 0.92);
+}
+
+.disclaimer--home {
+  margin-top: 2rem;
+  text-align: center;
+  border-top: none;
+  padding-top: 0;
+}
+
 code {
   font-family: ui-monospace, "Cascadia Code", monospace;
   font-size: 0.85em;
