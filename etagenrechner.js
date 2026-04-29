@@ -137,6 +137,22 @@ function fitIsoToRect(H, V, L, W, Hs, drawTop, drawBottom, pad, margin = 0.96) {
   return { k, ox, oy };
 }
 
+/** Bounding-Box der projizierten Prismakanten (nach Skalierung), für viewBox. */
+function isoProjectedBBox(H, V, L, k, ox, oy) {
+  let minx = Infinity;
+  let maxx = -Infinity;
+  let miny = Infinity;
+  let maxy = -Infinity;
+  for (const [vx, ly, hz] of isoPrismCorners(H, V, L)) {
+    const [x, y] = Pproj(vx, ly, hz, k, ox, oy);
+    minx = Math.min(minx, x);
+    maxx = Math.max(maxx, x);
+    miny = Math.min(miny, y);
+    maxy = Math.max(maxy, y);
+  }
+  return { minx, maxx, miny, maxy };
+}
+
 /**
  * Statische Prinzip-Zeichnung: Bedeutung von H, V, L am Raumprisma (nicht maßstäblich).
  */
@@ -220,12 +236,22 @@ function renderSvg(H, V, L, alphaDeg, passMm, Dmm) {
   const pad = 14;
   const drawTop = 52;
   const drawBottom = Hs - 6;
-  const { k, ox, oy } = fitIsoToRect(H, V, L, W, Hs, drawTop, drawBottom, pad, 0.98);
+  const { k, ox, oy } = fitIsoToRect(H, V, L, W, Hs, drawTop, drawBottom, pad, 0.995);
+
+  const bb = isoProjectedBBox(H, V, L, k, ox, oy);
+  const padGeom = 18;
+  const vbX = bb.minx - padGeom;
+  const vbY = bb.miny - padGeom;
+  const vbW = Math.max(bb.maxx - bb.minx + 2 * padGeom, 1);
+  const vbH = Math.max(bb.maxy - bb.miny + 2 * padGeom, 1);
+  const swEdge = Math.max(1.5, Math.min(7, 0.016 * Math.min(vbW, vbH)));
+  const swPipe = Math.max(4, Math.min(16, 0.026 * Math.min(vbW, vbH)));
+  const rDot = Math.max(4, Math.min(14, 0.018 * Math.min(vbW, vbH)));
 
   function lineIso(vx0, ly0, hz0, vx1, ly1, hz1) {
     const [x0, y0] = Pproj(vx0, ly0, hz0, k, ox, oy);
     const [x1, y1] = Pproj(vx1, ly1, hz1, k, ox, oy);
-    return `<line x1="${x0.toFixed(1)}" y1="${y0.toFixed(1)}" x2="${x1.toFixed(1)}" y2="${y1.toFixed(1)}" stroke="rgba(139,155,171,0.5)" stroke-width="1.25"/>`;
+    return `<line x1="${x0.toFixed(1)}" y1="${y0.toFixed(1)}" x2="${x1.toFixed(1)}" y2="${y1.toFixed(1)}" stroke="rgba(139,155,171,0.55)" stroke-width="${swEdge.toFixed(2)}"/>`;
   }
 
   const floor = `M ${Pproj(0, 0, 0, k, ox, oy).join(",")} L ${Pproj(V, 0, 0, k, ox, oy).join(",")} L ${Pproj(
@@ -260,26 +286,20 @@ function renderSvg(H, V, L, alphaDeg, passMm, Dmm) {
 
   const gid = `g-et-${Math.random().toString(36).slice(2, 9)}`;
 
-  const note = `H=${fmtMm(H)} mm · V=${fmtMm(V)} mm · L=${fmtMm(L)} mm · D=${fmtMm(Dmm)} mm · α≈${fmtDeg(alphaDeg)}° · Passstück≈${fmtMm(passMm)} mm`;
-
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${Hs}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Schema klassische Etage">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vbX.toFixed(2)} ${vbY.toFixed(2)} ${vbW.toFixed(2)} ${vbH.toFixed(2)}" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Raumprisma und Raumdiagonale">
   <defs>
     <linearGradient id="${gid}" x1="0%" y1="100%" x2="100%" y2="0%">
       <stop offset="0%" style="stop-color:#131c26"/>
       <stop offset="100%" style="stop-color:#0f1419"/>
     </linearGradient>
   </defs>
-  <rect width="100%" height="100%" fill="url(#${gid})" rx="10"/>
-  <text x="${W / 2}" y="26" text-anchor="middle" fill="#e8edf2" font-size="13" font-weight="600" font-family="DM Sans,system-ui,sans-serif">Raumprisma &amp; Diagonale (schematisch)</text>
-  <text x="${W / 2}" y="44" text-anchor="middle" fill="#8b9bab" font-size="10" font-family="DM Sans,system-ui,sans-serif">${escapeHtml(
-    note
-  )}</text>
-  <path d="${floor}" fill="none" stroke="rgba(139,155,171,0.32)" stroke-width="1.25"/>
-  <path d="${top}" fill="none" stroke="rgba(139,155,171,0.42)" stroke-width="1.25"/>
+  <rect x="${vbX.toFixed(2)}" y="${vbY.toFixed(2)}" width="${vbW.toFixed(2)}" height="${vbH.toFixed(2)}" fill="url(#${gid})"/>
+  <path d="${floor}" fill="none" stroke="rgba(139,155,171,0.35)" stroke-width="${swEdge.toFixed(2)}"/>
+  <path d="${top}" fill="none" stroke="rgba(139,155,171,0.48)" stroke-width="${swEdge.toFixed(2)}"/>
   ${verts}
-  <path d="${pipePath}" fill="none" stroke="#e8935c" stroke-width="6" stroke-linecap="round"/>
-  <circle cx="${p0x.toFixed(1)}" cy="${p0y.toFixed(1)}" r="6" fill="#5eb0f0"/>
-  <circle cx="${p1x.toFixed(1)}" cy="${p1y.toFixed(1)}" r="6" fill="#6ee7b7"/>
+  <path d="${pipePath}" fill="none" stroke="#e8935c" stroke-width="${swPipe.toFixed(2)}" stroke-linecap="round"/>
+  <circle cx="${p0x.toFixed(1)}" cy="${p0y.toFixed(1)}" r="${rDot.toFixed(2)}" fill="#5eb0f0"/>
+  <circle cx="${p1x.toFixed(1)}" cy="${p1y.toFixed(1)}" r="${rDot.toFixed(2)}" fill="#6ee7b7"/>
 </svg>`;
 }
 
@@ -568,6 +588,11 @@ function run() {
   fillBend("bendTitle2", "bendDl2", "Bogen 2", inp.elbow2, R2);
 
   document.getElementById("svgHost").innerHTML = renderSvg(H, V, L, alphaDeg, pass, D);
+  const cap = document.getElementById("svgCaption");
+  cap.hidden = false;
+  cap.innerHTML = `<strong>Maße:</strong> H=${escapeHtml(fmtMm(H))} mm · V=${escapeHtml(fmtMm(V))} mm · L=${escapeHtml(
+    fmtMm(L)
+  )} mm · D=${escapeHtml(fmtMm(D))} mm · α≈${escapeHtml(fmtDeg(alphaDeg))}° · Passstück≈${escapeHtml(fmtMm(pass))} mm`;
 
   block.hidden = false;
 

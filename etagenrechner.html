@@ -11,7 +11,7 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=24" />
+    <link rel="stylesheet" href="styles.css?v=25" />
   </head>
   <body>
     <div class="wrap wrap--sub">
@@ -145,7 +145,8 @@
         <div class="card">
           <h2>Schema (schematisch)</h2>
           <p class="formula-note">Nicht maßstäblich; nur zur Veranschaulichung der Maße H, V, L und der Raumdiagonale.</p>
-          <div id="svgHost" class="etagen-svg-host"></div>
+          <p id="svgCaption" class="etagen-schema-caption" hidden aria-live="polite"></p>
+          <div id="svgHost" class="etagen-svg-host etagen-svg-host--schema"></div>
         </div>
 
         <div class="row cols-2 etagen-bend-row">
@@ -168,6 +169,6 @@
         <a href="impressum.html" class="site-footer__link">Impressum &amp; Datenschutz</a>
       </footer>
     </div>
-    <script src="etagenrechner.js?v=3" defer></script>
+    <script src="etagenrechner.js?v=4" defer></script>
   </body>
 </html>

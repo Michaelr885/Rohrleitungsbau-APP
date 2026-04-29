@@ -1462,6 +1462,29 @@ code {
   width: 100%;
 }
 
+.etagen-schema-caption {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.45;
+  margin: 0 0 0.65rem;
+  padding: 0.55rem 0.65rem;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.etagen-schema-caption strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.etagen-svg-host--schema {
+  min-height: min(52vw, 320px);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
 .etagen-svg-host svg {
   display: block;
   width: 100%;
