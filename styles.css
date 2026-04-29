@@ -905,6 +905,27 @@ code {
   color: rgba(251, 191, 36, 0.65);
 }
 
+.glass-btn--marker {
+  border-color: rgba(96, 165, 250, 0.35);
+  background: linear-gradient(
+    135deg,
+    rgba(96, 165, 250, 0.14) 0%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+}
+
+.glass-btn--marker:hover {
+  border-color: rgba(96, 165, 250, 0.5);
+}
+
+.glass-btn--marker .glass-btn__icon {
+  color: #93c5fd;
+}
+
+.glass-btn--marker .glass-btn__chev {
+  color: rgba(147, 197, 253, 0.7);
+}
+
 .assign-card {
   background: var(--panel);
   border: 1px solid var(--border);
@@ -1064,4 +1085,87 @@ code {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* Leitungskennzeichnung (Merker) */
+.pipe-marker-list {
+  margin: 0 0 0.5rem 1.1rem;
+  padding: 0;
+  color: var(--text);
+  line-height: 1.55;
+}
+
+.pipe-marker-list li {
+  margin-bottom: 0.35rem;
+}
+
+.pipe-marker-legend {
+  margin-top: 0;
+}
+
+.table-wrap--pipe-marker {
+  margin: 0 -0.25rem;
+}
+
+.pipe-marker-table {
+  font-size: 0.82rem;
+}
+
+.pipe-marker-table td:first-child {
+  font-weight: 700;
+  color: var(--muted);
+  white-space: nowrap;
+  width: 2.25rem;
+}
+
+.pipe-marker-table td:nth-child(2) {
+  min-width: 7rem;
+}
+
+.pipe-marker-table td:nth-child(3) {
+  width: 5.5rem;
+  vertical-align: middle;
+}
+
+.pipe-marker-strip {
+  display: inline-flex;
+  height: 22px;
+  width: 100%;
+  max-width: 120px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+}
+
+.pipe-marker-main {
+  flex: 1 1 72%;
+  min-width: 0;
+}
+
+.pipe-marker-acc {
+  flex: 0 0 28%;
+  min-width: 0;
+}
+
+.pipe-marker-acc--none {
+  flex-basis: 0;
+  width: 0;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.pipe-marker-ral {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+@media (max-width: 520px) {
+  .pipe-marker-table {
+    font-size: 0.78rem;
+  }
+
+  .pipe-marker-strip {
+    max-width: none;
+  }
 }

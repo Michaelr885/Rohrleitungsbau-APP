@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0c1218" />
+    <title>Leitungskennzeichnung (Merker)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css?v=12" />
+  </head>
+  <body>
+    <div class="wrap wrap--sub">
+      <a href="index.html" class="back-link">← Index</a>
+      <h1>Leitungskennzeichnung</h1>
+      <p class="sub">
+        Merker zu Kennfarben und Gruppen nach <strong>DIN 2403</strong> (nicht erdverlegte Rohrleitungen) — ergänzend
+        <strong>TRGS 201</strong> zur Kennzeichnung nach dem Durchflussstoff. Farbfelder sind nur
+        <strong>ungefähre</strong> Bildschirm-Näherungen zu RAL, keine Farbmessung.
+      </p>
+
+      <div class="card">
+        <h2>Was gekennzeichnet wird</h2>
+        <ul class="pipe-marker-list">
+          <li>das <strong>Durchflussstoff</strong> (Medium) und die <strong>Durchflussrichtung</strong>;</li>
+          <li>bei Gefahrstoffen zusätzlich Gefahrenhinweise / Symbole nach GefStoffV und CLP/GHS;</li>
+          <li>Kennzeichnung in ausreichender Häufigkeit, u. a. an kritischen Stellen und entlang der Leitung (Angaben dazu in der Norm).</li>
+        </ul>
+        <p class="formula-note">
+          Schriftgröße und Erkennbarkeit hängen u. a. von der verlangten Erkennungsweite ab — siehe
+          <strong>DIN 2403</strong> und z. B. <strong>ASR A1.3</strong> für Arbeitsstätten.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>Durchflussstoff-Gruppen (Kennfarbe / Zusatzfarbe)</h2>
+        <p class="formula-note pipe-marker-legend">
+          <strong>Legende:</strong> Kennfarbe = breiter Streifen; Zusatzfarbe = schmaler Streifen (bei „—“ entfällt sie). Schrift = empfohlene
+          Lesbarkeit auf der Kennfarbe.
+        </p>
+        <div class="table-wrap table-wrap--pipe-marker">
+          <table class="data-table pipe-marker-table">
+            <thead>
+              <tr>
+                <th scope="col">Gr.</th>
+                <th scope="col">Durchflussstoff (Beispiel)</th>
+                <th scope="col">Schema</th>
+                <th scope="col">RAL (Orientierung)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Wasser</td>
+                <td>
+                  <span class="pipe-marker-strip" aria-hidden="true"
+                    ><span class="pipe-marker-main" style="background:#1e6b52"></span
+                    ><span class="pipe-marker-acc pipe-marker-acc--none"></span
+                  ></span>
+                </td>
+                <td>Kennfarbe grün · <span class="pipe-marker-ral">RAL 6032</span> · Schrift weiß</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Wasserdampf</td>
+                <td>
+                  <span class="pipe-marker-strip" aria-hidden="true"
+                    ><span class="pipe-marker-main" style="background:#9b2335"></span
+                    ><span class="pipe-marker-acc pipe-marker-acc--none"></span
+                  ></span>
+                </td>
+                <td>Kennfarbe rot · <span class="pipe-marker-ral">RAL 3001</span> · Schrift weiß</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>Luft</td>
+                <td>
+                  <span class="pipe-marker-strip" aria-hidden="true"
+                    ><span class="pipe-marker-main" style="background:#9ea0a1"></span
+                    ><span class="pipe-marker-acc pipe-marker-acc--none"></span
+                  ></span>
+                </td>
+                <td>Kennfarbe grau · <span class="pipe-marker-ral">RAL 7004</span> · Schrift schwarz</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>Brennbare Gase</td>
+                <td>
+                  <span class="pipe-marker-strip" aria-hidden="true"
+                    ><span class="pipe-marker-main" style="background:#e8a605"></span
+                    ><span class="pipe-marker-acc" style="background:#9b2335"></span
+                  ></span>
+                </td>
+                <td>Kennfarbe gelb · <span class="pipe-marker-ral">RAL 1003</span> · Zusatz rot · Schrift schwarz</td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>Nicht brennbare Gase</td>
+                <td>
+                  <span class="pipe-marker-strip" aria-hidden="true"
+                    ><span class="pipe-marker-main" style="background:#e8a605"></span
+                    ><span class="pipe-marker-acc pipe-marker-acc--none"></span
+                  ></span>
+                </td>
+                <td>Kennfarbe gelb · <span class="pipe-marker-ral">RAL 1003</span> · Schrift schwarz</td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td>Säuren</td>
+                <td>
+                  <span class="pipe-marker-strip" aria-hidden="true"
+                    ><span class="pipe-marker-main" style="background:#d54d1d"></span
+                    ><span class="pipe-marker-acc pipe-marker-acc--none"></span
+                  ></span>
+                </td>
+                <td>Kennfarbe orange · <span class="pipe-marker-ral">RAL 2010</span> · Schrift schwarz</td>
+              </tr>
+              <tr>
+                <td>7</td>
+                <td>Laugen</td>
+                <td>
+                  <span class="pipe-marker-strip" aria-hidden="true"
+                    ><span class="pipe-marker-main" style="background:#6b4c7a"></span
+                    ><span class="pipe-marker-acc pipe-marker-acc--none"></span
+                  ></span>
+                </td>
+                <td>Kennfarbe violett · <span class="pipe-marker-ral">RAL 4008</span> · Schrift weiß</td>
+              </tr>
+              <tr>
+                <td>8</td>
+                <td>Brennbare Flüssigkeiten und brennbare Feststoffe</td>
+                <td>
+                  <span class="pipe-marker-strip" aria-hidden="true"
+                    ><span class="pipe-marker-main" style="background:#5c3325"></span
+                    ><span class="pipe-marker-acc" style="background:#9b2335"></span
+                  ></span>
+                </td>
+                <td>Kennfarbe braun · <span class="pipe-marker-ral">RAL 8002</span> · Zusatz rot · Schrift weiß</td>
+              </tr>
+              <tr>
+                <td>9</td>
+                <td>Nicht brennbare Flüssigkeiten und nicht brennbare Feststoffe</td>
+                <td>
+                  <span class="pipe-marker-strip" aria-hidden="true"
+                    ><span class="pipe-marker-main" style="background:#5c3325"></span
+                    ><span class="pipe-marker-acc pipe-marker-acc--none"></span
+                  ></span>
+                </td>
+                <td>Kennfarbe braun · <span class="pipe-marker-ral">RAL 8002</span> · Schrift weiß</td>
+              </tr>
+              <tr>
+                <td>0</td>
+                <td>Sauerstoff</td>
+                <td>
+                  <span class="pipe-marker-strip" aria-hidden="true"
+                    ><span class="pipe-marker-main" style="background:#004f7c"></span
+                    ><span class="pipe-marker-acc pipe-marker-acc--none"></span
+                  ></span>
+                </td>
+                <td>Kennfarbe blau · <span class="pipe-marker-ral">RAL 5005</span> · Schrift weiß</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Zu Ihrer DIN-Datei</h2>
+        <p class="formula-note">
+          Die hochgeladene <strong>DIN 2403</strong>-PDF ist hier vermutlich nur als <strong>Scan</strong> vorliegend — automatischer Textabruf
+          war nicht möglich. Für die App wurde daher eine <strong>komprimierte Merker-Tabelle</strong> nach der in der Norm beschriebenen
+          Systematik erstellt. Verbindlich sind Abmessungen, alle Sonderfälle und die genaue Ausführung nur in der <strong>aktuellen Norm-Ausgabe</strong>.
+        </p>
+      </div>
+
+      <p class="disclaimer">
+        Keine Rechts- oder Normberatung. Maßgeblich sind die gültigen Vorschriften, die anerkannte Regeln der Technik und die beauftragte
+        Fachplanung. Diese Seite ersetzt weder DIN 2403 noch TRGS 201.
+      </p>
+    </div>
+  </body>
+</html>
