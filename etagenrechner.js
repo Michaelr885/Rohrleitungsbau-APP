@@ -251,7 +251,9 @@ function renderBendLegendSvg() {
   <text x="262" y="74" fill="#7dd3fc" font-size="11.5" font-weight="700" font-family="DM Sans,system-ui,sans-serif">Bogenmaß außen</text>
   <text x="288" y="126" fill="#e8935c" font-size="11.5" font-weight="700" font-family="DM Sans,system-ui,sans-serif">Bogenmaß Mitte</text>
   <text x="282" y="174" fill="#6ee7b7" font-size="11.5" font-weight="700" font-family="DM Sans,system-ui,sans-serif">Bogenmaß innen</text>
-  <text x="212" y="224" fill="#8b9bab" font-size="10" font-family="DM Sans,system-ui,sans-serif">Formeln: L außen=(R+OD/2)·α · L innen=(R−OD/2)·α</text>
+  <text x="${W / 2}" y="218" text-anchor="middle" fill="#8b9bab" font-size="10" font-family="DM Sans,system-ui,sans-serif">Formeln:</text>
+  <text x="${W / 2}" y="232" text-anchor="middle" fill="#8b9bab" font-size="10" font-family="DM Sans,system-ui,sans-serif">L außen = (R + OD/2) · α</text>
+  <text x="${W / 2}" y="246" text-anchor="middle" fill="#8b9bab" font-size="10" font-family="DM Sans,system-ui,sans-serif">L innen = (R − OD/2) · α</text>
 </svg>`;
 }
 
