@@ -127,6 +127,7 @@ function saveFormState() {
       art,
       dn,
       pn,
+      scheibenAnzahl: document.getElementById("scheibenAnzahl")?.value ?? "1",
       dichtungHoehe: field("dichtungHoehe", "e3")?.value ?? "",
       gewindegaenge: field("gewindegaenge", "f3")?.value ?? "",
       ueberstandBolzen: field("ueberstandBolzen", "h3")?.value ?? "",
@@ -173,6 +174,11 @@ function restoreFormState() {
     setIf("gewindegaenge", "f3", s.gewindegaenge);
     setIf("ueberstandBolzen", "h3", s.ueberstandBolzen);
     setIf("flanschHoeheManuell", "hoeheOverride", s.flanschHoeheManuell);
+    const scEl = document.getElementById("scheibenAnzahl");
+    if (scEl && s.scheibenAnzahl !== undefined && s.scheibenAnzahl !== null) {
+      const v = String(s.scheibenAnzahl);
+      if ([...scEl.options].some((o) => o.value === v)) scEl.value = v;
+    }
     return true;
   } catch {
     return false;
@@ -180,7 +186,16 @@ function restoreFormState() {
 }
 
 function wireSaveOnChange() {
-  const ids = ["art", "dn", "pn", "dichtungHoehe", "gewindegaenge", "ueberstandBolzen", "flanschHoeheManuell"];
+  const ids = [
+    "art",
+    "dn",
+    "pn",
+    "scheibenAnzahl",
+    "dichtungHoehe",
+    "gewindegaenge",
+    "ueberstandBolzen",
+    "flanschHoeheManuell",
+  ];
   for (const id of ids) {
     const el = document.getElementById(id);
     if (!el) continue;
@@ -205,6 +220,15 @@ function readInputs() {
   const fEl = field("gewindegaenge", "f3");
   const hEl = field("ueberstandBolzen", "h3");
   const hoeheOverride = field("flanschHoeheManuell", "hoeheOverride");
+  const scEl = document.getElementById("scheibenAnzahl");
+  let scheibenN = 1;
+  if (scEl) {
+    const raw = String(scEl.value).trim();
+    const n = parseInt(raw, 10);
+    if (raw === "0" || n === 0) scheibenN = 0;
+    else if (n === 2) scheibenN = 2;
+    else scheibenN = 1;
+  }
   let hoRaw = "";
   if (hoeheOverride) {
     const lines = hoeheOverride.value.split(/\r?\n/).map((l) => l.trim());
@@ -213,6 +237,7 @@ function readInputs() {
   }
   const hoNum = hoRaw === "" ? NaN : parseFloat(hoRaw);
   return {
+    scheibenAnzahl: scheibenN,
     dichtungHoeheMm: parseField(eEl, d.dichtungHoeheMm),
     ueberstandGewindegange: parseField(fEl, d.ueberstandGewindegange),
     ueberstandBolzenMm: parseField(hEl, d.ueberstandBolzenMm),
@@ -254,7 +279,8 @@ function compute() {
   const missing = [];
   if (!lookupOrNull(maps.pitch, gw)) missing.push("Steigung");
   if (!lookupOrNull(maps.mutter, gw)) missing.push("Mutterhöhe");
-  if (!lookupOrNull(maps.scheibe, gw)) missing.push("Scheibenhöhe");
+  const scheibenN = inp.scheibenAnzahl;
+  if (scheibenN > 0 && !lookupOrNull(maps.scheibe, gw)) missing.push("Scheibenhöhe");
   if (missing.length > 0) {
     msg.classList.add("visible", "err");
     msg.textContent = `Für Gewinde ${gw} fehlen in den Stammdaten: ${missing.join(
@@ -264,7 +290,7 @@ function compute() {
   }
   const pitch = maps.pitch.get(gw);
   const mutH = maps.mutter.get(gw);
-  const schH = maps.scheibe.get(gw);
+  const schHProScheibe = scheibenN > 0 ? maps.scheibe.get(gw) : 0;
 
   let hoehe = fl.hoeheFlanschMm;
   if (hoehe == null || Number.isNaN(hoehe)) {
@@ -288,7 +314,7 @@ function compute() {
     2 * hoehe +
     pitch * gewindegaenge +
     mutH +
-    schH +
+    scheibenN * schHProScheibe +
     dichtungMm +
     ueberstandBolzenMm -
     nut +
@@ -298,7 +324,7 @@ function compute() {
     2 * hoehe +
     2 * (pitch * gewindegaenge) +
     2 * mutH +
-    2 * schH +
+    2 * scheibenN * schHProScheibe +
     dichtungMm +
     2 * ueberstandBolzenMm -
     nut +
@@ -313,11 +339,14 @@ function compute() {
   document.getElementById("kpi-steh").textContent = fmt(stehbolzen);
 
   const detail = document.getElementById("detail");
+  const scheibenText =
+    scheibenN === 0
+      ? "keine"
+      : `${scheibenN} × ${fmt(schHProScheibe)} mm <span class="unit">(Stammdaten je Scheibe)</span>`;
+
   detail.innerHTML = `
     <strong>Gewinde:</strong> ${gw} · <strong>Anzahl Schrauben:</strong> ${fl.anzahlSchrauben ?? "—"}<br/>
-    Steigung ${fmt(pitch)} mm, Mutter ${fmt(mutH)} mm, Scheibe ${fmt(
-    schH
-  )} mm<br/>
+    Steigung ${fmt(pitch)} mm, Mutter ${fmt(mutH)} mm, Scheiben: ${scheibenText}<br/>
     Flanschhöhe <strong>${fmt(hoehe)} mm</strong>${
     fl.hoeheFlanschMm == null ? " (manuell)" : ""
   },
@@ -361,6 +390,11 @@ async function init() {
     setVal("dichtungHoehe", "e3", d.dichtungHoeheMm);
     setVal("gewindegaenge", "f3", d.ueberstandGewindegange);
     setVal("ueberstandBolzen", "h3", d.ueberstandBolzenMm);
+    const scEl = document.getElementById("scheibenAnzahl");
+    if (scEl && d.scheibenAnzahl != null) {
+      const v = String(d.scheibenAnzahl);
+      if ([...scEl.options].some((o) => o.value === v)) scEl.value = v;
+    }
   }
 
   wireSaveOnChange();

@@ -5,7 +5,8 @@
   "defaults": {
     "dichtungHoeheMm": 2.0,
     "ueberstandGewindegange": 3.0,
-    "ueberstandBolzenMm": 0
+    "ueberstandBolzenMm": 0,
+    "scheibenAnzahl": 1
   },
   "flansche": [
     {

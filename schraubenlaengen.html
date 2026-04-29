@@ -47,19 +47,29 @@
         <h2>Zusatzparameter</h2>
         <div class="row row--mobile-stack">
           <div>
-            <label for="dichtungHoehe">Dichtung Höhe (mm)</label>
-            <input id="dichtungHoehe" name="dichtungHoehe" type="text" inputmode="decimal" />
+            <label for="scheibenAnzahl">Scheiben (Anzahl)</label>
+            <select id="scheibenAnzahl" name="scheibenAnzahl">
+              <option value="0">keine (0)</option>
+              <option value="1" selected>eine (1)</option>
+              <option value="2">zwei (2)</option>
+            </select>
           </div>
           <div>
-            <label for="gewindegaenge">Überstand / Anzahl Gewindegänge</label>
-            <input id="gewindegaenge" name="gewindegaenge" type="text" inputmode="decimal" />
+            <label for="dichtungHoehe">Dichtung Höhe (mm)</label>
+            <input id="dichtungHoehe" name="dichtungHoehe" type="text" inputmode="decimal" />
           </div>
         </div>
         <div class="row row--mobile-stack">
           <div>
+            <label for="gewindegaenge">Überstand / Anzahl Gewindegänge</label>
+            <input id="gewindegaenge" name="gewindegaenge" type="text" inputmode="decimal" />
+          </div>
+          <div>
             <label for="ueberstandBolzen">Überstand (mm)</label>
             <input id="ueberstandBolzen" name="ueberstandBolzen" type="text" inputmode="decimal" />
           </div>
+        </div>
+        <div class="row">
           <div>
             <label for="flanschHoeheManuell">Flanschhöhe (mm)</label>
             <textarea
@@ -113,6 +123,6 @@
         Messung).
       </p>
     </div>
-    <script src="app.js?v=8" defer></script>
+    <script src="app.js?v=9" defer></script>
   </body>
 </html>
