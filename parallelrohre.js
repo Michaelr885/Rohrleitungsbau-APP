@@ -45,12 +45,18 @@ function renderSvg(spacingMm, angleDeg, pipeCount, stepMm) {
   const H = 280;
   const pad = 36;
   const pipeGap = (W - 2 * pad) / Math.max(n - 1, 1);
-  const stepPx = Math.min(28, 140 / n);
-  const bendY0 = 56;
-  const legDown = 95;
+
+  const headerBottom = 52;
+  const labelBand = 34;
+  const yBottom = H - labelBand - 8;
+  let bendY0 = 78;
+  let stepPx = Math.min(26, (yBottom - bendY0 - 36) / Math.max(n - 1, 1));
+  if (stepPx < 8) stepPx = 8;
+
+  const legLen = 88;
   const angleRad = (angleDeg * Math.PI) / 180;
-  const dx = Math.cos(angleRad) * legDown;
-  const dy = Math.sin(angleRad) * legDown;
+  const dx = Math.cos(angleRad) * legLen;
+  const dy = Math.sin(angleRad) * legLen;
 
   const paths = [];
   const labels = [];
@@ -59,13 +65,11 @@ function renderSvg(spacingMm, angleDeg, pipeCount, stepMm) {
     const x = pad + i * pipeGap;
     const yBend = bendY0 + i * stepPx;
     const x2 = x + dx;
-    const y2 = yBend + dy;
+    const y2 = yBend - dy;
     paths.push(
-      `<path d="M ${x} 16 L ${x} ${yBend} L ${x2} ${y2}" fill="none" stroke="#5eb0f0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`
+      `<path d="M ${x} ${yBottom} L ${x} ${yBend} L ${x2} ${y2}" fill="none" stroke="#5eb0f0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`
     );
-    paths.push(
-      `<circle cx="${x}" cy="${yBend}" r="4" fill="#8b9bab"/>`
-    );
+    paths.push(`<circle cx="${x}" cy="${yBend}" r="4" fill="#8b9bab"/>`);
     labels.push(
       `<text x="${x}" y="${H - 12}" text-anchor="middle" fill="#8b9bab" font-size="11" font-family="DM Sans,system-ui,sans-serif">Rohr ${i + 1}</text>`
     );
@@ -76,7 +80,7 @@ function renderSvg(spacingMm, angleDeg, pipeCount, stepMm) {
   const gid = `bgGrad-${Math.random().toString(36).slice(2, 9)}`;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Schema parallele Rohre mit versetzten Biegungen">
   <defs>
-    <linearGradient id="${gid}" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="${gid}" x1="0%" y1="100%" x2="100%" y2="0%">
       <stop offset="0%" style="stop-color:#131c26"/>
       <stop offset="100%" style="stop-color:#0f1419"/>
     </linearGradient>
@@ -88,7 +92,7 @@ function renderSvg(spacingMm, angleDeg, pipeCount, stepMm) {
   )}</text>
   ${paths.join("\n  ")}
   <line x1="${pad}" y1="${bendY0}" x2="${pad + (n - 1) * pipeGap}" y2="${bendY0 + (n - 1) * stepPx}" stroke="rgba(139,155,171,0.35)" stroke-width="1" stroke-dasharray="4 4"/>
-  <text x="${pad + 8}" y="${bendY0 + (n - 1) * stepPx + 22}" fill="#6b7d8f" font-size="10" font-family="DM Sans,system-ui,sans-serif">versetzte Biegungsanfänge</text>
+  <text x="${pad + 8}" y="${Math.min(bendY0 + (n - 1) * stepPx + 18, yBottom - 6)}" fill="#6b7d8f" font-size="10" font-family="DM Sans,system-ui,sans-serif">versetzte Biegungsanfänge</text>
   ${labels.join("\n  ")}
 </svg>`;
 }
