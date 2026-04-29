@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "note": "Näherungswerte für Orientierung. Außen-Ø nach EN 10220 (Serie 1, Auszug). E = typ. Mitte Bogen–Außenmaß für Passstück (mm), grob aus Nennweite; Abweichungen zu Herstellern möglich.",
+  "pipeRows": [
+    {
+      "id": "s1",
+      "label": "Beispiel EN (Auszug)",
+      "pipes": [
+        { "dn": 25, "odMm": 33.7, "wallMm": 3.2 },
+        { "dn": 32, "odMm": 42.4, "wallMm": 3.2 },
+        { "dn": 40, "odMm": 48.3, "wallMm": 3.2 },
+        { "dn": 50, "odMm": 60.3, "wallMm": 3.2 },
+        { "dn": 65, "odMm": 76.1, "wallMm": 3.6 },
+        { "dn": 80, "odMm": 88.9, "wallMm": 3.6 },
+        { "dn": 100, "odMm": 114.3, "wallMm": 4.0 },
+        { "dn": 125, "odMm": 139.7, "wallMm": 4.0 },
+        { "dn": 150, "odMm": 168.3, "wallMm": 4.5 },
+        { "dn": 200, "odMm": 219.1, "wallMm": 6.3 },
+        { "dn": 250, "odMm": 273.0, "wallMm": 6.3 },
+        { "dn": 300, "odMm": 323.9, "wallMm": 7.1 }
+      ]
+    },
+    {
+      "id": "manual",
+      "label": "Manuell (Außen-Ø, Wand & DN für Radius)"
+    }
+  ],
+  "elbowTypes": [
+    {
+      "id": "BA3",
+      "label": "BA3 (langer Radius, grob)",
+      "centerFactor": 1.52,
+      "arcFactor": 1.52
+    },
+    {
+      "id": "BA5",
+      "label": "BA5 (großer Radius, grob)",
+      "centerFactor": 2.6,
+      "arcFactor": 2.6
+    }
+  ],
+  "materialDensityKgM3": {
+    "steel": 7850,
+    "stainless": 7900
+  }
+}

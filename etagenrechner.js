@@ -1,0 +1,571 @@
+/**
+ * Klassischer Etagenrechner: zwei Bögen, ein Passstück auf der Raumdiagonalen.
+ * Passstück ≈ D − R1·tan(α/2) − R2·tan(α/2) − 2·Schweißspalt (R = Krümmungsradius Rohrmitte, grob aus DN·Faktor).
+ */
+
+const STORAGE_KEY = "etagenrechner-v1";
+
+/** @type {any} */
+let DATA = null;
+
+function parseNum(str) {
+  const v = parseFloat(String(str ?? "").replace(",", ".").trim());
+  return Number.isFinite(v) ? v : NaN;
+}
+
+function fmtMm(n) {
+  if (!Number.isFinite(n)) return "—";
+  return new Intl.NumberFormat("de-DE", {
+    maximumFractionDigits: 1,
+    minimumFractionDigits: 0,
+  }).format(n);
+}
+
+function fmtDeg(n) {
+  if (!Number.isFinite(n)) return "—";
+  return new Intl.NumberFormat("de-DE", {
+    maximumFractionDigits: 1,
+    minimumFractionDigits: 1,
+  }).format(n);
+}
+
+function fmtKg(n) {
+  if (!Number.isFinite(n)) return "—";
+  return new Intl.NumberFormat("de-DE", {
+    maximumFractionDigits: 1,
+    minimumFractionDigits: 0,
+  }).format(n);
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function getElbowDef(id) {
+  const list = DATA?.elbowTypes ?? [];
+  return list.find((e) => e.id === id) ?? list[0];
+}
+
+/** Krümmungsradius Rohrmitte (mm), grob */
+function radiusCenterMm(dn, elbowId) {
+  const def = getElbowDef(elbowId);
+  const f = Number(def?.centerFactor) || 1.5;
+  return f * dn;
+}
+
+function metalMassKg(odMm, wallMm, lengthMm, densityKgM3) {
+  const ro = odMm / 2;
+  const ri = Math.max(0, ro - wallMm);
+  const areaMm2 = Math.PI * (ro * ro - ri * ri);
+  const volM3 = (areaMm2 * lengthMm) / 1e9;
+  return volM3 * densityKgM3;
+}
+
+function bendRows(alphaDeg, Rmm, gapMm) {
+  const ar = (alphaDeg * Math.PI) / 180;
+  const arcOut = Rmm * ar;
+  const arcIn = Math.max(0, Rmm - 30) * ar;
+  const chord = 2 * Rmm * Math.sin(ar / 2);
+  const buildLen = Rmm * Math.tan(ar / 2) + gapMm;
+  return {
+    outerArc: arcOut,
+    innerArc: arcIn,
+    chord,
+    buildLen,
+  };
+}
+
+/**
+ * Isometrische Projektion: Achsen x=V, y=L, z=H (senkrecht).
+ */
+function Pproj(vx, ly, hz, k, ox, oy) {
+  const c = Math.cos(Math.PI / 6);
+  const s = Math.sin(Math.PI / 6);
+  const sx = ox + (vx - ly) * c * k;
+  const sy = oy + (vx + ly) * s * k - hz * k;
+  return [sx, sy];
+}
+
+function renderSvg(H, V, L, alphaDeg, passMm, Dmm) {
+  const W = 420;
+  const Hs = 300;
+  const ox = 70;
+  const oy = 240;
+  const m = Math.max(H, V, L, 1);
+  const k = Math.min(130 / m, 0.22);
+
+  function lineIso(vx0, ly0, hz0, vx1, ly1, hz1) {
+    const [x0, y0] = Pproj(vx0, ly0, hz0, k, ox, oy);
+    const [x1, y1] = Pproj(vx1, ly1, hz1, k, ox, oy);
+    return `<line x1="${x0.toFixed(1)}" y1="${y0.toFixed(1)}" x2="${x1.toFixed(1)}" y2="${y1.toFixed(1)}" stroke="rgba(139,155,171,0.45)" stroke-width="1"/>`;
+  }
+
+  const floor = `M ${Pproj(0, 0, 0, k, ox, oy).join(",")} L ${Pproj(V, 0, 0, k, ox, oy).join(",")} L ${Pproj(
+    V,
+    L,
+    0,
+    k,
+    ox,
+    oy
+  ).join(",")} L ${Pproj(0, L, 0, k, ox, oy).join(",")} Z`;
+  const top = `M ${Pproj(0, 0, H, k, ox, oy).join(",")} L ${Pproj(V, 0, H, k, ox, oy).join(",")} L ${Pproj(
+    V,
+    L,
+    H,
+    k,
+    ox,
+    oy
+  ).join(",")} L ${Pproj(0, L, H, k, ox, oy).join(",")} Z`;
+
+  const verts = [
+    [0, 0],
+    [V, 0],
+    [V, L],
+    [0, L],
+  ]
+    .map(([vx, ly]) => lineIso(vx, ly, 0, vx, ly, H))
+    .join("\n  ");
+
+  const [p0x, p0y] = Pproj(0, 0, 0, k, ox, oy);
+  const [p1x, p1y] = Pproj(V, L, H, k, ox, oy);
+  const pipePath = `M ${p0x.toFixed(1)},${p0y.toFixed(1)} L ${p1x.toFixed(1)},${p1y.toFixed(1)}`;
+
+  const gid = `g-et-${Math.random().toString(36).slice(2, 9)}`;
+
+  const note = `H=${fmtMm(H)} mm · V=${fmtMm(V)} mm · L=${fmtMm(L)} mm · D=${fmtMm(Dmm)} mm · α≈${fmtDeg(alphaDeg)}° · Passstück≈${fmtMm(passMm)} mm`;
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${Hs}" role="img" aria-label="Schema klassische Etage">
+  <defs>
+    <linearGradient id="${gid}" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#131c26"/>
+      <stop offset="100%" style="stop-color:#0f1419"/>
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#${gid})" rx="8"/>
+  <text x="${W / 2}" y="22" text-anchor="middle" fill="#e8edf2" font-size="12" font-weight="600" font-family="DM Sans,system-ui,sans-serif">Raumprisma &amp; Diagonale (schematisch)</text>
+  <text x="${W / 2}" y="38" text-anchor="middle" fill="#8b9bab" font-size="9.5" font-family="DM Sans,system-ui,sans-serif">${escapeHtml(
+    note
+  )}</text>
+  <path d="${floor}" fill="none" stroke="rgba(139,155,171,0.28)" stroke-width="1"/>
+  <path d="${top}" fill="none" stroke="rgba(139,155,171,0.35)" stroke-width="1"/>
+  ${verts}
+  <path d="${pipePath}" fill="none" stroke="#e8935c" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="${p0x.toFixed(1)}" cy="${p0y.toFixed(1)}" r="5" fill="#5eb0f0"/>
+  <circle cx="${p1x.toFixed(1)}" cy="${p1y.toFixed(1)}" r="5" fill="#6ee7b7"/>
+</svg>`;
+}
+
+function loadSaved() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+function saveState(obj) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+  } catch {
+    /* ignore */
+  }
+}
+
+function populateFromData() {
+  const series = document.getElementById("pipeSeries");
+  series.innerHTML = "";
+  for (const r of DATA?.pipeRows ?? []) {
+    const opt = document.createElement("option");
+    opt.value = r.id;
+    opt.textContent = r.label;
+    series.appendChild(opt);
+  }
+
+  const e1 = document.getElementById("elbow1");
+  const e2 = document.getElementById("elbow2");
+  e1.innerHTML = "";
+  e2.innerHTML = "";
+  for (const e of DATA?.elbowTypes ?? []) {
+    const o1 = document.createElement("option");
+    o1.value = e.id;
+    o1.textContent = e.label;
+    e1.appendChild(o1);
+    const o2 = document.createElement("option");
+    o2.value = e.id;
+    o2.textContent = e.label;
+    e2.appendChild(o2);
+  }
+  if (e1.options.length >= 2) {
+    e1.selectedIndex = 0;
+    e2.selectedIndex = 1;
+  }
+}
+
+function selectedPipeRow() {
+  const id = document.getElementById("pipeSeries").value;
+  return (DATA?.pipeRows ?? []).find((r) => r.id === id);
+}
+
+function wireDnDropdown() {
+  const row = selectedPipeRow();
+  const wrap = document.getElementById("dnWrap");
+  const manualWrap = document.getElementById("manualDnWrap");
+  const dnSel = document.getElementById("dnSelect");
+  if (!row || row.id === "manual") {
+    wrap.hidden = true;
+    manualWrap.hidden = false;
+    return;
+  }
+  wrap.hidden = false;
+  manualWrap.hidden = true;
+  const pipes = row.pipes ?? [];
+  const cur = dnSel.value;
+  dnSel.innerHTML = "";
+  for (const p of pipes) {
+    const o = document.createElement("option");
+    o.value = String(p.dn);
+    o.textContent = `DN ${p.dn} (Ø ${p.odMm} mm)`;
+    dnSel.appendChild(o);
+  }
+  if (pipes.some((p) => String(p.dn) === cur)) dnSel.value = cur;
+}
+
+function applyPipeSelection() {
+  const row = selectedPipeRow();
+  const auto = document.getElementById("autoWall").checked;
+  const outerEl = document.getElementById("outerMm");
+  const wallEl = document.getElementById("wallMm");
+
+  if (!row || row.id === "manual") {
+    outerEl.removeAttribute("readonly");
+    wallEl.removeAttribute("readonly");
+    return;
+  }
+
+  outerEl.setAttribute("readonly", "readonly");
+
+  const pipes = row.pipes ?? [];
+  const dn = parseInt(String(document.getElementById("dnSelect").value), 10);
+  const p = pipes.find((x) => x.dn === dn) ?? pipes[0];
+  if (p) {
+    outerEl.value = String(p.odMm).replace(".", ",");
+    if (auto) {
+      wallEl.value = String(p.wallMm).replace(".", ",");
+      wallEl.setAttribute("readonly", "readonly");
+    } else {
+      wallEl.removeAttribute("readonly");
+    }
+  }
+}
+
+function setMode(mode) {
+  const isLen = mode === "length";
+  document.getElementById("mode-length").classList.toggle("etagen-mode-btn--active", isLen);
+  document.getElementById("mode-angle").classList.toggle("etagen-mode-btn--active", !isLen);
+  document.getElementById("mode-length").setAttribute("aria-selected", isLen ? "true" : "false");
+  document.getElementById("mode-angle").setAttribute("aria-selected", !isLen ? "true" : "false");
+  document.getElementById("wrapL").hidden = !isLen;
+  document.getElementById("wrapAlpha").hidden = isLen;
+}
+
+function collectInputs() {
+  const mode = document.getElementById("mode-length").classList.contains("etagen-mode-btn--active")
+    ? "length"
+    : "angle";
+  const H = parseNum(document.getElementById("inputH").value);
+  const V = parseNum(document.getElementById("inputV").value);
+  const Lraw = parseNum(document.getElementById("inputL").value);
+  const alphaRaw = parseNum(document.getElementById("inputAlpha").value);
+  const gap = parseNum(document.getElementById("gapMm").value);
+  const outerMm = parseNum(document.getElementById("outerMm").value);
+  const wallMm = parseNum(document.getElementById("wallMm").value);
+  const row = selectedPipeRow();
+  let dn = NaN;
+  if (row && row.id !== "manual") {
+    dn = parseInt(String(document.getElementById("dnSelect").value), 10);
+  } else {
+    dn = parseNum(document.getElementById("manualDn").value);
+  }
+  return {
+    mode,
+    H,
+    V,
+    Lraw,
+    alphaRaw,
+    gap,
+    outerMm,
+    wallMm,
+    dn,
+    elbow1: document.getElementById("elbow1").value,
+    elbow2: document.getElementById("elbow2").value,
+    material: document.getElementById("material").value,
+  };
+}
+
+function computeGeometry(inp) {
+  const { H, V, mode } = inp;
+  if (!Number.isFinite(H) || H <= 0) return { err: "Bitte eine positive Höhe H (mm) angeben." };
+  if (!Number.isFinite(V) || V <= 0) return { err: "Bitte einen positiven Versatz V (mm) angeben." };
+
+  const base = Math.sqrt(H * H + V * V);
+  let L;
+  let D;
+  let alphaRad;
+  let alphaDeg;
+
+  if (mode === "length") {
+    L = inp.Lraw;
+    if (!Number.isFinite(L) || L <= 0) return { err: "Bitte eine positive Länge L (mm) angeben." };
+    D = Math.sqrt(H * H + V * V + L * L);
+    const c = L / D;
+    if (c >= 1 || c <= 0) return { err: "Ungültige Kombination aus H, V, L." };
+    alphaRad = Math.acos(c);
+    alphaDeg = (alphaRad * 180) / Math.PI;
+  } else {
+    alphaDeg = inp.alphaRaw;
+    if (!Number.isFinite(alphaDeg) || alphaDeg <= 0 || alphaDeg >= 90)
+      return { err: "Winkel α bitte zwischen 0° und 90°." };
+    alphaRad = (alphaDeg * Math.PI) / 180;
+    const t = Math.tan(alphaRad);
+    if (!Number.isFinite(t) || t <= 0) return { err: "Winkel ungültig." };
+    L = base / t;
+    D = L / Math.cos(alphaRad);
+  }
+
+  if (!Number.isFinite(D) || D <= 0) return { err: "Berechnung der Raumdiagonale fehlgeschlagen." };
+
+  return { H, V, L, D, alphaRad, alphaDeg, base };
+}
+
+function run() {
+  const msg = document.getElementById("msg");
+  const block = document.getElementById("resultBlock");
+  msg.hidden = true;
+  msg.textContent = "";
+  msg.className = "msg";
+  block.hidden = true;
+
+  const inp = collectInputs();
+  const geo = computeGeometry(inp);
+  if (geo.err) {
+    msg.hidden = false;
+    msg.className = "msg visible err";
+    msg.textContent = geo.err;
+    return;
+  }
+
+  const { H, V, L, D, alphaRad, alphaDeg } = geo;
+
+  let dn = inp.dn;
+  if (!Number.isFinite(dn) || dn <= 0) {
+    msg.hidden = false;
+    msg.className = "msg visible err";
+    msg.textContent = "Bitte Nennweite DN angeben (Auswahl oder bei „Manuell“ das Feld DN).";
+    return;
+  }
+
+  const gap = Number.isFinite(inp.gap) && inp.gap >= 0 ? inp.gap : 0;
+  const R1 = radiusCenterMm(dn, inp.elbow1);
+  const R2 = radiusCenterMm(dn, inp.elbow2);
+
+  const halfTan = Math.tan(alphaRad / 2);
+  const ded = R1 * halfTan + gap + R2 * halfTan + gap;
+  const pass = D - ded;
+
+  if (!Number.isFinite(pass) || pass <= 0) {
+    msg.hidden = false;
+    msg.className = "msg visible err";
+    msg.textContent =
+      "Passstück wird ≤ 0 — Kombination aus Diagonale, Bogenradien und Schweißspalt ist nicht plausibel (bitte Eingaben prüfen).";
+    return;
+  }
+
+  const od = inp.outerMm;
+  const wall = inp.wallMm;
+  if (!Number.isFinite(od) || od <= 0 || !Number.isFinite(wall) || wall <= 0 || wall >= od / 2) {
+    msg.hidden = false;
+    msg.className = "msg visible err";
+    msg.textContent = "Bitte gültigen Außen-Ø und Wandstärke angeben.";
+    return;
+  }
+
+  const rho = DATA?.materialDensityKgM3?.[inp.material] ?? 7850;
+  const arcLen = alphaRad * R1 + alphaRad * R2;
+  const approxCenterMm = pass + arcLen;
+  const kg = metalMassKg(od, wall, approxCenterMm, rho);
+
+  document.getElementById("outPassMm").textContent = `${fmtMm(pass)} mm`;
+
+  const kv = document.getElementById("kvList");
+  kv.innerHTML = "";
+  const items = [
+    ["Raumdiagonale D", `${fmtMm(D)} mm`],
+    ["Winkel α (am Passstück / Diagonale)", `${fmtDeg(alphaDeg)}°`],
+    ["Projektion L", `${fmtMm(L)} mm`],
+    ["R₁ (Mitte, Bogen 1)", `${fmtMm(R1)} mm`],
+    ["R₂ (Mitte, Bogen 2)", `${fmtMm(R2)} mm`],
+    ["Summe Bogenbögen (Mitte)", `${fmtMm(arcLen)} mm`],
+    ["Rohrmasse (Passstück + Bogenbögen, Näherung)", `${fmtKg(kg)} kg`],
+  ];
+  for (const [k, v] of items) {
+    const li = document.createElement("li");
+    li.innerHTML = `<span class="etagen-kv__k">${escapeHtml(k)}</span><span class="etagen-kv__v">${escapeHtml(v)}</span>`;
+    kv.appendChild(li);
+  }
+
+  function fillBend(titleId, dlId, label, elbowId, Rmm) {
+    document.getElementById(titleId).textContent = `${label} — ${elbowId} — ${fmtDeg(alphaDeg)}°`;
+    const br = bendRows(alphaDeg, Rmm, gap);
+    const dl = document.getElementById(dlId);
+    dl.innerHTML = "";
+    const pairs = [
+      ["Bogenmaß außen (Mitte×α)", fmtMm(br.outerArc)],
+      ["Baulänge (tan·R+Spalt, Näherung)", fmtMm(br.buildLen)],
+      ["Sehne", fmtMm(br.chord)],
+      ["Bogenmaß innen (grob)", fmtMm(br.innerArc)],
+    ];
+    for (const [dt, dd] of pairs) {
+      const ddt = document.createElement("dt");
+      ddt.textContent = dt;
+      const ddd = document.createElement("dd");
+      ddd.textContent = dd;
+      dl.appendChild(ddt);
+      dl.appendChild(ddd);
+    }
+  }
+
+  fillBend("bendTitle1", "bendDl1", "Bogen 1", inp.elbow1, R1);
+  fillBend("bendTitle2", "bendDl2", "Bogen 2", inp.elbow2, R2);
+
+  document.getElementById("svgHost").innerHTML = renderSvg(H, V, L, alphaDeg, pass, D);
+
+  block.hidden = false;
+
+  saveState({
+    mode: inp.mode,
+    H: document.getElementById("inputH").value,
+    V: document.getElementById("inputV").value,
+    L: document.getElementById("inputL").value,
+    alpha: document.getElementById("inputAlpha").value,
+    pipeSeries: document.getElementById("pipeSeries").value,
+    dn: document.getElementById("dnSelect").value,
+    manualDn: document.getElementById("manualDn").value,
+    autoWall: document.getElementById("autoWall").checked,
+    outerMm: document.getElementById("outerMm").value,
+    wallMm: document.getElementById("wallMm").value,
+    gapMm: document.getElementById("gapMm").value,
+    elbow1: inp.elbow1,
+    elbow2: inp.elbow2,
+    material: inp.material,
+  });
+}
+
+function restore() {
+  const s = loadSaved();
+  if (!s || typeof s !== "object") return;
+  if (s.mode === "length" || s.mode === "angle") setMode(s.mode);
+  if (s.H != null) document.getElementById("inputH").value = String(s.H);
+  if (s.V != null) document.getElementById("inputV").value = String(s.V);
+  if (s.L != null) document.getElementById("inputL").value = String(s.L);
+  if (s.alpha != null) document.getElementById("inputAlpha").value = String(s.alpha);
+  if (s.pipeSeries) document.getElementById("pipeSeries").value = s.pipeSeries;
+  wireDnDropdown();
+  if (s.dn != null) document.getElementById("dnSelect").value = String(s.dn);
+  if (s.manualDn != null) document.getElementById("manualDn").value = String(s.manualDn);
+  if (typeof s.autoWall === "boolean") document.getElementById("autoWall").checked = s.autoWall;
+  if (s.outerMm != null) document.getElementById("outerMm").value = String(s.outerMm);
+  if (s.wallMm != null) document.getElementById("wallMm").value = String(s.wallMm);
+  if (s.gapMm != null) document.getElementById("gapMm").value = String(s.gapMm);
+  if (s.elbow1) document.getElementById("elbow1").value = s.elbow1;
+  if (s.elbow2) document.getElementById("elbow2").value = s.elbow2;
+  if (s.material) document.getElementById("material").value = s.material;
+  applyPipeSelection();
+  const rowAfter = selectedPipeRow();
+  if (rowAfter && rowAfter.id !== "manual") {
+    document.getElementById("manualDn").value = document.getElementById("dnSelect").value;
+  }
+}
+
+async function init() {
+  try {
+    const res = await fetch("etagen-daten.json", { cache: "no-store" });
+    DATA = await res.json();
+  } catch {
+    const msg = document.getElementById("msg");
+    msg.hidden = false;
+    msg.className = "msg visible err";
+    msg.textContent = "Daten konnten nicht geladen werden (etagen-daten.json).";
+    return;
+  }
+
+  populateFromData();
+
+  document.getElementById("pipeSeries").addEventListener("change", () => {
+    wireDnDropdown();
+    const row = selectedPipeRow();
+    if (row && row.id === "manual") {
+      const md = document.getElementById("manualDn");
+      if (!parseNum(md.value)) md.value = document.getElementById("dnSelect").value || "250";
+    } else if (row && row.id !== "manual") {
+      const mdVal = parseInt(String(document.getElementById("manualDn").value), 10);
+      const pipes = row.pipes ?? [];
+      if (pipes.some((p) => p.dn === mdVal)) {
+        document.getElementById("dnSelect").value = String(mdVal);
+      }
+      document.getElementById("manualDn").value = document.getElementById("dnSelect").value;
+    }
+    applyPipeSelection();
+    run();
+  });
+
+  document.getElementById("dnSelect").addEventListener("change", () => {
+    document.getElementById("manualDn").value = document.getElementById("dnSelect").value;
+    applyPipeSelection();
+    run();
+  });
+
+  document.getElementById("autoWall").addEventListener("change", () => {
+    applyPipeSelection();
+    run();
+  });
+
+  document.getElementById("mode-length").addEventListener("click", () => {
+    setMode("length");
+    run();
+  });
+  document.getElementById("mode-angle").addEventListener("click", () => {
+    setMode("angle");
+    run();
+  });
+
+  wireDnDropdown();
+  restore();
+
+  [
+    "inputH",
+    "inputV",
+    "inputL",
+    "inputAlpha",
+    "wallMm",
+    "outerMm",
+    "gapMm",
+    "manualDn",
+    "elbow1",
+    "elbow2",
+    "material",
+  ].forEach((id) => {
+    const el = document.getElementById(id);
+    el.addEventListener("input", () => run());
+    el.addEventListener("change", () => run());
+  });
+
+  run();
+}
+
+document.addEventListener("DOMContentLoaded", init);

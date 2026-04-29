@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0c1218" />
+    <title>Etagenrechner (klassisch)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css?v=22" />
+  </head>
+  <body>
+    <div class="wrap wrap--sub">
+      <a href="index.html" class="back-link">← Index</a>
+      <h1>Etagenrechner (klassisch)</h1>
+      <p class="sub">
+        Zwei Bögen, ein gerades Passstück zwischen den Wendeltangenten: aus Höhe <strong>H</strong>, Versatz <strong>V</strong> und Bezugslänge <strong>L</strong>
+        (oder Winkel am Passstück) werden die <strong>Passstücklänge</strong> und ein Schema angezeigt.
+      </p>
+
+      <div class="card card--flat etagen-mode-bar" role="tablist" aria-label="Bezugsgröße">
+        <button type="button" class="etagen-mode-btn etagen-mode-btn--active" id="mode-length" data-mode="length" role="tab" aria-selected="true">
+          Länge L
+        </button>
+        <button type="button" class="etagen-mode-btn" id="mode-angle" data-mode="angle" role="tab" aria-selected="false">
+          Winkel α
+        </button>
+      </div>
+
+      <div class="card">
+        <h2>Geometrie (mm)</h2>
+        <div class="row row--mobile-stack">
+          <div>
+            <label for="inputH">Höhe H</label>
+            <input id="inputH" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 1000" />
+          </div>
+          <div>
+            <label for="inputV">Versatz V</label>
+            <input id="inputV" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 500" />
+          </div>
+        </div>
+        <div class="row row--mobile-stack">
+          <div id="wrapL">
+            <label for="inputL">Länge L (Projektion)</label>
+            <input id="inputL" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 2000" />
+          </div>
+          <div id="wrapAlpha" hidden>
+            <label for="inputAlpha">Winkel α (Passstück / Raumdiagonale)</label>
+            <input id="inputAlpha" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 29,2" />
+          </div>
+        </div>
+        <p class="formula-note etagen-formula-hint">
+          Raumdiagonale <strong>D</strong> = √(H² + V² + L²) im Modus „Länge L“; im Modus „Winkel α“ gilt <strong>L = D·cos α</strong> (wird aus H, V, α ermittelt).
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>Rohr &amp; Bögen</h2>
+        <div class="row row--mobile-stack">
+          <div>
+            <label for="pipeSeries">Rohrdaten</label>
+            <select id="pipeSeries"></select>
+          </div>
+          <div id="dnWrap" hidden>
+            <label for="dnSelect">Nennweite DN</label>
+            <select id="dnSelect"></select>
+          </div>
+          <div id="manualDnWrap" hidden>
+            <label for="manualDn">DN (für Bogenradius, mm Nennweite)</label>
+            <input id="manualDn" type="text" inputmode="numeric" autocomplete="off" placeholder="z. B. 250" />
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label for="wallMm">Wandstärke (mm)</label>
+            <input id="wallMm" type="text" inputmode="decimal" autocomplete="off" />
+          </div>
+        </div>
+        <div class="row">
+          <label class="checkbox-row">
+            <input type="checkbox" id="autoWall" checked />
+            <span>Wand aus DN-Tabelle übernehmen</span>
+          </label>
+        </div>
+        <div class="row row--mobile-stack">
+          <div>
+            <label for="outerMm">Außen-Ø (mm)</label>
+            <input id="outerMm" type="text" inputmode="decimal" autocomplete="off" />
+          </div>
+          <div>
+            <label for="gapMm">Schweißspalt je Naht (mm)</label>
+            <input id="gapMm" type="text" inputmode="decimal" autocomplete="off" value="3" />
+          </div>
+        </div>
+        <div class="row row--mobile-stack">
+          <div>
+            <label for="elbow1">Bogen 1</label>
+            <select id="elbow1"></select>
+          </div>
+          <div>
+            <label for="elbow2">Bogen 2</label>
+            <select id="elbow2"></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Gewicht (optional)</h2>
+        <div class="row row--mobile-stack">
+          <div>
+            <label for="material">Werkstoff</label>
+            <select id="material">
+              <option value="steel">Stahl</option>
+              <option value="stainless">Edelstahl</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div id="msg" class="msg" role="alert" hidden></div>
+
+      <div id="resultBlock" class="etagen-result-wrap" hidden>
+        <div class="etagen-banner">
+          <span class="etagen-banner__label">Passstücklänge</span>
+          <span class="etagen-banner__value" id="outPassMm">—</span>
+        </div>
+
+        <div class="card etagen-summary-card">
+          <h2>Kennwerte</h2>
+          <ul class="etagen-kv" id="kvList"></ul>
+        </div>
+
+        <div class="card">
+          <h2>Schema (schematisch)</h2>
+          <p class="formula-note">Nicht maßstäblich; nur zur Veranschaulichung der Maße H, V, L und der Raumdiagonale.</p>
+          <div id="svgHost" class="etagen-svg-host"></div>
+        </div>
+
+        <div class="row cols-2 etagen-bend-row">
+          <div class="card etagen-bend-card" id="bendCard1">
+            <h2 id="bendTitle1">Bogen 1</h2>
+            <dl class="etagen-dl" id="bendDl1"></dl>
+          </div>
+          <div class="card etagen-bend-card" id="bendCard2">
+            <h2 id="bendTitle2">Bogen 2</h2>
+            <dl class="etagen-dl" id="bendDl2"></dl>
+          </div>
+        </div>
+      </div>
+
+      <p class="disclaimer">
+        Modell: gerades Passstück liegt auf der Raumdiagonale; Abzug je Bogen ≈ <strong>R·tan(α/2)</strong> (R = Krümmungsradius Rohrmitte, grob aus DN/BA-Typ), zuzüglich Schweißspalt je Naht.
+        Stammdaten und Radien sind Näherungen — Herstellerunterlagen gehen vor.
+      </p>
+      <footer class="site-footer">
+        <a href="impressum.html" class="site-footer__link">Impressum &amp; Datenschutz</a>
+      </footer>
+    </div>
+    <script src="etagenrechner.js?v=1" defer></script>
+  </body>
+</html>
