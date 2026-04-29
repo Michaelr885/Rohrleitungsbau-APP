@@ -73,10 +73,11 @@ function metalMassKg(odMm, wallMm, lengthMm, densityKgM3) {
   return volM3 * densityKgM3;
 }
 
-function bendRows(alphaDeg, Rmm, gapMm) {
+function bendRows(alphaDeg, Rmm, gapMm, outerMm) {
   const ar = (alphaDeg * Math.PI) / 180;
-  const arcOut = Rmm * ar;
-  const arcIn = Math.max(0, Rmm - 30) * ar;
+  const ro = Math.max(0, outerMm / 2);
+  const arcOut = (Rmm + ro) * ar;
+  const arcIn = Math.max(0, Rmm - ro) * ar;
   const chord = 2 * Rmm * Math.sin(ar / 2);
   const buildLen = Rmm * Math.tan(ar / 2) + gapMm;
   return {
@@ -712,14 +713,14 @@ function run() {
 
   function fillBend(titleId, dlId, label, elbowId, Rmm) {
     document.getElementById(titleId).textContent = `${label} — ${elbowId} — ${fmtDeg(alphaDeg)}°`;
-    const br = bendRows(alphaDeg, Rmm, gap);
+    const br = bendRows(alphaDeg, Rmm, gap, od);
     const dl = document.getElementById(dlId);
     dl.innerHTML = "";
     const pairs = [
-      ["Bogenmaß außen (Mitte×α)", fmtMm(br.outerArc)],
+      ["Bogenmaß außen", fmtMm(br.outerArc)],
       ["Baulänge (tan·R+Spalt, Näherung)", fmtMm(br.buildLen)],
       ["Sehne", fmtMm(br.chord)],
-      ["Bogenmaß innen (grob)", fmtMm(br.innerArc)],
+      ["Bogenmaß innen", fmtMm(br.innerArc)],
     ];
     for (const [dt, dd] of pairs) {
       const ddt = document.createElement("dt");
