@@ -1,7 +1,5 @@
 /**
- * Schraubenlängen — Logik entspricht Excel „Schraubenlänge“:
- * - Zeile aus Flansch-Tabelle: MATCH über Art, DN, PN (wie Probe[Prüfung]=1)
- * - C6 starre Schraube, C9 Stehbolzen (siehe meta.formeln in JSON)
+ * Schraubenlängen — Berechnung aus Stammdaten (JSON) und Zusatzparametern.
  */
 
 const STATE = {
@@ -143,10 +141,10 @@ function parseField(el, fallback) {
 
 function readInputs() {
   const d = STATE.data.defaults;
-  const eEl = document.getElementById("e3");
-  const fEl = document.getElementById("f3");
-  const hEl = document.getElementById("h3");
-  const hoeheOverride = document.getElementById("hoeheOverride");
+  const eEl = document.getElementById("dichtungHoehe");
+  const fEl = document.getElementById("gewindegaenge");
+  const hEl = document.getElementById("ueberstandBolzen");
+  const hoeheOverride = document.getElementById("flanschHoeheManuell");
   const hoRaw = hoeheOverride.value.trim().replace(",", ".");
   const hoNum = hoRaw === "" ? NaN : parseFloat(hoRaw);
   return {
@@ -205,34 +203,34 @@ function compute() {
     } else {
       msg.classList.add("visible", "err");
       msg.textContent =
-        "Für diese Zeile fehlt die Flanschhöhe in den Excel-Daten (z. B. „NA“). Bitte „Flanschhöhe (mm)“ manuell eintragen.";
+        "Für diesen Flansch ist keine Höhe hinterlegt. Bitte „Flanschhöhe (mm)“ manuell eintragen.";
       return;
     }
   }
 
-  const E3 = inp.dichtungHoeheMm;
-  const F3 = inp.ueberstandGewindegange;
-  const H3 = inp.ueberstandBolzenMm;
+  const dichtungMm = inp.dichtungHoeheMm;
+  const gewindegaenge = inp.ueberstandGewindegange;
+  const ueberstandBolzenMm = inp.ueberstandBolzenMm;
   const nut = fl.nutRuecksprungMm ?? 0;
   const bund = fl.bundMm ?? 0;
 
   const starre =
     2 * hoehe +
-    pitch * F3 +
+    pitch * gewindegaenge +
     mutH +
     schH +
-    E3 +
-    H3 -
+    dichtungMm +
+    ueberstandBolzenMm -
     nut +
     2 * bund;
 
   const stehbolzen =
     2 * hoehe +
-    2 * (pitch * F3) +
+    2 * (pitch * gewindegaenge) +
     2 * mutH +
     2 * schH +
-    E3 +
-    2 * H3 -
+    dichtungMm +
+    2 * ueberstandBolzenMm -
     nut +
     2 * bund;
 
@@ -260,7 +258,7 @@ function compute() {
     fl.hoeheFlanschMm == null ? " (manuell)" : ""
   },
     Nut/Rücksprung ${fmt(nut)} mm, Bund ${fmt(bund)} mm ·
-    Dichtung ${fmt(E3)} mm, Gewindegänge ${F3}, Überstand Bolzen ${fmt(H3)} mm
+    Dichtung ${fmt(dichtungMm)} mm, Gewindegänge ${gewindegaenge}, Überstand Bolzen ${fmt(ueberstandBolzenMm)} mm
   `;
 
   out.classList.add("visible");
@@ -286,11 +284,9 @@ async function init() {
   populateArt(data);
 
   const d = data.defaults;
-  document.getElementById("e3").value = String(d.dichtungHoeheMm).replace(".", ",");
-  document.getElementById("f3").value = String(d.ueberstandGewindegange).replace(".", ",");
-  document.getElementById("h3").value = String(d.ueberstandBolzenMm).replace(".", ",");
-
-  document.getElementById("formeln").textContent = `${data.meta.formeln.starreSchraubeMm} | ${data.meta.formeln.stehbolzenMm}`;
+  document.getElementById("dichtungHoehe").value = String(d.dichtungHoeheMm).replace(".", ",");
+  document.getElementById("gewindegaenge").value = String(d.ueberstandGewindegange).replace(".", ",");
+  document.getElementById("ueberstandBolzen").value = String(d.ueberstandBolzenMm).replace(".", ",");
 
   wireFilters();
   document.getElementById("calc").addEventListener("click", (ev) => {

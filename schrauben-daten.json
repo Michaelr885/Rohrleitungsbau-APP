@@ -1,15 +1,6 @@
 {
   "meta": {
-    "title": "Schraubenlängen",
-    "excelSheet": "Schraubenlänge",
-    "notes": [
-      "Berechnung entspricht den Formeln in Zelle C6 (starre Schraube) und C9 (Stehbolzen) der Excel-Datei.",
-      "Zeilenfilter: Es wird genau die Zeile aus der Flansch-Tabelle verwendet, bei der Art, DN und PN mit der Auswahl übereinstimmen (entspricht INDEX(Flansch,...) mit MATCH(1,Probe[Prüfung],0))."
-    ],
-    "formeln": {
-      "starreSchraubeMm": "2*hoeheFlansch + steigungMm*F3 + mutterHoehe + scheibenHoehe + E3 + H3 - nut + 2*bund",
-      "stehbolzenMm": "2*hoeheFlansch + 2*(steigungMm*F3) + 2*mutterHoehe + 2*scheibenHoehe + E3 + 2*H3 - nut + 2*bund"
-    }
+    "title": "Schraubenlängen"
   },
   "defaults": {
     "dichtungHoeheMm": 2.0,
