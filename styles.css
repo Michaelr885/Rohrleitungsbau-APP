@@ -1017,10 +1017,28 @@ code {
 .reducer-sketch-svg {
   display: block;
   width: 100%;
-  max-height: min(70vh, 520px);
+  max-height: min(75vh, 560px);
   height: auto;
-  border-radius: 4px;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+.reducer-sketch-grid {
+  display: grid;
+  gap: 1.1rem;
+}
+
+@media (min-width: 560px) {
+  .reducer-sketch-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.reducer-sketch-title {
+  margin: 0 0 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
 }
 
 .assign-card {

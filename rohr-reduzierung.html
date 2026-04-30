@@ -11,7 +11,7 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=24" />
+    <link rel="stylesheet" href="styles.css?v=25" />
   </head>
   <body>
     <div class="wrap wrap--sub">
@@ -100,10 +100,36 @@
         </div>
 
         <div class="card card--diagram">
-          <h2>Abwicklung (Schema)</h2>
+          <h2>Skizzen (interaktiv)</h2>
           <p class="diagram-caption">
-            Handbuch-ähnliche Skizze (1:1 in der Grafik): helles Papier, schwarze Konturen, Schraffur = auszuschneidende
-            Keile. Maßketten mit den berechneten Werten in mm (deutsche Zahlschreibweise).
+            Gleicher dunkle Diagramm-Stil wie z. B. „Parallele Rohre“: bei gültigen Eingaben aktualisieren sich Tabelle und
+            Skizzen mit (auch während der Eingabe). „Berechnen“ prüft Eingaben und speichert den Stand.
+          </p>
+          <div class="reducer-sketch-grid">
+            <div>
+              <h3 class="reducer-sketch-title">Seitenansicht</h3>
+              <div id="sketchSide" class="diagram-svg-wrap reducer-diagram" aria-live="polite"></div>
+            </div>
+            <div>
+              <h3 class="reducer-sketch-title">Stirnansicht Schnittkante</h3>
+              <div id="sketchEndCut" class="diagram-svg-wrap reducer-diagram" aria-live="polite"></div>
+            </div>
+            <div>
+              <h3 class="reducer-sketch-title">Großer Umfang · ein Segment</h3>
+              <div id="sketchRingCD" class="diagram-svg-wrap reducer-diagram" aria-live="polite"></div>
+            </div>
+            <div>
+              <h3 class="reducer-sketch-title">Kleiner Umfang · Segmente</h3>
+              <div id="sketchRingHatch" class="diagram-svg-wrap reducer-diagram" aria-live="polite"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card--diagram">
+          <h2>Abwicklung (Maßketten)</h2>
+          <p class="diagram-caption">
+            Abwicklung mit Bemaßung — Maßstab in der Grafik entspricht den mm-Werten (1 mm = 1 Einheit). Schraffur =
+            auszuschneidene Keile.
           </p>
           <div id="diagram" class="diagram-svg-wrap reducer-diagram" aria-live="polite"></div>
         </div>
@@ -117,6 +143,6 @@
         <a href="impressum.html" class="site-footer__link">Impressum &amp; Datenschutz</a>
       </footer>
     </div>
-    <script src="rohr-reduzierung.js?v=2" defer></script>
+    <script src="rohr-reduzierung.js?v=3" defer></script>
   </body>
 </html>
