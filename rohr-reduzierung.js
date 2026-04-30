@@ -60,18 +60,30 @@ function collectInputs() {
   };
 }
 
+/** Handbuch-ähnliche Abwicklung: helles „Papier“, schwarze Konturen, Schraffur, Bemaßung in mm. */
 function buildDevelopmentSvg(D, d, L, n) {
   const U = Math.PI * D;
+  const Us = Math.PI * d;
   const CD = U / n;
-  const Cd = (Math.PI * d) / n;
+  const Cd = Us / n;
+  const gap = CD - Cd;
 
-  const padX = U * 0.04;
-  const padY = L * 0.12;
-  const vbW = U + 2 * padX;
-  const vbH = L + 2 * padY;
-  const x0 = padX;
-  const yTop = padY;
-  const yBot = padY + L;
+  const strokeMain = 1.35;
+  const strokeFine = 0.9;
+  const arrow = Math.max(5, Math.min(10, U * 0.004));
+  const fontMain = Math.max(11, Math.min(18, U * 0.022));
+  const fontSmall = Math.max(9, fontMain * 0.82);
+
+  const marginL = Math.max(52, L * 0.14);
+  const marginR = Math.max(28, U * 0.03);
+  const marginT = Math.max(72, L * 0.2);
+  const marginB = Math.max(78, L * 0.22);
+
+  const x0 = marginL;
+  const yTop = marginT;
+  const yBot = marginT + L;
+  const vbW = marginL + U + marginR;
+  const vbH = marginT + L + marginB;
 
   const esc = (s) =>
     String(s)
@@ -80,76 +92,164 @@ function buildDevelopmentSvg(D, d, L, n) {
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
 
+  const tCD = esc(fmtNum(CD, 1, 2));
+  const tCd = esc(fmtNum(Cd, 1, 2));
+  const tU = esc(fmtNum(U, 1, 2));
+  const tUs = esc(fmtNum(Us, 1, 2));
+  const tL = esc(fmtNum(L, 0, 1));
+  const tGap = esc(fmtNum(gap, 1, 2));
+  const tD = esc(fmtNum(D, 1, 2));
+  const td = esc(fmtNum(d, 1, 2));
+
   const parts = [];
+
+  const arrowHeadPath = (xTip, yTip, dir) => {
+    const h = arrow * 0.55;
+    if (dir === "left") {
+      return `M ${xTip} ${yTip} L ${xTip + arrow} ${yTip - h} L ${xTip + arrow} ${yTip + h} Z`;
+    }
+    return `M ${xTip} ${yTip} L ${xTip - arrow} ${yTip - h} L ${xTip - arrow} ${yTip + h} Z`;
+  };
+
+  /** Horizontale Maßkette: yRef = Bezugskante; gapOut positiv = Maßlinie nach oben. */
+  const dimH = (x1, x2, yRef, gapOut, labelHtml) => {
+    const sign = gapOut < 0 ? -1 : 1;
+    const yDim = yRef - gapOut;
+    const extLen = Math.abs(gapOut) * 0.35 + 10;
+    const yTick = yRef - sign * Math.min(Math.abs(gapOut) * 0.22, 14);
+    parts.push(
+      `<line x1="${x1}" y1="${yRef}" x2="${x1}" y2="${yDim + sign * extLen}" stroke="#111" stroke-width="${strokeFine}"/>`
+    );
+    parts.push(
+      `<line x1="${x2}" y1="${yRef}" x2="${x2}" y2="${yDim + sign * extLen}" stroke="#111" stroke-width="${strokeFine}"/>`
+    );
+    parts.push(
+      `<line x1="${x1}" y1="${yDim}" x2="${x2}" y2="${yDim}" stroke="#111" stroke-width="${strokeMain}"/>`
+    );
+    parts.push(`<path d="${arrowHeadPath(x1, yDim, "left")}" fill="#111"/>`);
+    parts.push(`<path d="${arrowHeadPath(x2, yDim, "right")}" fill="#111"/>`);
+    const ty = yDim - sign * (fontMain * 0.45);
+    parts.push(
+      `<text x="${(x1 + x2) / 2}" y="${ty}" text-anchor="middle" fill="#111" font-size="${fontMain}" font-family="DM Sans, system-ui, sans-serif">${labelHtml}</text>`
+    );
+    parts.push(
+      `<line x1="${x1}" y1="${yTick}" x2="${x1}" y2="${yRef}" stroke="#111" stroke-width="${strokeFine}"/>`
+    );
+    parts.push(
+      `<line x1="${x2}" y1="${yTick}" x2="${x2}" y2="${yRef}" stroke="#111" stroke-width="${strokeFine}"/>`
+    );
+  };
+
+  /** Vertikale Maßkette links vom Rohr (Maßzahl von links lesbar). */
+  const dimV = (y1, y2, xRef, gapLeft, labelHtml) => {
+    const xDim = xRef - gapLeft;
+    const ext = Math.min(gapLeft * 0.2, 14);
+    parts.push(
+      `<line x1="${xRef}" y1="${y1}" x2="${xDim - ext}" y2="${y1}" stroke="#111" stroke-width="${strokeFine}"/>`
+    );
+    parts.push(
+      `<line x1="${xRef}" y1="${y2}" x2="${xDim - ext}" y2="${y2}" stroke="#111" stroke-width="${strokeFine}"/>`
+    );
+    parts.push(
+      `<line x1="${xDim}" y1="${y1}" x2="${xDim}" y2="${y2}" stroke="#111" stroke-width="${strokeMain}"/>`
+    );
+    const h = arrow * 0.5;
+    parts.push(
+      `<path d="M ${xDim} ${y1} L ${xDim - h} ${y1 + arrow} L ${xDim + h} ${y1 + arrow} Z" fill="#111"/>`
+    );
+    parts.push(
+      `<path d="M ${xDim} ${y2} L ${xDim - h} ${y2 - arrow} L ${xDim + h} ${y2 - arrow} Z" fill="#111"/>`
+    );
+    parts.push(
+      `<text transform="translate(${xDim - fontMain * 0.9}, ${(y1 + y2) / 2}) rotate(-90)" text-anchor="middle" dominant-baseline="middle" fill="#111" font-size="${fontMain}" font-family="DM Sans, system-ui, sans-serif">${labelHtml}</text>`
+    );
+  };
+
   parts.push(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${vbW} ${vbH}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Abwicklung Reduzierung">`
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${vbW} ${vbH}" preserveAspectRatio="xMidYMid meet" class="reducer-sketch-svg" role="img" aria-label="Abwicklung Reduzierung mit Bemaßung">`
   );
+
   parts.push(`<defs>
-    <pattern id="reducer-cut" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
-      <line x1="0" y1="0" x2="0" y2="8" stroke="rgba(248,113,113,0.35)" stroke-width="2"/>
+    <pattern id="reducer-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="7" stroke="#6b6b6b" stroke-width="1.1"/>
     </pattern>
   </defs>`);
 
+  parts.push(`<rect x="0" y="0" width="${vbW}" height="${vbH}" fill="#f7f4ed" stroke="#c8c2b4" stroke-width="1"/>`);
+
   parts.push(
-    `<rect x="0" y="0" width="${vbW}" height="${vbH}" fill="rgba(15,20,25,0.35)" rx="4"/>`
+    `<text x="${vbW / 2}" y="${marginT * 0.38}" text-anchor="middle" fill="#222" font-size="${fontSmall}" font-family="DM Sans, system-ui, sans-serif">Abwicklung konzentrisch · D = ${tD} mm, d = ${td} mm, n = ${n}</text>`
   );
 
   for (let k = 0; k < n; k++) {
     const xL = x0 + k * CD;
     const xR = x0 + (k + 1) * CD;
     const cx = x0 + (k + 0.5) * CD;
-    const xSl = cx - Cd / 2;
-    const xSr = cx + Cd / 2;
-    const wedgeLeft = `${xL},${yBot} ${xSl},${yTop} ${xL},${yTop}`;
-    const wedgeRight = `${xSr},${yTop} ${xR},${yTop} ${xR},${yBot}`;
-    const sw = Math.max(0.5, U * 0.001);
+    const wedgeLeft = `${xL},${yBot} ${cx - Cd / 2},${yTop} ${xL},${yTop}`;
+    const wedgeRight = `${cx + Cd / 2},${yTop} ${xR},${yTop} ${xR},${yBot}`;
     parts.push(
-      `<polygon points="${wedgeLeft}" fill="url(#reducer-cut)" stroke="rgba(248,113,113,0.45)" stroke-width="${sw}"/>`
+      `<polygon points="${wedgeLeft}" fill="url(#reducer-hatch)" stroke="#111" stroke-width="${strokeFine}"/>`
     );
     parts.push(
-      `<polygon points="${wedgeRight}" fill="url(#reducer-cut)" stroke="rgba(248,113,113,0.45)" stroke-width="${sw}"/>`
+      `<polygon points="${wedgeRight}" fill="url(#reducer-hatch)" stroke="#111" stroke-width="${strokeFine}"/>`
     );
   }
 
-  const palette = ["rgba(61,157,240,0.5)", "rgba(74,222,128,0.45)", "rgba(196,181,253,0.48)"];
   for (let k = 0; k < n; k++) {
     const xL = x0 + k * CD;
     const xR = x0 + (k + 1) * CD;
     const cx = x0 + (k + 0.5) * CD;
-    const xSl = cx - Cd / 2;
-    const xSr = cx + Cd / 2;
-    const fill = palette[k % palette.length];
-    const pts = `${xL},${yBot} ${xR},${yBot} ${xSr},${yTop} ${xSl},${yTop}`;
+    const pts = `${xL},${yBot} ${xR},${yBot} ${cx + Cd / 2},${yTop} ${cx - Cd / 2},${yTop}`;
     parts.push(
-      `<polygon points="${pts}" fill="${fill}" stroke="rgba(232,237,242,0.55)" stroke-width="${Math.max(
-        0.6,
-        U * 0.0012
-      )}"/>`
+      `<polygon points="${pts}" fill="#fff" fill-opacity="0.92" stroke="#111" stroke-width="${strokeMain}"/>`
     );
   }
 
   parts.push(
-    `<line x1="${x0}" y1="${yBot}" x2="${x0 + U}" y2="${yBot}" stroke="rgba(232,237,242,0.85)" stroke-width="${Math.max(
-      1,
-      U * 0.0015
-    )}"/>`
+    `<line x1="${x0}" y1="${yBot}" x2="${x0 + U}" y2="${yBot}" stroke="#111" stroke-width="${strokeMain}"/>`
   );
   parts.push(
-    `<line x1="${x0}" y1="${yTop}" x2="${x0 + U}" y2="${yTop}" stroke="rgba(232,237,242,0.85)" stroke-width="${Math.max(
-      1,
-      U * 0.0015
-    )}"/>`
+    `<line x1="${x0}" y1="${yTop}" x2="${x0 + U}" y2="${yTop}" stroke="#111" stroke-width="${strokeMain}"/>`
   );
 
-  const fs = Math.max(10, Math.min(22, U * 0.028));
-  const labelY = Math.max(8, padY * 0.55);
+  for (let k = 0; k < n; k++) {
+    const cx = x0 + (k + 0.5) * CD;
+    parts.push(
+      `<line x1="${cx}" y1="${yTop}" x2="${cx}" y2="${yBot}" stroke="#555" stroke-width="${strokeFine * 0.75}" stroke-dasharray="6 5"/>`
+    );
+  }
+
+  const gapTopOuter = marginT * 0.88;
+  const gapTopInner = marginT * 0.52;
+  dimH(x0, x0 + U, yTop, gapTopOuter, `π·D = ${tU} mm`);
+  dimH(x0, x0 + CD, yTop, gapTopInner, `C<tspan baseline-shift="sub" font-size="0.72em">D</tspan> = ${tCD} mm`);
+
+  const xSmall0 = x0 + (U - Us) / 2;
+  const xSmall1 = xSmall0 + Us;
+  const cx0 = x0 + CD / 2;
+  const gapBotOuter = marginB * 0.9;
+  const gapBotInner = marginB * 0.55;
+  dimH(xSmall0, xSmall1, yBot, -gapBotOuter, `π·d = ${tUs} mm`);
+  dimH(cx0 - Cd / 2, cx0 + Cd / 2, yBot, -gapBotInner, `C<tspan baseline-shift="sub" font-size="0.72em">d</tspan> = ${tCd} mm`);
+
+  dimV(yTop, yBot, x0, marginL * 0.72, `L = ${tL} mm`);
+
+  const xGap1 = x0 + CD * 0.5 - Cd / 2;
+  const xGap2 = x0 + CD * 0.5 + Cd / 2;
+  const yGapDim = yBot + marginB * 0.32;
   parts.push(
-    `<text x="${vbW / 2}" y="${labelY}" text-anchor="middle" fill="rgba(232,237,242,0.9)" font-size="${fs}" font-family="DM Sans, system-ui, sans-serif">großer Ø (U = ${esc(
-      fmtNum(U, 2, 2)
-    )} mm)</text>`
+    `<line x1="${xGap1}" y1="${yBot}" x2="${xGap1}" y2="${yGapDim + 14}" stroke="#111" stroke-width="${strokeFine}"/>`
   );
   parts.push(
-    `<text x="${vbW / 2}" y="${vbH - labelY * 0.35}" text-anchor="middle" fill="rgba(232,237,242,0.85)" font-size="${fs}" font-family="DM Sans, system-ui, sans-serif">kleiner Ø · n = ${n}</text>`
+    `<line x1="${xGap2}" y1="${yBot}" x2="${xGap2}" y2="${yGapDim + 14}" stroke="#111" stroke-width="${strokeFine}"/>`
+  );
+  parts.push(
+    `<line x1="${xGap1}" y1="${yGapDim}" x2="${xGap2}" y2="${yGapDim}" stroke="#111" stroke-width="${strokeMain}"/>`
+  );
+  parts.push(`<path d="${arrowHeadPath(xGap1, yGapDim, "left")}" fill="#111"/>`);
+  parts.push(`<path d="${arrowHeadPath(xGap2, yGapDim, "right")}" fill="#111"/>`);
+  parts.push(
+    `<text x="${(xGap1 + xGap2) / 2}" y="${yGapDim + fontMain + 4}" text-anchor="middle" fill="#111" font-size="${fontSmall}" font-family="DM Sans, system-ui, sans-serif">Keil je Segment: C<tspan baseline-shift="sub" font-size="0.72em">D</tspan> − C<tspan baseline-shift="sub" font-size="0.72em">d</tspan> = ${tGap} mm</text>`
   );
 
   parts.push(`</svg>`);
