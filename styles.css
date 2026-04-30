@@ -989,6 +989,31 @@ code {
   color: rgba(232, 147, 92, 0.68);
 }
 
+.glass-btn--reducer {
+  border-color: rgba(251, 113, 133, 0.35);
+  background: linear-gradient(
+    135deg,
+    rgba(251, 113, 133, 0.12) 0%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+}
+
+.glass-btn--reducer:hover {
+  border-color: rgba(251, 113, 133, 0.5);
+}
+
+.glass-btn--reducer .glass-btn__icon {
+  color: #fb7185;
+}
+
+.glass-btn--reducer .glass-btn__chev {
+  color: rgba(251, 113, 133, 0.72);
+}
+
+.reducer-diagram {
+  min-height: 200px;
+}
+
 .assign-card {
   background: var(--panel);
   border: 1px solid var(--border);

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0c1218" />
+    <title>Rohr — Reduzierung konzentrisch</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css?v=23" />
+  </head>
+  <body>
+    <div class="wrap wrap--sub">
+      <a href="index.html" class="back-link">← Index</a>
+      <h1>Rohr — Reduzierung konzentrisch</h1>
+      <p class="sub">
+        Abwicklung für eine konzentrische Reduzierung aus einem größeren Rohr: Umfang in <var>n</var> Segmente teilen,
+        Mittellinienabstand am großen Ø (<var>C<sub>D</sub></var>) und stehen bleibende Bogenbreite am kleinen Ø
+        (<var>C<sub>d</sub></var>) nach klassischer Schlosser-Geometrie.
+      </p>
+
+      <div class="card">
+        <h2>Eingabe</h2>
+        <div class="row row--mobile-stack">
+          <div>
+            <label for="dLargeMm">Großer Außen-Ø <var>D</var> (mm)</label>
+            <input id="dLargeMm" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 521" />
+          </div>
+          <div>
+            <label for="dSmallMm">Kleiner Außen-Ø <var>d</var> (mm)</label>
+            <input id="dSmallMm" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 168,3" />
+          </div>
+        </div>
+        <div class="row row--mobile-stack">
+          <div>
+            <label for="lengthMm">Länge der Reduzierung <var>L</var> (mm)</label>
+            <input id="lengthMm" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 350" />
+          </div>
+          <div>
+            <label for="segmentCount">Anzahl Segmente <var>n</var></label>
+            <select id="segmentCount" name="segmentCount">
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8" selected>8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="12">12</option>
+              <option value="16">16</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="btn" id="calc">Berechnen</button>
+
+      <div id="msg" class="msg" role="alert" hidden></div>
+
+      <div id="resultBlock" hidden>
+        <div class="card">
+          <h2>Ergebnis</h2>
+          <p class="formula-note">
+            <strong>Formeln:</strong>
+            <code>C<sub>D</sub> = π·D / n</code> (Bogen je Segment am großen Umfang),
+            <code>C<sub>d</sub> = π·d / n</code> (stehen bleibende Bogenbreite am kleinen Umfang, auf gleicher
+            Mittellinie zentriert). Kehle / Schweißzugabe und Schnittbreite sind nicht eingerechnet.
+          </p>
+          <div class="table-wrap">
+            <table class="data-table data-table--rohr">
+              <tbody>
+                <tr>
+                  <th scope="row">Umfang groß (π·D)</th>
+                  <td><span id="circLarge">—</span> mm</td>
+                </tr>
+                <tr>
+                  <th scope="row">Umfang klein (π·d)</th>
+                  <td><span id="circSmall">—</span> mm</td>
+                </tr>
+                <tr class="data-table__emph">
+                  <th scope="row"><var>C<sub>D</sub></var> — Bogen je Segment am großen Ø</th>
+                  <td><span id="cLarge">—</span> mm</td>
+                </tr>
+                <tr class="data-table__emph">
+                  <th scope="row"><var>C<sub>d</sub></var> — Bogen am kleinen Ø (Mittellinie)</th>
+                  <td><span id="cSmall">—</span> mm</td>
+                </tr>
+                <tr>
+                  <th scope="row">Ausfräsung / Keil je Segment am kleinen Ende (C<sub>D</sub> − C<sub>d</sub>)</th>
+                  <td><span id="wedgeGap">—</span> mm</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card card--diagram">
+          <h2>Abwicklung (Schema)</h2>
+          <p class="diagram-caption">
+            Vereinfachte Abwicklung: oben großer Umfang, unten kleiner Umfang. Farbige Flächen = stehen bleibendes
+            Material; die dazwischen liegenden Keile werden ausgeschnitten. Maßstab nur zur Orientierung.
+          </p>
+          <div id="diagram" class="diagram-svg-wrap reducer-diagram" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <p class="disclaimer">
+        Hinweis: Näherung nach üblicher Praxis (Handbuch); Kerf, Vorwärmung, Toleranzen und Nacharbeit am Werkstück
+        gesondert berücksichtigen — keine Gewähr.
+      </p>
+      <footer class="site-footer">
+        <a href="impressum.html" class="site-footer__link">Impressum &amp; Datenschutz</a>
+      </footer>
+    </div>
+    <script src="rohr-reduzierung.js?v=1" defer></script>
+  </body>
+</html>
