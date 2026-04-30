@@ -166,20 +166,21 @@ function buildSideProfileSvg(D, d, L) {
   return parts.join("");
 }
 
-/** Stirnansicht Schnittkante: Sägezahn, C_d an der Kuppe, C_D/2 vom Mittelstrich */
+/** Stirnansicht Schnittkante: Sägezahn mit abgeflachter Stirn, zentriert, kurzes Rohrstück rechts */
 function buildEndCutSvg(D, d, n, CD, Cd) {
   const W = 420;
   const H = 280;
   const uid = "gEnd-" + Math.random().toString(36).slice(2, 10);
-  const xBody = W - 48;
   const yMid = H / 2;
   const nShow = Math.min(Math.max(n, 3), 16);
-  const totalH = nShow * CD;
-  const scaleY = (H - 56) / totalH;
+  const scaleY = (H - 56) / (nShow * CD);
   const y0 = yMid - (nShow * CD * scaleY) / 2;
 
   const tipDepth = Math.max(32, Math.min(88, ((CD - Cd) / Math.max(CD, 1e-6)) * 70 + 26));
-  const xTip = xBody - tipDepth;
+  const stubW = 28;
+  const xFlat = 0;
+  const xBody = xFlat + tipDepth;
+  const xStub = xBody + stubW;
 
   const parts = [];
   parts.push(
@@ -187,8 +188,15 @@ function buildEndCutSvg(D, d, n, CD, Cd) {
   );
   parts.push(svgGradientBg(uid, W, H));
 
+  const marginDim = 70;
+  const contentLeft = xFlat - marginDim;
+  const contentRight = xStub + 12;
+  const shiftX = W / 2 - (contentLeft + contentRight) / 2;
+
+  parts.push(`<g transform="translate(${shiftX}, 0)">`);
+
   parts.push(
-    `<line x1="${xTip - 25}" y1="${yMid}" x2="${xBody + 40}" y2="${yMid}" stroke="${SK.center}" stroke-width="1" stroke-dasharray="7 4 2 4"/>`
+    `<line x1="${xFlat - 22}" y1="${yMid}" x2="${xStub + 18}" y2="${yMid}" stroke="${SK.center}" stroke-width="1" stroke-dasharray="7 4 2 4"/>`
   );
 
   let pathU = `M ${xBody} ${y0}`;
@@ -197,8 +205,9 @@ function buildEndCutSvg(D, d, n, CD, Cd) {
     const ya = y0 + k * CD * scaleY;
     const yb = y0 + (k + 1) * CD * scaleY;
     const yt = (ya + yb) / 2;
-    pathU += ` L ${xTip} ${yt} L ${xBody} ${yb}`;
-    pathL += ` L ${xTip} ${yt} L ${xBody} ${yb}`;
+    const flatH = Math.min((yb - ya) * 0.22, 8);
+    pathU += ` L ${xFlat} ${yt - flatH} L ${xFlat} ${yt + flatH} L ${xBody} ${yb}`;
+    pathL += ` L ${xFlat} ${yt + flatH} L ${xFlat} ${yt - flatH} L ${xBody} ${yb}`;
   }
   parts.push(
     `<path d="${pathU}" fill="none" stroke="${SK.accent}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>`
@@ -210,16 +219,26 @@ function buildEndCutSvg(D, d, n, CD, Cd) {
     `<line x1="${xBody}" y1="${y0}" x2="${xBody}" y2="${y0 + nShow * CD * scaleY}" stroke="${SK.accent}" stroke-width="2.2"/>`
   );
 
+  parts.push(
+    `<line x1="${xBody}" y1="${y0}" x2="${xStub}" y2="${y0}" stroke="${SK.strokeSoft}" stroke-width="1.6"/>`
+  );
+  parts.push(
+    `<line x1="${xBody}" y1="${y0 + nShow * CD * scaleY}" x2="${xStub}" y2="${y0 + nShow * CD * scaleY}" stroke="${SK.strokeSoft}" stroke-width="1.6"/>`
+  );
+  parts.push(
+    `<line x1="${xStub}" y1="${y0}" x2="${xStub}" y2="${y0 + nShow * CD * scaleY}" stroke="${SK.strokeSoft}" stroke-width="1.6"/>`
+  );
+
   const kMid = Math.floor(nShow / 2);
   const yTipT = y0 + (kMid + 0.5) * CD * scaleY;
   const halfCdPx = (Cd / 2) * scaleY;
-  const vx = xTip - 22;
+  const vx = xFlat - 22;
   parts.push(`<line x1="${vx}" y1="${yTipT - halfCdPx}" x2="${vx}" y2="${yTipT + halfCdPx}" stroke="${SK.warn}" stroke-width="1.3"/>`);
   parts.push(
-    `<line x1="${vx}" y1="${yTipT - halfCdPx}" x2="${xTip - 2}" y2="${yTipT - halfCdPx}" stroke="${SK.dim}" stroke-width="0.85"/>`
+    `<line x1="${vx}" y1="${yTipT - halfCdPx}" x2="${xFlat - 1}" y2="${yTipT - halfCdPx}" stroke="${SK.dim}" stroke-width="0.85"/>`
   );
   parts.push(
-    `<line x1="${vx}" y1="${yTipT + halfCdPx}" x2="${xTip - 2}" y2="${yTipT + halfCdPx}" stroke="${SK.dim}" stroke-width="0.85"/>`
+    `<line x1="${vx}" y1="${yTipT + halfCdPx}" x2="${xFlat - 1}" y2="${yTipT + halfCdPx}" stroke="${SK.dim}" stroke-width="0.85"/>`
   );
   parts.push(
     `<text x="${vx - 6}" y="${yTipT}" text-anchor="end" dominant-baseline="middle" fill="${SK.text}" font-size="12" font-weight="600" font-family="DM Sans,system-ui,sans-serif">C<tspan baseline-shift="sub" font-size="0.7em">d</tspan> = ${esc(
@@ -230,24 +249,26 @@ function buildEndCutSvg(D, d, n, CD, Cd) {
   const halfSegPx = (CD / 2) * scaleY;
   const yNotchUp = yMid - halfSegPx;
   const yNotchDn = yMid + halfSegPx;
-  const vx2 = xBody + 28;
+  const vx2 = xBody + 26;
   parts.push(`<line x1="${vx2}" y1="${yMid}" x2="${vx2}" y2="${yNotchUp}" stroke="${SK.warn}" stroke-width="1.3"/>`);
-  parts.push(`<line x1="${vx2}" y1="${yMid}" x2="${xBody + 4}" y2="${yMid}" stroke="${SK.dim}" stroke-width="0.85"/>`);
-  parts.push(`<line x1="${vx2}" y1="${yNotchUp}" x2="${xBody + 4}" y2="${yNotchUp}" stroke="${SK.dim}" stroke-width="0.85"/>`);
+  parts.push(`<line x1="${vx2}" y1="${yMid}" x2="${xBody + 3}" y2="${yMid}" stroke="${SK.dim}" stroke-width="0.85"/>`);
+  parts.push(`<line x1="${vx2}" y1="${yNotchUp}" x2="${xBody + 3}" y2="${yNotchUp}" stroke="${SK.dim}" stroke-width="0.85"/>`);
   parts.push(
     `<text x="${vx2 + 8}" y="${(yMid + yNotchUp) / 2}" dominant-baseline="middle" fill="${SK.text}" font-size="11" font-weight="600" font-family="DM Sans,system-ui,sans-serif">C<tspan baseline-shift="sub" font-size="0.7em">D</tspan>/2 = ${esc(
       fmtNum(CD / 2, 1, 2)
     )}</text>`
   );
-  const vx3 = xBody + 46;
+  const vx3 = xBody + 44;
   parts.push(`<line x1="${vx3}" y1="${yMid}" x2="${vx3}" y2="${yNotchDn}" stroke="${SK.warn}" stroke-width="1.3"/>`);
-  parts.push(`<line x1="${vx3}" y1="${yMid}" x2="${xBody + 4}" y2="${yMid}" stroke="${SK.dim}" stroke-width="0.85"/>`);
-  parts.push(`<line x1="${vx3}" y1="${yNotchDn}" x2="${xBody + 4}" y2="${yNotchDn}" stroke="${SK.dim}" stroke-width="0.85"/>`);
+  parts.push(`<line x1="${vx3}" y1="${yMid}" x2="${xBody + 3}" y2="${yMid}" stroke="${SK.dim}" stroke-width="0.85"/>`);
+  parts.push(`<line x1="${vx3}" y1="${yNotchDn}" x2="${xBody + 3}" y2="${yNotchDn}" stroke="${SK.dim}" stroke-width="0.85"/>`);
   parts.push(
     `<text x="${vx3 + 8}" y="${(yMid + yNotchDn) / 2}" dominant-baseline="middle" fill="${SK.text}" font-size="11" font-weight="600" font-family="DM Sans,system-ui,sans-serif">C<tspan baseline-shift="sub" font-size="0.7em">D</tspan>/2 = ${esc(
       fmtNum(CD / 2, 1, 2)
     )}</text>`
   );
+
+  parts.push(`</g>`);
 
   parts.push(
     `<text x="${W / 2}" y="26" text-anchor="middle" fill="${SK.text}" font-size="13" font-weight="600" font-family="DM Sans,system-ui,sans-serif">Stirnansicht Schnittkante</text>`
@@ -262,14 +283,14 @@ function buildEndCutSvg(D, d, n, CD, Cd) {
   return parts.join("");
 }
 
-/** Kreissektor C_D am großen Umfang (wie Handbuch-Ansicht von oben) */
+/** Kreissektor C_D am großen Umfang (wie Handbuch-Ansicht von oben), mit kurzem Rohrstück am Segment */
 function buildRingSectorSvg(D, n, CD) {
   const W = 380;
   const H = 380;
   const uid = "gRing-" + Math.random().toString(36).slice(2, 10);
   const cx = W / 2;
-  const cy = H / 2;
-  const R = Math.min(W, H) * 0.36;
+  const cy = H / 2 + 26;
+  const R = Math.min(W, H) * 0.34;
   const Ri = R * 0.42;
   const a0 = (-Math.PI / 2) * 0.35;
   const a1 = a0 + (2 * Math.PI) / n;
@@ -308,8 +329,29 @@ function buildRingSectorSvg(D, n, CD) {
     `<path d="M ${xi0} ${yi0} L ${xr0} ${yr0} A ${R} ${R} 0 ${largeArc} 1 ${xr1} ${yr1} L ${xi1} ${yi1} A ${Ri} ${Ri} 0 ${largeArc} 0 ${xi0} ${yi0} Z" fill="${SK.fillSolid}" stroke="${SK.accent}" stroke-width="2"/>`
   );
 
-  const rm = (R + Ri) / 2;
   const am = (a0 + a1) / 2;
+  const stub = Math.min(26, R * 0.14);
+  const span = Math.min((a1 - a0) * 0.22, 0.32);
+  const as0 = am - span;
+  const as1 = am + span;
+  const Ro = R + stub;
+  const sx0 = cx + Ri * Math.cos(as0);
+  const sy0 = cy + Ri * Math.sin(as0);
+  const sx1 = cx + R * Math.cos(as0);
+  const sy1 = cy + R * Math.sin(as0);
+  const sx2 = cx + Ro * Math.cos(as0);
+  const sy2 = cy + Ro * Math.sin(as0);
+  const sx3 = cx + Ro * Math.cos(as1);
+  const sy3 = cy + Ro * Math.sin(as1);
+  const sx4 = cx + R * Math.cos(as1);
+  const sy4 = cy + R * Math.sin(as1);
+  const sx5 = cx + Ri * Math.cos(as1);
+  const sy5 = cy + Ri * Math.sin(as1);
+  parts.push(
+    `<polygon points="${sx0},${sy0} ${sx1},${sy1} ${sx2},${sy2} ${sx3},${sy3} ${sx4},${sy4} ${sx5},${sy5}" fill="rgba(61,157,240,0.12)" stroke="${SK.strokeSoft}" stroke-width="1.3" stroke-linejoin="round"/>`
+  );
+
+  const rm = (R + Ri) / 2;
   const arcR = rm + 28;
   const ax0 = cx + arcR * Math.cos(a0 + 0.04);
   const ay0 = cy + arcR * Math.sin(a0 + 0.04);
@@ -339,7 +381,7 @@ function buildRingSectorSvg(D, n, CD) {
   parts.push(
     `<text x="${cx}" y="46" text-anchor="middle" fill="${SK.muted}" font-size="10" font-family="DM Sans,system-ui,sans-serif">D = ${esc(
       fmtNum(D, 1, 2)
-    )} mm · n = ${n}</text>`
+    )} mm · n = ${n} · kurzes Rohrstück angedeutet</text>`
   );
 
   parts.push(`</svg>`);
@@ -353,8 +395,8 @@ function buildRingHatchSvg(d, n, Cd) {
   const uid = "gHat-" + Math.random().toString(36).slice(2, 10);
   const pid = "hatch-" + uid;
   const cx = W / 2;
-  const cy = H / 2;
-  const R = Math.min(W, H) * 0.36;
+  const cy = H / 2 + 26;
+  const R = Math.min(W, H) * 0.34;
   const Ri = R * 0.45;
 
   const parts = [];
