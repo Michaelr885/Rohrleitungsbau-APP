@@ -25,6 +25,9 @@ const SK = {
   fillAlt: "rgba(94,176,240,0.12)",
 };
 
+/** Zusätzlicher Abstand nach unten unter Titelzeilen (alle vier Skizzen gleich) */
+const SKETCH_V_OFF = 52;
+
 function parseNum(str) {
   const v = parseFloat(String(str || "").replace(",", ".").trim());
   return Number.isFinite(v) ? v : NaN;
@@ -106,7 +109,7 @@ function buildSideProfileSvg(D, d, L) {
   const uid = "gSide-" + Math.random().toString(36).slice(2, 10);
   const padL = 28;
   const padR = 36;
-  const midY = H / 2;
+  const midY = H / 2 + SKETCH_V_OFF;
   const x0 = padL;
   const x1 = W - padR;
   const taperW = Math.min(200, (x1 - x0) * 0.55);
@@ -171,7 +174,7 @@ function buildEndCutSvg(D, d, n, CD, Cd) {
   const W = 420;
   const H = 280;
   const uid = "gEnd-" + Math.random().toString(36).slice(2, 10);
-  const yMid = H / 2;
+  const yMid = H / 2 + SKETCH_V_OFF;
   const nShow = Math.min(Math.max(n, 3), 16);
   const scaleY = (H - 56) / (nShow * CD);
   const y0 = yMid - (nShow * CD * scaleY) / 2;
@@ -196,7 +199,7 @@ function buildEndCutSvg(D, d, n, CD, Cd) {
   parts.push(`<g transform="translate(${shiftX}, 0)">`);
 
   parts.push(
-    `<line x1="${xFlat - 22}" y1="${yMid}" x2="${xStub + 18}" y2="${yMid}" stroke="${SK.center}" stroke-width="1" stroke-dasharray="7 4 2 4"/>`
+    `<line x1="${xFlat + 4}" y1="${yMid}" x2="${xStub + 10}" y2="${yMid}" stroke="${SK.center}" stroke-width="1" stroke-dasharray="7 4 2 4"/>`
   );
 
   let pathU = `M ${xBody} ${y0}`;
@@ -251,7 +254,6 @@ function buildEndCutSvg(D, d, n, CD, Cd) {
   const yNotchDn = yMid + halfSegPx;
   const vx2 = xBody + 26;
   parts.push(`<line x1="${vx2}" y1="${yMid}" x2="${vx2}" y2="${yNotchUp}" stroke="${SK.warn}" stroke-width="1.3"/>`);
-  parts.push(`<line x1="${vx2}" y1="${yMid}" x2="${xBody + 3}" y2="${yMid}" stroke="${SK.dim}" stroke-width="0.85"/>`);
   parts.push(`<line x1="${vx2}" y1="${yNotchUp}" x2="${xBody + 3}" y2="${yNotchUp}" stroke="${SK.dim}" stroke-width="0.85"/>`);
   parts.push(
     `<text x="${vx2 + 8}" y="${(yMid + yNotchUp) / 2}" dominant-baseline="middle" fill="${SK.text}" font-size="11" font-weight="600" font-family="DM Sans,system-ui,sans-serif">C<tspan baseline-shift="sub" font-size="0.7em">D</tspan>/2 = ${esc(
@@ -260,7 +262,6 @@ function buildEndCutSvg(D, d, n, CD, Cd) {
   );
   const vx3 = xBody + 44;
   parts.push(`<line x1="${vx3}" y1="${yMid}" x2="${vx3}" y2="${yNotchDn}" stroke="${SK.warn}" stroke-width="1.3"/>`);
-  parts.push(`<line x1="${vx3}" y1="${yMid}" x2="${xBody + 3}" y2="${yMid}" stroke="${SK.dim}" stroke-width="0.85"/>`);
   parts.push(`<line x1="${vx3}" y1="${yNotchDn}" x2="${xBody + 3}" y2="${yNotchDn}" stroke="${SK.dim}" stroke-width="0.85"/>`);
   parts.push(
     `<text x="${vx3 + 8}" y="${(yMid + yNotchDn) / 2}" dominant-baseline="middle" fill="${SK.text}" font-size="11" font-weight="600" font-family="DM Sans,system-ui,sans-serif">C<tspan baseline-shift="sub" font-size="0.7em">D</tspan>/2 = ${esc(
@@ -289,7 +290,7 @@ function buildRingSectorSvg(D, n, CD) {
   const H = 380;
   const uid = "gRing-" + Math.random().toString(36).slice(2, 10);
   const cx = W / 2;
-  const cy = H / 2 + 26;
+  const cy = H / 2 + 26 + SKETCH_V_OFF;
   const R = Math.min(W, H) * 0.34;
   const Ri = R * 0.42;
   const a0 = (-Math.PI / 2) * 0.35;
@@ -395,7 +396,7 @@ function buildRingHatchSvg(d, n, Cd) {
   const uid = "gHat-" + Math.random().toString(36).slice(2, 10);
   const pid = "hatch-" + uid;
   const cx = W / 2;
-  const cy = H / 2 + 26;
+  const cy = H / 2 + 26 + SKETCH_V_OFF;
   const R = Math.min(W, H) * 0.34;
   const Ri = R * 0.45;
 
