@@ -611,20 +611,45 @@ function updateGeometryModeUi() {
   const wrapAlpha = document.getElementById("wrapAlpha");
   const inputV = document.getElementById("inputV");
   const labelV = document.getElementById("labelInputV");
+  const labelL = document.getElementById("labelInputL");
+  const labelA = document.getElementById("labelInputAlpha");
   if (sprung === "space") {
     wrapL.hidden = !isLen;
     wrapAlpha.hidden = isLen;
     inputV.removeAttribute("readonly");
     labelV.textContent = "Versatz V";
+    if (labelL) labelL.textContent = "Länge L (Projektion)";
+    if (labelA) labelA.textContent = "Winkel α (Passstück / Raumdiagonale)";
   } else {
     wrapL.hidden = true;
-    wrapAlpha.hidden = isLen;
+    wrapAlpha.hidden = false;
+    if (labelL) labelL.textContent = "Länge-Modus (Plansprung)";
+    if (labelA) labelA.textContent = "Winkel α (zwischen H und V)";
     if (isLen) {
       inputV.removeAttribute("readonly");
       labelV.textContent = "Versatz V (2D)";
     } else {
       inputV.setAttribute("readonly", "readonly");
-      labelV.textContent = "Versatz V (wird aus H und α berechnet)";
+      labelV.textContent = "Versatz V (automatisch aus H und α)";
+      syncPlanarDerivedFields();
+    }
+  }
+}
+
+function syncPlanarDerivedFields() {
+  const sprung = getSprungMode();
+  if (sprung !== "planar") return;
+  const isLen = document.getElementById("mode-length").classList.contains("etagen-mode-btn--active");
+  const h = parseNum(document.getElementById("inputH").value);
+  const vEl = document.getElementById("inputV");
+  const a = parseNum(document.getElementById("inputAlpha").value);
+  if (!Number.isFinite(h) || h <= 0) return;
+  if (!isLen && Number.isFinite(a) && a > 0 && a < 90) {
+    const ar = (a * Math.PI) / 180;
+    const t = Math.tan(ar);
+    if (Number.isFinite(t) && t > 0) {
+      const v = h / t;
+      if (Number.isFinite(v) && v > 0) vEl.value = fmtMm(v);
     }
   }
 }
@@ -835,7 +860,7 @@ function run() {
   const cap = document.getElementById("svgCaption");
   cap.hidden = false;
   if (isPlanar) {
-    cap.innerHTML = `<strong>Maße:</strong> H=${escapeHtml(fmtMm(H))} mm · V=${escapeHtml(fmtMm(V))} mm · D=${escapeHtml(
+    cap.innerHTML = `<strong>Maße:</strong> H=${escapeHtml(fmtMm(H))} mm · V=${escapeHtml(fmtMm(geo.V))} mm · D=${escapeHtml(
       fmtMm(D)
     )} mm · α≈${escapeHtml(fmtDeg(alphaDeg))}° · Passstück≈${escapeHtml(fmtMm(pass))} mm`;
   } else {
@@ -910,10 +935,12 @@ async function init() {
 
   document.getElementById("sprung-space").addEventListener("click", () => {
     setSprungMode("space");
+    syncPlanarDerivedFields();
     run();
   });
   document.getElementById("sprung-planar").addEventListener("click", () => {
     setSprungMode("planar");
+    syncPlanarDerivedFields();
     run();
   });
 
@@ -948,17 +975,24 @@ async function init() {
 
   document.getElementById("mode-length").addEventListener("click", () => {
     setMode("length");
+    syncPlanarDerivedFields();
     run();
   });
   document.getElementById("mode-angle").addEventListener("click", () => {
     setMode("angle");
+    syncPlanarDerivedFields();
     run();
   });
+
+  document.getElementById("inputH").addEventListener("input", () => syncPlanarDerivedFields());
+  document.getElementById("inputAlpha").addEventListener("input", () => syncPlanarDerivedFields());
 
   wireDnDropdown();
   const initialSaved = loadSaved();
   restore(initialSaved);
   if (!initialSaved) setSprungMode("space");
+  const bendLegendHost = document.getElementById("bendLegendHost");
+  if (bendLegendHost) bendLegendHost.innerHTML = renderBendLegendSvg();
 
   [
     "inputH",
