@@ -1010,6 +1010,27 @@ code {
   color: rgba(251, 113, 133, 0.72);
 }
 
+.glass-btn--thermal {
+  border-color: rgba(45, 212, 191, 0.35);
+  background: linear-gradient(
+    135deg,
+    rgba(45, 212, 191, 0.12) 0%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+}
+
+.glass-btn--thermal:hover {
+  border-color: rgba(45, 212, 191, 0.5);
+}
+
+.glass-btn--thermal .glass-btn__icon {
+  color: #5eead4;
+}
+
+.glass-btn--thermal .glass-btn__chev {
+  color: rgba(94, 234, 212, 0.72);
+}
+
 .reducer-diagram {
   min-height: 200px;
 }

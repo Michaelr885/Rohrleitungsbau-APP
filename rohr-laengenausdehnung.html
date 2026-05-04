@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0c1218" />
+    <title>Rohr — Längenausdehnung</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css?v=26" />
+  </head>
+  <body>
+    <div class="wrap wrap--sub">
+      <a href="index.html" class="back-link">← Index</a>
+      <h1>Rohr — Längenausdehnung</h1>
+      <p class="sub">
+        Thermische Längenänderung eines geraden Rohrstrangs:
+        <strong>ΔL = α · L · (T<sub>1</sub> − T<sub>0</sub>)</strong> mit linearer Ausdehnungszahl
+        <var>α</var> (1/K), Bezugslänge <var>L</var> und Temperaturdifferenz ΔT in Kelvin bzw. °C.
+      </p>
+
+      <div class="card">
+        <h2>Eingabe</h2>
+        <div class="row">
+          <div>
+            <label for="material">Werkstoff (Richtwert für α)</label>
+            <select id="material" name="material">
+              <option value="steel">Stahl (ca. 12)</option>
+              <option value="stainless">Edelstahl austenitisch (ca. 16,5)</option>
+              <option value="cu">Kupfer (ca. 17)</option>
+              <option value="al">Aluminium (ca. 23)</option>
+              <option value="pp">PP Kunststoff (ca. 150)</option>
+              <option value="pe">PE Kunststoff (ca. 200)</option>
+              <option value="custom">α manuell</option>
+            </select>
+          </div>
+        </div>
+        <p class="formula-note" id="alphaHint">
+          α in 10<sup>−6</sup>/K — Wert aus Tabelle, bei „α manuell“ unten eintragen.
+        </p>
+        <div class="row row--mobile-stack">
+          <div>
+            <label for="alphaManual">α (10<sup>−6</sup>/K), nur bei „α manuell“</label>
+            <input id="alphaManual" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 12" />
+          </div>
+          <div>
+            <label for="lengthM">Länge L (m)</label>
+            <input id="lengthM" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 30" />
+          </div>
+        </div>
+        <div class="row row--mobile-stack">
+          <div>
+            <label for="t0">Temperatur T<sub>0</sub> (°C)</label>
+            <input id="t0" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 20" />
+          </div>
+          <div>
+            <label for="t1">Temperatur T<sub>1</sub> (°C)</label>
+            <input id="t1" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 80" />
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="btn" id="calc">Berechnen</button>
+
+      <div id="msg" class="msg" role="alert" hidden></div>
+
+      <div id="resultBlock" hidden>
+        <div class="card">
+          <h2>Ergebnis</h2>
+          <p class="formula-note">
+            Verwendet: α = <strong><span id="alphaUsed">—</span></strong> 10<sup>−6</sup>/K · L =
+            <strong><span id="lenUsed">—</span></strong> m · ΔT =
+            <strong><span id="dtUsed">—</span></strong> K
+          </p>
+          <div class="table-wrap">
+            <table class="data-table data-table--rohr">
+              <tbody>
+                <tr class="data-table__emph">
+                  <th scope="row">Längenänderung ΔL</th>
+                  <td><span id="deltaLmm">—</span> mm <span class="rohr-sub">(<span id="deltaLm">—</span> m)</span></td>
+                </tr>
+                <tr>
+                  <th scope="row">Länge bei T<sub>1</sub> (näherungsweise)</th>
+                  <td><span id="lenAtT1mm">—</span> mm <span class="rohr-sub">(L + ΔL)</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <p class="disclaimer">
+        Hinweis: α-Werte sind typische Richtwerte; Werkstoff, Legierung und Temperaturbereich schwanken. Für
+        Statik, Kompensation und Festpunkte gesondert bewerten — keine Gewähr.
+      </p>
+      <footer class="site-footer">
+        <a href="impressum.html" class="site-footer__link">Impressum &amp; Datenschutz</a>
+      </footer>
+    </div>
+    <script src="rohr-laengenausdehnung.js?v=1" defer></script>
+  </body>
+</html>
